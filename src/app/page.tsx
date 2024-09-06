@@ -4,6 +4,7 @@
 import { useState } from 'react'
 import Image from "next/image";
 import AuthModal from '@/components/AuthModal'
+import Link from 'next/link';
 
 export default function HomePage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -12,15 +13,22 @@ export default function HomePage() {
   const closeModal = () => setIsModalOpen(false)
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <div>
       <nav className="flex min-w-full items-center justify-between p-24">
         <h1> Welcome to IDLR Landing page!</h1>
-          <button
-            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            onClick={openModal}
+          <Link
+            href="/signin"
+            className="underline hover:text-primary"
           >
-            Sign In / Sign Up
-          </button>
+            Sign In
+          </Link>
+
+          <Link
+            href="/signup"
+            className="underline hover:text-primary"
+          >
+            Sign Up
+          </Link>
 
           <AuthModal isOpen={isModalOpen} onClose={closeModal} />
       </nav>
@@ -35,6 +43,6 @@ export default function HomePage() {
           />
       </div>
       <p>The greatest way to pass the time</p>
-    </main>
+    </div>
   )
 }
