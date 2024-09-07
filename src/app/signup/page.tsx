@@ -21,9 +21,8 @@ export default function SignupPage() {
     })
 
     if (res.ok) {
-      router.push('/dashboard') // Redirect on success
+      router.push('/dashboard')
     } else {
-      // Handle error
       console.error('Signup failed')
     }
   }

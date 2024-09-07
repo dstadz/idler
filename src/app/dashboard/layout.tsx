@@ -1,24 +1,26 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "../globals.css";
-const inter = Inter({ subsets: ["latin"] });
+'use client'
+import { useSession, signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
-export const metadata: Metadata = {
-  title: "Idle game ",
-  description: "how to enjoy time that could  be better spent anywhere else",
-};
+export default function DashboardLayout({ children }) {
+  const { data: session, status } = useSession()
+  const router = useRouter()
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+  useEffect(() => {
+    if (status === 'loading') return
+    if (!session) router.push('/auth/signin')
+      console.log(`🚀 ~ file: layout.tsx:14 ~ useEffect ~ session:`, session)
+  }, [session, status, router])
+
+  if (status === 'loading' || !session) {
+    return <p>Loading...</p>
+  }
+
   return (
-    <html lang="en">
-      <body className={inter.className}>
-        Dashboard
-        {children}
-      </body>
-    </html>
-  );
+    <div>
+      <h1>{session.user.name}s Dashboard</h1>
+      {children}
+    </div>
+  )
 }
