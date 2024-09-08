@@ -14,15 +14,19 @@ export async function POST(request: Request) {
 
     const user = await prisma.user.create({
       data: {
+        name,
         email,
         password: hashedPassword,
-        name,
       },
     })
 
-    return NextResponse.json(user)
+    return NextResponse.json(user, { status: 201 })
   } catch (error) {
     console.error('Error creating user:', error)
-    return NextResponse.json({ message: 'Error creating user', error: error.message }, { status: 500 })
+
+    return NextResponse.json(
+      { message: 'Error creating user', error: (error as Error).message },
+      { status: 500 }
+    )
   }
 }
