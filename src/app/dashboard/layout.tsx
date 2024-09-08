@@ -1,24 +1,39 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "../globals.css";
-const inter = Inter({ subsets: ["latin"] });
+'use client'
+import React, { ReactNode, useEffect } from 'react'
+import SignOutButton from '@/components/SignOutbutton'
+import { useSession, signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
-export const metadata: Metadata = {
-  title: "Idle game ",
-  description: "how to enjoy time that could  be better spent anywhere else",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body className={inter.className}>
-        Dashboard
-        {children}
-      </body>
-    </html>
-  );
+interface DashboardLayoutProps {
+  children: ReactNode
 }
+
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+  const { data: session, status } = useSession()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (status === 'loading') return
+    if (!session) router.push('/signin')
+      console.log(`🚀 ~ file: layout.tsx:14 ~ useEffect ~ session:`, session)
+  }, [session, status, router])
+
+  if (status === 'loading' || !session) {
+    return <p>Loading...</p>
+  }
+
+
+  if (!session || !session.user) {
+    return <div>User not logged in</div>
+  }
+
+  return (
+    <div>
+      <h1>{session.user.name}s Dashboard</h1>
+      <SignOutButton />
+      {children}
+    </div>
+  )
+}
+
+export default DashboardLayout
