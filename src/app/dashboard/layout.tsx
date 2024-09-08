@@ -1,10 +1,14 @@
 'use client'
+import React, { ReactNode, useEffect } from 'react'
 import SignOutButton from '@/components/SignOutbutton'
 import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 
-export default function DashboardLayout({ children }) {
+interface DashboardLayoutProps {
+  children: ReactNode
+}
+
+const DashboardLayout = ({ children }: DashboardLayoutProps) => {
   const { data: session, status } = useSession()
   const router = useRouter()
 
@@ -18,6 +22,11 @@ export default function DashboardLayout({ children }) {
     return <p>Loading...</p>
   }
 
+
+  if (!session || !session.user) {
+    return <div>User not logged in</div>
+  }
+
   return (
     <div>
       <h1>{session.user.name}s Dashboard</h1>
@@ -26,3 +35,5 @@ export default function DashboardLayout({ children }) {
     </div>
   )
 }
+
+export default DashboardLayout
