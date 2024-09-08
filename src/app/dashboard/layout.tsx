@@ -9,7 +9,7 @@ export default function DashboardLayout({ children }) {
 
   useEffect(() => {
     if (status === 'loading') return
-    if (!session) router.push('/auth/signin')
+    if (!session) router.push('/signin')
       console.log(`🚀 ~ file: layout.tsx:14 ~ useEffect ~ session:`, session)
   }, [session, status, router])
 
