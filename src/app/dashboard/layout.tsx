@@ -1,4 +1,5 @@
 'use client'
+import SignOutButton from '@/components/SignOutbutton'
 import { useSession, signIn } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
@@ -20,6 +21,7 @@ export default function DashboardLayout({ children }) {
   return (
     <div>
       <h1>{session.user.name}s Dashboard</h1>
+      <SignOutButton />
       {children}
     </div>
   )
