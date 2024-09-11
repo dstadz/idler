@@ -1,19 +1,13 @@
 'use client'
-import React, { ReactNode } from 'react'
 
-import NavStack from '@/components/NavStack'
+import React from 'react'
 
-interface PlayersLayoutProps {
-  children: ReactNode,
-}
-
-const PlayersLayout = ({ children }: PlayersLayoutProps) => {
-  return ( // /Player
-    <div className="flex flex-col border-2 w-full">
-      This is the Player Page
-      {children}
+const PlayerPage = () => {
+  return (
+    <div>
+      This is the Civvie Page Content
     </div>
   )
 }
 
-export default PlayersLayout
+export default PlayerPage

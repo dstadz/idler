@@ -15,7 +15,7 @@ interface NavStackProps {
   tabs: TabItem[]
 }
 
-export default function NavStack({ tabs }: NavStackProps) {
+export default function NavStack() {
   const [value, setValue] = useState<number>(0)
   const [mounted, setMounted] = useState(false)
   const router = useRouter()

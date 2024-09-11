@@ -1,11 +1,6 @@
-'use client'
-import React, { ReactNode } from 'react'
+import { LayoutProps } from "@/interfaces"
 
-interface PlayerLayoutProps {
-  children: ReactNode
-}
-
-const PlayerLayout = ({ children }: PlayerLayoutProps) => {
+const PlayerLayout = ({ children }: LayoutProps) => {
   return (
     <div className="flex flex-col border-2 w-full border-4 border-purple-500">
       Player Layout

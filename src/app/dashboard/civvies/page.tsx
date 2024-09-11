@@ -1,17 +1,13 @@
 'use client'
-import React, { ReactNode } from 'react'
 
-interface CivviesLayoutProps {
-  children: ReactNode
-}
+import React from 'react'
 
-const CivviesLayout = ({ children }: CivviesLayoutProps) => {
-  return ( // /Civvies
-    <div className="flex flex-col border-2 w-full">
-      This is the Civvie Page
-      {children}
+const CivviesPage = () => {
+  return (
+    <div>
+      This is the Civvie Page Content
     </div>
   )
 }
 
-export default CivviesLayout
+export default CivviesPage

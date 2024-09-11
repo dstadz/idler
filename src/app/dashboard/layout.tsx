@@ -8,11 +8,7 @@ import Stack from '@mui/material/Stack'
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 
-interface DashboardLayoutProps {
-  children: ReactNode
-}
-
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession()
   const router = useRouter()
 

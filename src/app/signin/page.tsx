@@ -6,30 +6,32 @@ import { useState } from 'react'
 export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
 
-const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault()
-  setError(null)
-  setLoading(true)
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError(null)
+    setLoading(true)
 
-  const result = await signIn('credentials', {
-    redirect: false,
-    email,
-    password,
-    callbackUrl: '/dashboard',
-  })
+    const result = await signIn('credentials', {
+      redirect: false,
+      email,
+      password,
+      callbackUrl: '/dashboard',
+    })
 
-  setLoading(false)
+    setLoading(false)
 
-  if (result?.error) {
-    console.log(`🚀 ~ file: page.tsx:21 ~ handleSubmit ~ result:`, result)
-    setError('Invalid email or password')
-  } else {
-    window.location.href = result.url
+    if (result?.error) {
+      console.log(`🚀 ~ file: page.tsx:21 ~ handleSubmit ~ result:`, result)
+      setError('Invalid email or password')
+    } else if (result?.url) {
+      window.location.href = result.url
+    } else {
+      console.error('Error: Redirect URL is missing')
+    }
   }
-}
 
   return (
     <div>
