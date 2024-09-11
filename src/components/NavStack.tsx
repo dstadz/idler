@@ -1,0 +1,63 @@
+import { useState, useEffect } from 'react'
+import Box from '@mui/material/Box'
+import Tab from '@mui/material/Tab'
+import Tabs from '@mui/material/Tabs'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { NAV_TABS } from '@/utils/contants'
+
+interface TabItem {
+  title: string
+  route: string
+}
+
+interface NavStackProps {
+  tabs: TabItem[]
+}
+
+export default function NavStack() {
+  const [value, setValue] = useState<number>(0)
+  const [mounted, setMounted] = useState(false)
+  const router = useRouter()
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue)
+    if (mounted) {
+      router.push(`/dashboard/${NAV_TABS[newValue].route}`)
+    }
+  }
+
+  if (!mounted) {
+    return null
+  }
+
+  return (
+    <Tabs
+      value={value}
+      onChange={handleChange}
+      role="navigation"
+      orientation="vertical"
+    >
+      {NAV_TABS.map((tab, index) => (
+        <Tab
+          key={tab.route}
+          label={tab.title}
+          value={index}
+          sx={{
+            minWidth: 64,
+            minHeight: 60,
+            borderRadius: '4px',
+            transition: 'background 0.2s ease-in-out',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.08)',
+            },
+          }}
+        />
+      ))}
+    </Tabs>
+  )
+}

@@ -9,7 +9,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <SessionProvider>
       <html lang="en">
         <body>
-          <main className="flex min-h-screen flex-col items-center justify-between p-4">
+          <main className="flex min-h-screen min-w-screen flex-col items-center justify-between">
             {children}
           </main>
         </body>
