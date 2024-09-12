@@ -1,3 +1,7 @@
+import {
+  Map as MapIcon,
+} from '@mui/icons-material'
+
 export const NAV_TABS = [
   {
     // icon: <LocalOffer />,
@@ -14,7 +18,7 @@ export const NAV_TABS = [
     // treatmentKeys: ['app-route-purchases'],
   },
   // {
-  //   // icon: ,
+  //   icon: ,
   //   title: 'Village',
   //   route: 'village',
   // },
@@ -23,11 +27,11 @@ export const NAV_TABS = [
   //   title: 'Research',
   //   route: 'research',
   // },
-  // {
-  //   // icon: ,
-  //   title: 'Map',
-  //   route: 'map',
-  // },
+  {
+    icon: MapIcon,
+    title: 'Overworld',
+    route: 'overworld',
+  },
   // {
   //   // icon: ,
   //   title: 'Achievements',
