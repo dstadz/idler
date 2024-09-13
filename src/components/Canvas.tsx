@@ -9,7 +9,7 @@ const useCentralHub = ({
   let direction = 'toHub'
   let targetSatelliteIndex = 0
 
-  const speed = 2 // Speed of movement
+  const speed = 0.2 // Speed of movement
 
 
   // const getValues = () => {
@@ -23,7 +23,9 @@ const useCentralHub = ({
     }
   }
 
-const Canvas = () => {
+const Canvas = ({
+  units,
+}) => {
   const canvasRef = useRef(null)
   const fpsRef = useRef(0) // Use ref to track FPS directly
   let {
@@ -46,7 +48,6 @@ const Canvas = () => {
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      // Draw central hub (blue rectangle)
       ctx.font = '48px serif'
       ctx.fillText('🏠', centralHubPosition.x, centralHubPosition.y)
 
@@ -58,17 +59,39 @@ const Canvas = () => {
         ctx.fill()
       })
 
-      // Draw resource transfer div (horse emoji)
-ctx.font = '30px serif'
-ctx.fillText('🐴', resourceTransferPosition.x, resourceTransferPosition.y)
+      // Calculate the direction angle for the horse emoji
+      const target = direction === 'toHub' ? centralHubPosition : satellitePositions[targetSatelliteIndex]
+      const dx = target.x - resourceTransferPosition.x
+      const dy = target.y - resourceTransferPosition.y
+      const angle = Math.atan2(dy, dx) // Calculate the angle in radians
 
-// Display horse emoji coordinates
-ctx.fillStyle = 'black'
-ctx.font = '16px Arial'
-ctx.fillText(`Horse: (${Math.round(resourceTransferPosition.x)}, ${Math.round(resourceTransferPosition.y)})`, 10, 80)
+      // Determine if the horse should be flipped (moving right)
+      const isMovingRight = dx > 0
 
-ctx.fillText(`fakeFPS: ${fpsRef.current}`, 10, 20)
+      // Draw rotated horse emoji
+      ctx.save() // Save the current canvas state
+      ctx.translate(resourceTransferPosition.x, resourceTransferPosition.y) // Move the canvas origin to the horse position
+
+      // Apply flipping if moving rightwards
+      if (isMovingRight) {
+        ctx.scale(-1, 1) // Flip the canvas horizontally
+      }
+
+      // ctx.rotate(angle) // Rotate the canvas by the angle of movement
+      ctx.font = '30px serif' // Set the font size for the emoji
+      ctx.fillText('🐎', isMovingRight ? 15 : -15, 10) // Adjust the position based on flip
+
+      ctx.restore() // Restore the canvas to its original state
+
+      // Display horse emoji coordinates
+      ctx.fillStyle = 'black'
+      ctx.font = '16px Arial'
+      ctx.fillText(`Horse: (${Math.round(resourceTransferPosition.x)}, ${Math.round(resourceTransferPosition.y)})`, 10, 40)
+
+      // Draw FPS counter
+      ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
     }
+
 
     const updatePosition = () => {
       const targetSatellite = satellitePositions[targetSatelliteIndex]
