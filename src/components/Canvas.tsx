@@ -1,9 +1,8 @@
 import { useRef, useEffect, useState } from 'react'
 
-const Canvas = () => {
-  const canvasRef = useRef(null)
-  const fpsRef = useRef(0) // Use ref to track FPS directly
-
+const useCentralHub = ({
+  // ctx: CanvasRenderingContext2D
+}) => {
   const centralHubPosition = { x: 300, y: 200 }
   const satellitePositions = [{ x: 50, y: 50 }, { x: 200, y: 100 }]
   let resourceTransferPosition = { x: 50, y: 50 }
@@ -11,6 +10,31 @@ const Canvas = () => {
   let targetSatelliteIndex = 0
 
   const speed = 2 // Speed of movement
+
+
+  // const getValues = () => {
+    return {
+      centralHubPosition,
+      satellitePositions,
+      resourceTransferPosition,
+      direction,
+      targetSatelliteIndex,
+      speed,
+    }
+  }
+
+const Canvas = () => {
+  const canvasRef = useRef(null)
+  const fpsRef = useRef(0) // Use ref to track FPS directly
+  let {
+    centralHubPosition,
+    satellitePositions,
+    resourceTransferPosition,
+    direction,
+    targetSatelliteIndex,
+    speed
+  } = useCentralHub({})
+
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -23,8 +47,8 @@ const Canvas = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       // Draw central hub (blue rectangle)
-      ctx.fillStyle = 'blue'
-      ctx.fillRect(centralHubPosition.x, centralHubPosition.y, 50, 50)
+      ctx.font = '48px serif'
+      ctx.fillText('🏠', centralHubPosition.x, centralHubPosition.y)
 
       // Draw satellites (green circles)
       ctx.fillStyle = 'green'
@@ -34,20 +58,17 @@ const Canvas = () => {
         ctx.fill()
       })
 
-      // Draw resource transfer div (red circle)
-      ctx.fillStyle = 'red'
-      ctx.beginPath()
-      ctx.arc(resourceTransferPosition.x, resourceTransferPosition.y, 15, 0, 2 * Math.PI)
-      ctx.fill()
+      // Draw resource transfer div (horse emoji)
+ctx.font = '30px serif'
+ctx.fillText('🐴', resourceTransferPosition.x, resourceTransferPosition.y)
 
-      // Display red circle coordinates
-      ctx.fillStyle = 'black'
-      ctx.font = '16px Arial'
-      ctx.fillText(`Red: (${Math.round(resourceTransferPosition.x)}, ${Math.round(resourceTransferPosition.y)})`, 10, 40)
+// Display horse emoji coordinates
+ctx.fillStyle = 'black'
+ctx.font = '16px Arial'
+ctx.fillText(`Horse: (${Math.round(resourceTransferPosition.x)}, ${Math.round(resourceTransferPosition.y)})`, 10, 80)
 
-      // Draw FPS counter
-      ctx.fillText(`fakeFPS: ${fpsRef.current}`, 10, 20)
-      }
+ctx.fillText(`fakeFPS: ${fpsRef.current}`, 10, 20)
+    }
 
     const updatePosition = () => {
       const targetSatellite = satellitePositions[targetSatelliteIndex]
@@ -101,9 +122,13 @@ const Canvas = () => {
     }
 
     requestAnimationFrame(gameLoop)
-  }, []) // include fps in dependency to ensure rendering
-
-  return <canvas ref={canvasRef} width={800} height={600} />
+  }, [])
+  return <canvas
+    ref={canvasRef}
+    width={800}
+    height={600}
+    className="border-2 border-purple-500 border-rounded"
+  />
 }
 
 export default Canvas
