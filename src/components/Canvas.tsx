@@ -1,3 +1,4 @@
+import { CanvasElement } from '@/classes/canvas'
 import { useRef, useEffect, useState } from 'react'
 
 const useCentralHub = ({
@@ -23,10 +24,12 @@ const useCentralHub = ({
     }
   }
 
+
 const Canvas = ({
   units,
 }) => {
   const canvasRef = useRef(null)
+  const [elements, setElements] = useState([])
   const fpsRef = useRef(0) // Use ref to track FPS directly
   let {
     centralHubPosition,
@@ -37,10 +40,12 @@ const Canvas = ({
     speed
   } = useCentralHub({})
 
-
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
+    const newElements = units.map(item => new CanvasElement({ ctx, ...item, }))
+    setElements(newElements) // Update state with new elements
+
     let lastFrameTime = performance.now()
     let frameCount = 0
     let fpsTime = 0
@@ -79,7 +84,7 @@ const Canvas = ({
 
       // ctx.rotate(angle) // Rotate the canvas by the angle of movement
       ctx.font = '30px serif' // Set the font size for the emoji
-      ctx.fillText('🐎', isMovingRight ? 15 : -15, 10) // Adjust the position based on flip
+      ctx.fillText('🐎', -15, 10) // Adjust the position based on flip
 
       ctx.restore() // Restore the canvas to its original state
 
@@ -127,6 +132,7 @@ const Canvas = ({
     }
 
     const gameLoop = (timestamp) => {
+      console.log(`🚀 ~ file: Canvas.tsx:165 ~ :`, {elements})
       const deltaTime = timestamp - lastFrameTime
       lastFrameTime = timestamp
 
@@ -141,17 +147,43 @@ const Canvas = ({
 
       updatePosition()
       draw()
+    //   elements.forEach(element => {
+    //     console.log(`🚀 ~ file: Canvas.tsx:167 ~ gameLoop ~ element:`, element)
+    //     element.updatePosition()
+    //     element.drawUnit()
+    // })
       requestAnimationFrame(gameLoop)
     }
 
     requestAnimationFrame(gameLoop)
   }, [])
-  return <canvas
-    ref={canvasRef}
-    width={800}
-    height={600}
-    className="border-2 border-purple-500 border-rounded"
-  />
+
+  // Use `elements` as needed in rendering or other effects
+  useEffect(() => {
+    if (elements.length) {
+      // Logic to draw elements on the canvas or interact with them
+      const gameLoop = (timestamp) => {
+        console.log(`🚀 ~ file: Canvas.tsx:165 ~ :`, {elements})
+        elements.forEach(element => {
+          console.log(`🚀 ~ file: Canvas.tsx:167 ~ gameLoop ~ element:`, element)
+          element.updatePosition()
+          element.drawUnit()
+      })
+        requestAnimationFrame(gameLoop)
+      }
+
+      requestAnimationFrame(gameLoop)
+    }
+  }, [elements]) // This effect runs whenever `elements` is updated
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={800}
+      height={600}
+      className="border-2 border-purple-500 border-rounded"
+    />
+  )
 }
 
 export default Canvas
