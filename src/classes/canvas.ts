@@ -16,6 +16,7 @@ export class CanvasElement {
   drawUnit() {
     this.ctx.font = this.size + 'px serif'
     this.ctx.fillText(this.emoji, this.position[0], this.position[1])
+    // this.ctx.fillText(`[${Math.round(this.position[0])}, ${Math.round(this.position[1])}]`, this.position[0], this.position[1] + 40)
   }
 }
 
@@ -85,9 +86,7 @@ export class TransportNode extends CanvasElement {
     const isMovingRight = dx > 0
     // if (isMovingRight) this.ctx.scale(-1, 1)
     this.ctx.font = this.size + 'px serif'
-    this.ctx.fillText(this.emoji, this.position[0], this.position[1])
-    this.ctx.fillText(`FPS: ${this.position[0]}, ${this.position[1]}`, this.position[0], this.position[1] + 40)
-
+    super.drawUnit()
     this.ctx.restore()
   }
 
@@ -109,8 +108,8 @@ export class TransportNode extends CanvasElement {
       }
     } else {
       this.position = [
-        Math.round(this.position[0] + (dx / distance) * this.speed),
-        Math.round(this.position[1] + (dy / distance) * this.speed)
+        this.position[0] + (dx / distance) * this.speed,
+        this.position[1] + (dy / distance) * this.speed
       ]
     }
   }
@@ -136,8 +135,8 @@ export class TransportNode extends CanvasElement {
     } else {
 
       const [x,y] = [
-        Math.round(this.position[0] + (dx / distance) * this.speed),
-        Math.round(this.position[1] + (dy / distance) * this.speed)
+        this.position[0] + (dx / distance) * this.speed,
+        this.position[1] + (dy / distance) * this.speed
       ]
       this.position = [x,y]
     }
