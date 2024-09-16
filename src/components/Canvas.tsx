@@ -77,82 +77,11 @@ const Canvas = ({
     const draw = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
-      ctx.font = '48px serif'
-      ctx.fillText('home', centralHubPosition.x, centralHubPosition.y)
-
-      // Draw satellites (green circles)
-      ctx.fillStyle = 'green'
-      satellitePositions.forEach(pos => {
-        ctx.beginPath()
-        ctx.arc(pos.x, pos.y, 20, 0, 2 * Math.PI)
-        ctx.fill()
-      })
-
-      // Calculate the direction angle for the horse emoji
-      const target = direction === 'toHub' ? centralHubPosition : satellitePositions[targetSatelliteIndex]
-      const dx = target.x - resourceTransferPosition.x
-      const dy = target.y - resourceTransferPosition.y
-      const angle = Math.atan2(dy, dx) // Calculate the angle in radians
-
-      // Determine if the horse should be flipped (moving right)
-      const isMovingRight = dx > 0
-
-      // Draw rotated horse emoji
-      ctx.save() // Save the current canvas state
-      ctx.translate(resourceTransferPosition.x, resourceTransferPosition.y) // Move the canvas origin to the horse position
-
-      // Apply flipping if moving rightwards
-      if (isMovingRight) {
-        ctx.scale(-1, 1) // Flip the canvas horizontally
-      }
-
-      // ctx.rotate(angle) // Rotate the canvas by the angle of movement
-      ctx.font = '30px serif' // Set the font size for the emoji
-      ctx.fillText('🐎', -15, 10) // Adjust the position based on flip
-
-      ctx.restore() // Restore the canvas to its original state
-
-      // Display horse emoji coordinates
-      ctx.fillStyle = 'black'
-      ctx.font = '16px Arial'
-      ctx.fillText(`Horse: (${Math.round(resourceTransferPosition.x)}, ${Math.round(resourceTransferPosition.y)})`, 10, 40)
-
       // Draw FPS counter
       ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
     }
 
-    const updatePosition = () => {
-      const targetSatellite = satellitePositions[targetSatelliteIndex]
-
-      if (direction === 'toHub') {
-        const dx = centralHubPosition.x - resourceTransferPosition.x
-        const dy = centralHubPosition.y - resourceTransferPosition.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance < speed) {
-          direction = 'toSatellite'
-        } else {
-          resourceTransferPosition = {
-            x: resourceTransferPosition.x + (dx / distance) * speed,
-            y: resourceTransferPosition.y + (dy / distance) * speed,
-          }
-        }
-      } else if (direction === 'toSatellite') {
-        const dx = targetSatellite.x - resourceTransferPosition.x
-        const dy = targetSatellite.y - resourceTransferPosition.y
-        const distance = Math.sqrt(dx * dx + dy * dy)
-
-        if (distance < speed) {
-          direction = 'toHub'
-          targetSatelliteIndex = (targetSatelliteIndex + 1) % satellitePositions.length
-        } else {
-          resourceTransferPosition = {
-            x: resourceTransferPosition.x + (dx / distance) * speed,
-            y: resourceTransferPosition.y + (dy / distance) * speed,
-          }
-        }
-      }
-    }
+    const updatePosition = () => {}
 
     const gameLoop = (timestamp) => {
       const deltaTime = timestamp - lastFrameTime
