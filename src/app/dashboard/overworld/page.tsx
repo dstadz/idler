@@ -5,16 +5,31 @@ import React from 'react'
 
 const OverworldPage = () => {
 
-  const units = [
-    { position: [100, 150], target: [400, 300], speed: 5, node: '🐉', size: 60, children: [] },
-    { position: [200, 250], target: [500, 350], speed: 3, node: '🦄', size: 50, children: [] },
-    { position: [300, 350], target: [600, 400], speed: 4, node: '🐎', size: 48, children: [] }
+  const homeNode = {
+    position: [400, 400],
+    emoji: '🏰',
+    size: 80,
+    children: [],
+  }
+
+  const resourceNodesData = [
+    {
+      position: [100, 150],
+      emoji: '🌋',
+      size: 60,
+      transportNode: { speed: 0.3, emoji: '🐉', size: 16 },
+    }, {
+      position: [700, 500],
+      emoji: '🌲',
+      size: 60,
+      transportNode: { speed: 3, emoji: '🦄', size: 16 },
+    }
   ]
 
   return (
     <div>
       This is the Overworld Page Content
-      <Canvas units={units} />
+      <Canvas homeNode={homeNode} resourceNodesData={resourceNodesData} />
     </div>
   )
 }

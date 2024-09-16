@@ -1,4 +1,4 @@
-import { CanvasElement } from '@/classes/canvas'
+import { ResourceNode } from '@/classes/canvas'
 import { useRef, useEffect, useState } from 'react'
 
 const useCentralHub = ({
@@ -26,10 +26,11 @@ const useCentralHub = ({
 
 
 const Canvas = ({
-  units,
+  homeNode,
+  resourceNodesData,
 }) => {
   const canvasRef = useRef(null)
-  const [elements, setElements] = useState([])
+  const [resourceNodes, setResourceNodes] = useState([])
   const fpsRef = useRef(0) // Use ref to track FPS directly
   let {
     centralHubPosition,
@@ -43,8 +44,31 @@ const Canvas = ({
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-    const newElements = units.map(item => new CanvasElement({ ctx, ...item, }))
-    setElements(newElements) // Update state with new elements
+    const newResourceNodes = [homeNode, ...resourceNodesData].map(item => new ResourceNode({
+      ctx,
+      ...item,
+      homeNode,
+    }))
+    setResourceNodes(newResourceNodes)
+  }, [resourceNodesData])
+
+  useEffect(() => {
+    if (resourceNodes.length) {
+      const gameLoop = (timestamp) => {
+        resourceNodes.forEach(node => {
+          node?.transportNode?.updatePosition()
+          node?.transportNode?.drawUnit()
+          node?.drawUnit()
+      })
+        requestAnimationFrame(gameLoop)
+      }
+      requestAnimationFrame(gameLoop)
+    }
+  }, [resourceNodes])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    const ctx = canvas.getContext('2d')
 
     let lastFrameTime = performance.now()
     let frameCount = 0
@@ -54,7 +78,7 @@ const Canvas = ({
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
       ctx.font = '48px serif'
-      ctx.fillText('🏠', centralHubPosition.x, centralHubPosition.y)
+      ctx.fillText('home', centralHubPosition.x, centralHubPosition.y)
 
       // Draw satellites (green circles)
       ctx.fillStyle = 'green'
@@ -97,7 +121,6 @@ const Canvas = ({
       ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
     }
 
-
     const updatePosition = () => {
       const targetSatellite = satellitePositions[targetSatelliteIndex]
 
@@ -132,7 +155,6 @@ const Canvas = ({
     }
 
     const gameLoop = (timestamp) => {
-      console.log(`🚀 ~ file: Canvas.tsx:165 ~ :`, {elements})
       const deltaTime = timestamp - lastFrameTime
       lastFrameTime = timestamp
 
@@ -147,34 +169,10 @@ const Canvas = ({
 
       updatePosition()
       draw()
-    //   elements.forEach(element => {
-    //     console.log(`🚀 ~ file: Canvas.tsx:167 ~ gameLoop ~ element:`, element)
-    //     element.updatePosition()
-    //     element.drawUnit()
-    // })
       requestAnimationFrame(gameLoop)
     }
-
     requestAnimationFrame(gameLoop)
   }, [])
-
-  // Use `elements` as needed in rendering or other effects
-  useEffect(() => {
-    if (elements.length) {
-      // Logic to draw elements on the canvas or interact with them
-      const gameLoop = (timestamp) => {
-        console.log(`🚀 ~ file: Canvas.tsx:165 ~ :`, {elements})
-        elements.forEach(element => {
-          console.log(`🚀 ~ file: Canvas.tsx:167 ~ gameLoop ~ element:`, element)
-          element.updatePosition()
-          element.drawUnit()
-      })
-        requestAnimationFrame(gameLoop)
-      }
-
-      requestAnimationFrame(gameLoop)
-    }
-  }, [elements]) // This effect runs whenever `elements` is updated
 
   return (
     <canvas
