@@ -1,5 +1,5 @@
-import { ResourceNode } from '@/classes/canvas'
-import { useCanvas } from '@/hooks/useCanvas'
+import { ResourceNode } from '@/classes'
+import { useCanvas } from '@/hooks'
 import { useRef, useEffect, useState, useCallback } from 'react'
 
 const Canvas = ({
