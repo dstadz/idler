@@ -1,15 +1,18 @@
+import { useRef, useEffect, useState, useCallback } from 'react'
 import { ResourceNode } from '@/classes'
 import { useCanvas } from '@/hooks'
-import { useRef, useEffect, useState, useCallback } from 'react'
 
 const Canvas = ({
   homeNode,
   resourceNodesData,
+}: {
+  homeNode: NodeType
+  resourceNodesData: ResourceNodeType[]
 }) => {
-  const canvasRef = useRef(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
 
-  const [resourceNodes, setResourceNodes] = useState([])
+  const [resourceNodes, setResourceNodes] = useState<ResourceNode[]>([])
   useEffect(() => {
     if (!ctx) return
     const canvas = canvasRef.current
@@ -18,6 +21,7 @@ const Canvas = ({
         ctx,
         ...node,
         homeNode,
+        id: `${Math.random()}`,
       }))
     setResourceNodes(newResourceNodes)
 
@@ -27,7 +31,7 @@ const Canvas = ({
     if (!resourceNodes.length) return
 
     const canvas = canvasRef.current
-    const gameLoop = (timestamp) => {
+    const gameLoop = (timestamp: number) => {
       clearWholeRect(canvas)
       drawFPS(timestamp)
 

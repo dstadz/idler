@@ -1,10 +1,16 @@
 export class CanvasElement {
-  constructor({
-    ctx,
-    position,
-    emoji,
-    size,
-    id,
+  ctx: CanvasRenderingContext2D
+  position: [number, number]
+  emoji: string
+  size: number
+  id: string
+
+  constructor({ ctx, position, emoji, size, id }: {
+    ctx: CanvasRenderingContext2D
+    position: [number, number]
+    emoji: string
+    size: number
+    id: string
   }) {
     this.ctx = ctx
     this.position = position
@@ -14,31 +20,26 @@ export class CanvasElement {
   }
 
   drawUnit() {
-    this.ctx.font = this.size + 'px serif'
+    this.ctx.font = `${this.size}px serif`
     this.ctx.fillText(this.emoji, this.position[0], this.position[1])
     // this.ctx.fillText(`[${Math.round(this.position[0])}, ${Math.round(this.position[1])}]`, this.position[0], this.position[1] + 40)
   }
 }
 
 export class ResourceNode extends CanvasElement {
-  constructor({
-    ctx,
-    position,
-    homeNode,
-    emoji,
-    size,
-    transportNode,
-    id,
-  }) {
-    super({
-      ctx,
-      position,
-      size,
-      emoji,
-      id,
-    })
+  transportNode?: TransportNode
 
-    this.homePosition = homeNode
+  constructor({ ctx, position, homeNode, emoji, size, transportNode, id }: {
+    ctx: CanvasRenderingContext2D
+    position: [number, number]
+    homeNode: { position: [number, number] }
+    emoji: string
+    size: number
+    transportNode?: { emoji: string; size: number; speed: number }
+    id: string
+  }) {
+    super({ ctx, position, size, emoji, id })
+
     if (transportNode) {
       this.transportNode = new TransportNode({
         ctx,
@@ -49,8 +50,6 @@ export class ResourceNode extends CanvasElement {
         parentNode: this,
         homeNode,
       })
-    } else {
-      this.isHome = true
     }
   }
 
@@ -60,22 +59,21 @@ export class ResourceNode extends CanvasElement {
 }
 
 export class TransportNode extends CanvasElement {
-  constructor({
-    ctx,
-    emoji,
-    size,
-    id,
-    parentNode,
-    homeNode,
-    speed,
+  parentNode: ResourceNode
+  homeNode: { position: [number, number] }
+  target: [number, number]
+  speed: number
+
+  constructor({ ctx, emoji, size, id, parentNode, homeNode, speed }: {
+    ctx: CanvasRenderingContext2D
+    emoji: string
+    size: number
+    id: string
+    parentNode: ResourceNode
+    homeNode: { position: [number, number] }
+    speed: number
   }) {
-    super({
-      ctx,
-      position: homeNode.position,
-      emoji,
-      size,
-      id,
-    })
+    super({ ctx, position: homeNode.position, emoji, size, id})
     this.parentNode = parentNode
     this.homeNode = homeNode
     this.target = parentNode.position
@@ -86,13 +84,13 @@ export class TransportNode extends CanvasElement {
     this.ctx.save()
     const dx = this.target[0] - this.position[0]
     const isMovingRight = dx > 0
+    // Optional: mirror emoji if moving right
     // if (isMovingRight) this.ctx.scale(-1, 1)
-    this.ctx.font = this.size + 'px serif'
+    this.ctx.font = `${this.size}px serif`
     super.drawUnit()
     this.ctx.restore()
   }
 
-  // Method to update the position based on speed
   updatePosition() {
     if (this.target.length !== 2) return
     const dx = this.target[0] - this.position[0]
@@ -116,8 +114,7 @@ export class TransportNode extends CanvasElement {
     }
   }
 
-
-  hasArrived() {
-    return this.position[0] === this.target[0] && this.position[1] === this.target[1]
-  }
+  // hasArrived(): boolean {
+  //   return this.position[0] === this.target[0] && this.position[1] === this.target[1]
+  // }
 }

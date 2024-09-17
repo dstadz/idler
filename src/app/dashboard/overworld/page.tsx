@@ -5,14 +5,13 @@ import React from 'react'
 
 const OverworldPage = () => {
 
-  const homeNode = {
+  const homeNode: NodeType = {
     position: [400, 400],
     emoji: '🏰',
     size: 30,
-    children: [],
   }
 
-  const resourceNodesData = [
+  const resourceNodesData: ResourceNodeType[] = [
     {
       position: [100, 150],
       emoji: '🌋',

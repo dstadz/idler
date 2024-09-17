@@ -1,9 +1,15 @@
-import { useRef, useEffect, useState, useCallback } from 'react'
+import {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  RefObject,
+} from 'react'
 
-export const useCanvas = (canvasRef) => {
+export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
 
   // initialize context
-  const [ctx, setCtx] = useState(null)
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
   useEffect(() => {
     const canvas = canvasRef.current
     if (canvas) {
@@ -12,7 +18,8 @@ export const useCanvas = (canvasRef) => {
     }
   }, [canvasRef])
 
-  const clearWholeRect = useCallback(canvas => {
+  const clearWholeRect = useCallback((canvas: HTMLCanvasElement | null) => {
+    if (!canvas || !ctx) return
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }, [ctx])
 
@@ -21,7 +28,8 @@ export const useCanvas = (canvasRef) => {
   let lastFrameTime = performance.now()
   let frameCount = 0
   let fpsTime = 0
-  const drawFPS = useCallback(timestamp => {
+  const drawFPS = useCallback((timestamp: number) => {
+    if (!ctx) return
     const deltaTime = timestamp - lastFrameTime
     lastFrameTime = timestamp
     frameCount++
