@@ -17,12 +17,12 @@ const OverworldPage = () => {
       position: [100, 150],
       emoji: '🌋',
       size: 20,
-      transportNode: { speed: 0.3, emoji: '🐉', size: 16 },
+      transportNode: { speed: 0.9, emoji: '🐉', size: 16 },
     }, {
       position: [700, 500],
       emoji: '🌲',
       size: 20,
-      transportNode: { speed: 3, emoji: '🦄', size: 16 },
+      transportNode: { speed: 1.25, emoji: '🦄', size: 16 },
     }
   ]
 

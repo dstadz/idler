@@ -1,80 +1,45 @@
 import { ResourceNode } from '@/classes/canvas'
-import { useRef, useEffect, useState } from 'react'
-
-const useCanvasContext = (canvasRef) => {
-  const [ctx, setCtx] = useState(null)
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (canvas) {
-      const context = canvas.getContext('2d')
-      setCtx(context)
-    }
-  }, [canvasRef])
-
-  return { ctx }
-}
-
+import { useCanvas } from '@/hooks/useCanvas'
+import { useRef, useEffect, useState, useCallback } from 'react'
 
 const Canvas = ({
   homeNode,
   resourceNodesData,
 }) => {
   const canvasRef = useRef(null)
-  const { ctx } = useCanvasContext(canvasRef)
-  const fpsRef = useRef(0)
-  let lastFrameTime = performance.now()
-  let frameCount = 0
-  let fpsTime = 0
-  const drawFPS = timestamp => {
-    const deltaTime = timestamp - lastFrameTime
-    lastFrameTime = timestamp
-
-    frameCount++
-    fpsTime += deltaTime
-
-    if (fpsTime >= 1000) {
-      fpsRef.current = frameCount
-      frameCount = 0
-      fpsTime = 0
-    }
-    ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
-  }
-
-  const clearRect = canvas => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-  }
+  const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
 
   const [resourceNodes, setResourceNodes] = useState([])
   useEffect(() => {
+    if (!ctx) return
     const canvas = canvasRef.current
     const newResourceNodes = [homeNode, ...resourceNodesData]
-    .map(item => new ResourceNode({
-      ctx,
-      ...item,
-      homeNode,
-    }))
+      .map(node => new ResourceNode({
+        ctx,
+        ...node,
+        homeNode,
+      }))
     setResourceNodes(newResourceNodes)
-  }, [resourceNodesData])
+
+  }, [ctx, homeNode, resourceNodesData])
 
   useEffect(() => {
+    if (!resourceNodes.length) return
+
     const canvas = canvasRef.current
+    const gameLoop = (timestamp) => {
+      clearWholeRect(canvas)
+      drawFPS(timestamp)
 
-    if (resourceNodes.length) {
-      const gameLoop = (timestamp) => {
-        clearRect(canvas)
-        drawFPS(timestamp)
-
-        resourceNodes.forEach(node => {
-          node?.transportNode?.updatePosition()
-          node?.transportNode?.drawUnit()
-          node?.drawUnit()
+      resourceNodes.forEach(node => {
+        node?.transportNode?.updatePosition()
+        node?.transportNode?.drawUnit()
+        node?.drawUnit()
       })
-        requestAnimationFrame(gameLoop)
-      }
       requestAnimationFrame(gameLoop)
     }
-  }, [resourceNodes])
+    requestAnimationFrame(gameLoop)
+  }, [resourceNodes, drawFPS, clearWholeRect])
 
   return (
     <canvas

@@ -44,6 +44,7 @@ export class ResourceNode extends CanvasElement {
         ctx,
         emoji: transportNode.emoji,
         size: transportNode.size,
+        speed: transportNode.speed,
         id,
         parentNode: this,
         homeNode,
@@ -78,7 +79,7 @@ export class TransportNode extends CanvasElement {
     this.parentNode = parentNode
     this.homeNode = homeNode
     this.target = parentNode.position
-    this.speed = speed || 1
+    this.speed = speed
   }
 
   drawUnit() {
@@ -98,7 +99,7 @@ export class TransportNode extends CanvasElement {
     const dy = this.target[1] - this.position[1]
     const distance = Math.sqrt(dx * dx + dy * dy)
 
-    if (distance < 1) {
+    if (distance <= this.speed) {
       if (
         this.target[0] === this.homeNode.position[0] &&
         this.target[1] === this.homeNode.position[1]
@@ -112,34 +113,6 @@ export class TransportNode extends CanvasElement {
         this.position[0] + (dx / distance) * this.speed,
         this.position[1] + (dy / distance) * this.speed
       ]
-    }
-  }
-
-  // Method to update the position based on speed
-  updatePosition() {
-    if (this.target.length !== 2) return
-    const dx = this.target[0] - this.position[0]
-    const dy = this.target[1] - this.position[1]
-    const distance = Math.sqrt(dx * dx + dy * dy)
-    // const distanceFromHome = Math.sqrt((this.target[0] - this.homeNode.position[0]) ** 2 + (this.target[1] - this.homeNode.position[1]) ** 2)
-    // const distanceFromParent = Math.sqrt((this.target[0] - this.parentNode.position[0]) ** 2 + (this.target[1] - this.parentNode.position[1]) ** 2)
-
-    if (distance < 1) {
-      if (
-        this.target[0] === this.homeNode.position[0] &&
-        this.target[1] === this.homeNode.position[1]
-      ) {
-        this.target = [this.parentNode.position[0], this.parentNode.position[1]]
-      } else {
-        this.target = [this.homeNode.position[0], this.homeNode.position[1]]
-      }
-    } else {
-
-      const [x,y] = [
-        this.position[0] + (dx / distance) * this.speed,
-        this.position[1] + (dy / distance) * this.speed
-      ]
-      this.position = [x,y]
     }
   }
 
