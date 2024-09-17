@@ -1,28 +1,32 @@
 import { ResourceNode } from '@/classes/canvas'
 import { useRef, useEffect, useState } from 'react'
 
+const useCanvasContext = (canvasRef) => {
+  const [ctx, setCtx] = useState(null)
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (canvas) {
+      const context = canvas.getContext('2d')
+      setCtx(context)
+    }
+  }, [canvasRef])
+
+  return { ctx }
+}
+
+
 const Canvas = ({
   homeNode,
   resourceNodesData,
 }) => {
   const canvasRef = useRef(null)
-  const [resourceNodes, setResourceNodes] = useState([])
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-    const newResourceNodes = [homeNode, ...resourceNodesData].map(item => new ResourceNode({
-      ctx,
-      ...item,
-      homeNode,
-    }))
-    setResourceNodes(newResourceNodes)
-  }, [resourceNodesData])
-
+  const { ctx } = useCanvasContext(canvasRef)
   const fpsRef = useRef(0)
   let lastFrameTime = performance.now()
   let frameCount = 0
   let fpsTime = 0
-  const drawFPS = (ctx, timestamp) => {
+  const drawFPS = timestamp => {
     const deltaTime = timestamp - lastFrameTime
     lastFrameTime = timestamp
 
@@ -37,17 +41,29 @@ const Canvas = ({
     ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
   }
 
-  const clearRect = () => {
+  const clearRect = canvas => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }
-  useEffect(() => {
 
+  const [resourceNodes, setResourceNodes] = useState([])
+  useEffect(() => {
     const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
+    const newResourceNodes = [homeNode, ...resourceNodesData]
+    .map(item => new ResourceNode({
+      ctx,
+      ...item,
+      homeNode,
+    }))
+    setResourceNodes(newResourceNodes)
+  }, [resourceNodesData])
+
+  useEffect(() => {
+    const canvas = canvasRef.current
 
     if (resourceNodes.length) {
       const gameLoop = (timestamp) => {
-        drawFPS(ctx, timestamp)
+        clearRect(canvas)
+        drawFPS(timestamp)
 
         resourceNodes.forEach(node => {
           node?.transportNode?.updatePosition()
@@ -59,31 +75,6 @@ const Canvas = ({
       requestAnimationFrame(gameLoop)
     }
   }, [resourceNodes])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
-
-    let lastFrameTime = performance.now()
-    let frameCount = 0
-    let fpsTime = 0
-
-    const draw = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-
-      // Draw FPS counter
-      ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
-    }
-
-    const updatePosition = () => {}
-
-    const gameLoop = (timestamp) => {
-      updatePosition()
-      draw()
-      requestAnimationFrame(gameLoop)
-    }
-    requestAnimationFrame(gameLoop)
-  }, [])
 
   return (
     <canvas
