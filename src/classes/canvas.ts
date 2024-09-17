@@ -33,6 +33,7 @@ export class ResourceNode extends CanvasElement {
     super({
       ctx,
       position,
+      size,
       emoji,
       id,
     })
