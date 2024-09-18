@@ -1,15 +1,11 @@
 import { useRef, useEffect, useState } from 'react'
 import { Node, ResourceNode } from '@/classes'
-import { useCanvas } from '@/hooks'
 
 export const useResourceNodes = ({
-  canvasRef,
+  ctx,
   homeNode,
   resourceNodesData,
 }) => {
-
-
-  const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
   const [resourceNodes, setResourceNodes] = useState({} as ResourceNodeType[])
   useEffect(() => {
     if (!ctx || !homeNode || !resourceNodesData) return
@@ -21,7 +17,15 @@ export const useResourceNodes = ({
     setResourceNodes(newResourceNodes)
   }, [ctx, homeNode, resourceNodesData])
 
+  const drawResourceNodes = () => {
+    resourceNodes.forEach(node => {
+      node?.transportNode?.updatePosition()
+      node?.drawUnit()
+    })
+  }
+
   return {
-    resourceNodes, setResourceNodes
+    resourceNodes,
+    drawResourceNodes,
   }
 }

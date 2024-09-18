@@ -20,13 +20,13 @@ const Canvas = ({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
 
-  const { homeNode, setHomeNode } = useHomeNode({
+  const { homeNode, drawHomeNode } = useHomeNode({
     ctx,
     homeNodeData,
   })
 
-  const { resourceNodes, setResourceNodes } = useResourceNodes({
-    canvasRef,
+  const { resourceNodes, drawResourceNodes } = useResourceNodes({
+    ctx,
     homeNode,
     resourceNodesData,
   })
@@ -38,15 +38,12 @@ const Canvas = ({
       clearWholeRect(canvasRef.current)
       drawFPS(timestamp)
 
-      homeNode.drawUnit()
-      resourceNodes.forEach(node => {
-        node?.transportNode?.updatePosition()
-        node?.drawUnit()
-      })
+      drawHomeNode()
+      drawResourceNodes()
       requestAnimationFrame(gameLoop)
     }
     requestAnimationFrame(gameLoop)
-  }, [homeNode, resourceNodes, drawFPS, clearWholeRect])
+  }, [drawHomeNode, resourceNodes, drawResourceNodes, drawFPS, clearWholeRect])
 
   return (
     <canvas

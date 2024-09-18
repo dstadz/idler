@@ -15,19 +15,12 @@ export const useHomeNode = ({
     setHomeNode(newHomeNode)
   }, [ctx, homeNodeData])
 
-
-  useEffect(() => {
-    if (!('drawUnit' in homeNode)) return
-
-    const gameLoop = (timestamp: number) => {
-      homeNode.drawUnit()
-      requestAnimationFrame(gameLoop)
-    }
-    requestAnimationFrame(gameLoop)
-  }, [homeNode])
+  const drawHomeNode = () => {
+    homeNode.drawUnit()
+  }
 
   return {
     homeNode,
-    setHomeNode,
+    drawHomeNode,
   }
 }
