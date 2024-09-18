@@ -38,6 +38,7 @@ export class Node {
     ].filter(Boolean)
 
     this.notes.map((note, i) => {
+      this.ctx.font = `16px serif`
       this.ctx.fillText(note, this.position[0], this.position[1] + 20 * (i + 1))
     })
   }
@@ -89,6 +90,7 @@ export class ResourceNode extends Node {
         size: transportNode.size,
         speed: transportNode.speed,
         strength: transportNode.strength,
+        dexterity: transportNode.dexterity,
       })
     }
   }
@@ -106,13 +108,14 @@ export class TransportNode extends Node {
   // dynamic
   targetNode: Node
   resources: { stone?: number; wood?: number; food?: number } | undefined
+  isLoading: boolean = false
 
   // stats
   speed: number
-  dexterity: number
   strength: number
+  dexterity: number
 
-  constructor({ ctx, emoji, size, id, parentNode, homeNode, speed, strength, resources }: {
+  constructor({ ctx, emoji, size, id, parentNode, homeNode, speed, strength, dexterity, resources }: {
     ctx: CanvasRenderingContext2D
     emoji: string
     size: number
@@ -121,6 +124,7 @@ export class TransportNode extends Node {
     homeNode: { position: [number, number] }
     speed: number
     strength: number
+    dexterity: number
   }) {
     super({ ctx, position: homeNode.position, emoji, size, resources, id})
     this.parentNode = parentNode
@@ -128,7 +132,8 @@ export class TransportNode extends Node {
     this.targetNode = parentNode
     this.speed = speed
     this.strength = strength
-    this.resources = {}  // Initialize with empty resources
+    this.dexterity = dexterity
+    this.resources = {}
   }
 
   drawUnit() {
@@ -142,22 +147,33 @@ export class TransportNode extends Node {
 
   handleArrival(arrivalNode = this.targetNode) {
     console.log('arrived at', arrivalNode.emoji)
+    this.isLoading = true
 
-    // Check if arriving at a ResourceNode (to collect resources)
     if (arrivalNode instanceof ResourceNode) {
-      const resourceToTransfer = "stone" // Example, you can dynamically choose a resource
-      this.transferResources(arrivalNode, resourceToTransfer)
-
-      // Set target back to home node to deliver payload
-      this.targetNode = this.homeNode
-
-    // Check if arriving at home node (to deliver resources)
+      const randResource = Object.keys(arrivalNode.resources)[Math.floor(Math.random() * Object.keys(arrivalNode.resources).length)]
+      this.startLoading(arrivalNode, randResource)
     } else if (arrivalNode === this.homeNode) {
-      this.deliverResources(arrivalNode)
-
-      // Set target back to parentNode to collect more resources
-      this.targetNode = this.parentNode
+      this.startUnloading(arrivalNode)
     }
+  }
+
+  startLoading(targetNode: Node, resource: string) {
+    const loadingTime = 1000 / this.dexterity
+
+    setTimeout(() => {
+      this.transferResources(targetNode, resource)
+      this.isLoading = false
+      this.targetNode = this.homeNode
+    }, loadingTime)
+  }
+
+  startUnloading(targetNode: Node) {
+    const unloadingTime = 1000 / this.dexterity
+    setTimeout(() => {
+      this.deliverResources(targetNode)
+      this.isLoading = false
+      this.targetNode = this.parentNode
+    }, unloadingTime)
   }
 
   transferResources(targetNode: Node, resource: string) {
@@ -202,6 +218,10 @@ export class TransportNode extends Node {
   }
 
   updatePosition() {
+    if (this.isLoading) {
+      return
+    }
+
     const { position: targetPosition } = this.targetNode
     if (targetPosition.length !== 2) return
 
@@ -211,11 +231,6 @@ export class TransportNode extends Node {
 
     if (distance <= this.speed) {
       this.handleArrival()
-      if (this.hasArrived(this.parentNode)) {
-        this.targetNode = this.homeNode
-      } else {
-        this.targetNode = this.parentNode
-      }
     } else {
       this.position = [
         this.position[0] + (dx / distance) * this.speed,

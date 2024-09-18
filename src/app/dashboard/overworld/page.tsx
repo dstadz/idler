@@ -3,13 +3,13 @@
 import Canvas from '@/components/Canvas'
 import { Box, Stack, Typography } from '@mui/material'
 import React from 'react'
+import { RESOURCES } from '@/utils/contants'
 
-const OverworldPage = () => {
 
   const homeNode: NodeType = {
     position: [400, 400],
     emoji: '🏰',
-    size: 30,
+    size: 40,
     inventory: {},
     resources: {},
   }
@@ -18,22 +18,36 @@ const OverworldPage = () => {
     {
       position: [100, 150],
       emoji: '🌋',
-      size: 20,
+      size: 40,
       resources: {
-        stone: 2000,
+        [RESOURCES.STONE.emoji]: 2000,
       },
-      transportNode: { speed: 0.9, emoji: '🐉', size: 16 , strength: 20 },
+      transportNode: {
+        speed: 0.9,
+        emoji: '🐉',
+        size: 16 ,
+        strength: 2,
+        dexterity: 5,
+      },
     }, {
       position: [600, 200],
       emoji: '🌲',
-      size: 20,
+      size: 40,
       resources: {
-        wood: 2000,
-        food: 1000,
+        [RESOURCES.FOOD.emoji]: 2000,
+        [RESOURCES.WOOD.emoji]: 1000,
       },
-      transportNode: { speed: 1.25, emoji: '🦄', size: 16, strength: 5 },
+      transportNode: {
+        speed: 1.25,
+        emoji: '🦄',
+        size: 16,
+        strength: 5,
+        dexterity: 2,
+      },
     }
   ]
+
+  const OverworldPage = () => {
 
   return (
     <Stack flexDirection="row" justifyContent="space-between">

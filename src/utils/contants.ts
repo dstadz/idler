@@ -47,3 +47,13 @@ export const NAV_TABS = [
   //   route: 'inventory',
   // },
 ]
+
+export const RESOURCES = {
+  STONE: { name: 'Stone', emoji: '🪨'},
+  WOOD: { name: 'Wood', emoji: '🪵',},
+  FOOD: { name: 'Food', emoji: '🍎',},
+  GOLD: { name: 'Gold', emoji: '🪙'},
+  POWER: { name: 'Power', emoji: '⚡️'},
+  ENERGY: { name: 'Energy', emoji: '✨'},
+  WATER: { name: 'water', emoji: '💧'},
+}
