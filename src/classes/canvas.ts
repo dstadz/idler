@@ -56,8 +56,6 @@ export class Node {
 
     this.resources[resource] += transferAmount
     targetNode.resources[resource] -= transferAmount
-
-    console.log(`${transferAmount} ${resource} transferred from ${targetNode.emoji} to ${this.emoji}`)
   }
 }
 
@@ -86,6 +84,7 @@ export class ResourceNode extends Node {
         ctx,
         homeNode,
         parentNode: this,
+        position: this.position,
         emoji: transportNode.emoji,
         size: transportNode.size,
         speed: transportNode.speed,
@@ -95,9 +94,7 @@ export class ResourceNode extends Node {
     }
   }
 
-  drawUnit() {
-    super.drawUnit()
-  }
+  drawUnit() { super.drawUnit() }
 }
 
 export class TransportNode extends Node {
@@ -107,6 +104,7 @@ export class TransportNode extends Node {
 
   // dynamic
   targetNode: Node
+  position: [number, number]
   resources: { stone?: number; wood?: number; food?: number } | undefined
   isLoading: boolean = false
 
@@ -115,10 +113,23 @@ export class TransportNode extends Node {
   strength: number
   dexterity: number
 
-  constructor({ ctx, emoji, size, id, parentNode, homeNode, speed, strength, dexterity, resources }: {
+  constructor({
+    ctx,
+    emoji,
+    size,
+    position,
+    id,
+    parentNode,
+    homeNode,
+    speed,
+    strength,
+    dexterity,
+    resources,
+  }: {
     ctx: CanvasRenderingContext2D
     emoji: string
     size: number
+    position: [number, number]
     id: string
     parentNode: ResourceNode
     homeNode: { position: [number, number] }
@@ -128,6 +139,7 @@ export class TransportNode extends Node {
   }) {
     super({ ctx, position: homeNode.position, emoji, size, resources, id})
     this.parentNode = parentNode
+    this.position = position
     this.homeNode = homeNode
     this.targetNode = parentNode
     this.speed = speed
@@ -136,7 +148,8 @@ export class TransportNode extends Node {
     this.resources = {}
   }
 
-  drawUnit() {
+  drawUnit() { super.drawUnit() }
+    /** -- WIP to flip the emoji when moving right
     this.ctx.save()
     const dx = this.targetNode.position[0] - this.position[0]
     const isMovingRight = dx > 0
@@ -144,9 +157,9 @@ export class TransportNode extends Node {
     super.drawUnit()
     this.ctx.restore()
   }
+    */
 
   handleArrival(arrivalNode = this.targetNode) {
-    console.log('arrived at', arrivalNode.emoji)
     this.isLoading = true
 
     if (arrivalNode instanceof ResourceNode) {
@@ -188,8 +201,6 @@ export class TransportNode extends Node {
     }
     this.resources[resource] += transferAmount
     targetNode.resources[resource] -= transferAmount
-
-    console.log(`${transferAmount} ${resource} collected from ${targetNode.emoji} by ${this.emoji}`)
   }
 
   deliverResources(targetNode: Node) {
@@ -201,13 +212,10 @@ export class TransportNode extends Node {
         targetNode.resources[resource] = 0
       }
       targetNode.resources[resource] += this.resources[resource]
-      console.log(`${this.resources[resource]} ${resource} delivered to ${targetNode.emoji}`)
 
       // Clear resources in the TransportNode after delivery
       this.resources[resource] = 0
     })
-
-    console.log(`Payload delivered by ${this.emoji}`)
   }
 
   hasArrived(node = this.targetNode): boolean {
@@ -218,12 +226,12 @@ export class TransportNode extends Node {
   }
 
   updatePosition() {
-    if (this.isLoading) {
-      return
-    }
-
+    if (this.isLoading) return
     const { position: targetPosition } = this.targetNode
-    if (targetPosition.length !== 2) return
+    if (
+      targetPosition?.length !== 2 ||
+      this.position?.length !== 2
+    ) return
 
     const dx = targetPosition[0] - this.position[0]
     const dy = targetPosition[1] - this.position[1]
@@ -237,5 +245,7 @@ export class TransportNode extends Node {
         this.position[1] + (dy / distance) * this.speed
       ]
     }
+
+    this.drawUnit()
   }
 }

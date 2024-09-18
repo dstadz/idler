@@ -1,49 +1,62 @@
-import { useRef, useEffect, useState, useCallback } from 'react'
-import { ResourceNode } from '@/classes'
+import { useRef, useEffect, useState } from 'react'
+import { Node, ResourceNode } from '@/classes'
 import { useCanvas } from '@/hooks'
 
 const Canvas = ({
-  homeNode,
+  homeNodeData,
   resourceNodesData,
+  updateResourceValues,
 }: {
-  homeNode: NodeType
+  homeNodeData: NodeType
   resourceNodesData: ResourceNodeType[]
+  updateResourceValues: ({
+    updatedNodes,
+    updatedHomeNode,
+  }: {
+    updatedNodes: ResourceNodeType[]
+    updatedHomeNode: NodeType
+  }) => void
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
 
-  const [resourceNodes, setResourceNodes] = useState<ResourceNode[]>([])
+  const [homeNode, setHomeNode] = useState({} as NodeType)
   useEffect(() => {
-    if (!ctx) return
-    const canvas = canvasRef.current
-    const newResourceNodes = [homeNode, ...resourceNodesData]
-      .map(node => new ResourceNode({
-        ctx,
-        ...node,
-        homeNode,
-        id: `${Math.random()}`,
-      }))
-    setResourceNodes(newResourceNodes)
+    if (!ctx || !homeNodeData) return
 
+    const newHomeNode = new Node(
+      { ctx, ...homeNodeData, id: `${Math.random()}` },
+    )
+    setHomeNode(newHomeNode)
+  }, [ctx, homeNodeData])
+
+  const [resourceNodes, setResourceNodes] = useState({} as ResourceNodeType[])
+  useEffect(() => {
+    if (!ctx || !homeNode || !resourceNodesData) return
+
+    const newResourceNodes = resourceNodesData
+    .map(node => new ResourceNode(
+      { ctx, ...node, homeNode, id: `${Math.random()}` }
+    ))
+    setResourceNodes(newResourceNodes)
   }, [ctx, homeNode, resourceNodesData])
 
   useEffect(() => {
     if (!resourceNodes.length) return
 
-    const canvas = canvasRef.current
     const gameLoop = (timestamp: number) => {
-      clearWholeRect(canvas)
+      clearWholeRect(canvasRef.current)
       drawFPS(timestamp)
 
+      homeNode.drawUnit()
       resourceNodes.forEach(node => {
         node?.transportNode?.updatePosition()
-        node?.transportNode?.drawUnit()
         node?.drawUnit()
       })
       requestAnimationFrame(gameLoop)
     }
     requestAnimationFrame(gameLoop)
-  }, [resourceNodes, drawFPS, clearWholeRect])
+  }, [homeNode, resourceNodes, drawFPS, clearWholeRect])
 
   return (
     <canvas

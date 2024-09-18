@@ -24,7 +24,6 @@ export default function SignIn() {
     setLoading(false)
 
     if (result?.error) {
-      console.log(`🚀 ~ file: page.tsx:21 ~ handleSubmit ~ result:`, result)
       setError('Invalid email or password')
     } else if (result?.url) {
       window.location.href = result.url
