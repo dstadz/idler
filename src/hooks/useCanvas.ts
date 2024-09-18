@@ -7,8 +7,6 @@ import {
 } from 'react'
 
 export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
-
-  // initialize context
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
   useEffect(() => {
     const canvas = canvasRef.current
