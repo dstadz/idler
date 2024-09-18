@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { Node, ResourceNode } from '@/classes'
-import { useCanvas, useHomeNode } from '@/hooks'
+import { useCanvas, useHomeNode, useResourceNodes } from '@/hooks'
 
 const Canvas = ({
   homeNodeData,
@@ -25,16 +25,11 @@ const Canvas = ({
     homeNodeData,
   })
 
-  const [resourceNodes, setResourceNodes] = useState({} as ResourceNodeType[])
-  useEffect(() => {
-    if (!ctx || !homeNode || !resourceNodesData) return
-
-    const newResourceNodes = resourceNodesData
-    .map(node => new ResourceNode(
-      { ctx, ...node, homeNode, id: `${Math.random()}` }
-    ))
-    setResourceNodes(newResourceNodes)
-  }, [ctx, homeNode, resourceNodesData])
+  const { resourceNodes, setResourceNodes } = useResourceNodes({
+    canvasRef,
+    homeNode,
+    resourceNodesData,
+  })
 
   useEffect(() => {
     if (!resourceNodes.length) return
