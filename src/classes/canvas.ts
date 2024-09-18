@@ -89,9 +89,8 @@ export class TransportNode extends Node {
   homeNode: { position: [number, number] }
 
   // dynamic
-  target: [number, number]
+  targetNode: Node
   resources?: { stone?: number; wood?: number; food?: number } | undefined
-
 
   // stats
   speed: number
@@ -110,14 +109,14 @@ export class TransportNode extends Node {
     super({ ctx, position: homeNode.position, emoji, size, resources, id})
     this.parentNode = parentNode
     this.homeNode = homeNode
-    this.target = parentNode.position
+    this.targetNode = parentNode // Initialize targetNode as the parentNode
     this.speed = speed
     this.strength = strength
   }
 
   drawUnit() {
     this.ctx.save()
-    const dx = this.target[0] - this.position[0]
+    const dx = this.targetNode.position[0] - this.position[0]
     const isMovingRight = dx > 0
     // Optional: mirror emoji if moving right
     // if (isMovingRight) this.ctx.scale(-1, 1)
@@ -126,11 +125,8 @@ export class TransportNode extends Node {
     this.ctx.restore()
   }
 
-
-
   handleArrival() {
     console.log('arrived')
-
   }
 
   hasArrived(node = this.targetNode): boolean {
@@ -141,27 +137,24 @@ export class TransportNode extends Node {
   }
 
   updatePosition() {
-    if (this.target.length !== 2) return
+    const { position: targetPosition } = this.targetNode
+    if (targetPosition.length !== 2) return
 
-    const dx = this.target[0] - this.position[0]
-    const dy = this.target[1] - this.position[1]
+    const dx = targetPosition[0] - this.position[0]
+    const dy = targetPosition[1] - this.position[1]
     const distance = Math.sqrt(dx * dx + dy * dy)
 
-  if (distance <= this.speed) {
-    if (
-      this.target[0] === this.homeNode.position[0] &&
-      this.target[1] === this.homeNode.position[1]
-    ) {
-      this.target = [this.parentNode.position[0], this.parentNode.position[1]]
+    if (distance <= this.speed) {
+      if (this.hasArrived(this.homeNode)) {
+        this.targetNode = this.parentNode
+      } else {
+        this.targetNode = this.homeNode
+      }
     } else {
-      this.target = [this.homeNode.position[0], this.homeNode.position[1]]
+      this.position = [
+        this.position[0] + (dx / distance) * this.speed,
+        this.position[1] + (dy / distance) * this.speed
+      ]
     }
-  } else {
-    this.position = [
-      this.position[0] + (dx / distance) * this.speed,
-      this.position[1] + (dy / distance) * this.speed
-    ]
   }
-}
-
 }
