@@ -1,6 +1,6 @@
 import { useRef, useEffect, useState } from 'react'
 import { Node, ResourceNode } from '@/classes'
-import { useCanvas } from '@/hooks'
+import { useCanvas, useHomeNode } from '@/hooks'
 
 const Canvas = ({
   homeNodeData,
@@ -20,15 +20,10 @@ const Canvas = ({
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
 
-  const [homeNode, setHomeNode] = useState({} as NodeType)
-  useEffect(() => {
-    if (!ctx || !homeNodeData) return
-
-    const newHomeNode = new Node(
-      { ctx, ...homeNodeData, id: `${Math.random()}` },
-    )
-    setHomeNode(newHomeNode)
-  }, [ctx, homeNodeData])
+  const { homeNode, setHomeNode } = useHomeNode({
+    canvasRef,
+    homeNodeData,
+  })
 
   const [resourceNodes, setResourceNodes] = useState({} as ResourceNodeType[])
   useEffect(() => {

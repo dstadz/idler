@@ -16,11 +16,11 @@ import { homeNodeData, resourceNodesData } from '@/data'
         {resourceNodesData.map(node => (
           <div key={node.id}>
             <Typography>
-              {node.emoji}
+              {node.emoji}:
             </Typography>
             {Object.keys(node.resources).map(resource => (
               <Typography key={resource}>
-                {resource}: {node.resources[resource]}
+                --{resource}: {node.resources[resource]}
               </Typography>
             ))}
           </div>
