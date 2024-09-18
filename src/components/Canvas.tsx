@@ -21,7 +21,7 @@ const Canvas = ({
   const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
 
   const { homeNode, setHomeNode } = useHomeNode({
-    canvasRef,
+    ctx,
     homeNodeData,
   })
 

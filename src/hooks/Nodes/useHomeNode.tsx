@@ -1,15 +1,10 @@
 import { useRef, useEffect, useState } from 'react'
 import { Node, ResourceNode } from '@/classes'
-import { useCanvas } from '@/hooks'
 
 export const useHomeNode = ({
-  canvasRef,
+  ctx,
   homeNodeData,
 }) => {
-
-
-  const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
-
   const [homeNode, setHomeNode] = useState({} as NodeType)
   useEffect(() => {
     if (!ctx || !homeNodeData) return
@@ -20,6 +15,16 @@ export const useHomeNode = ({
     setHomeNode(newHomeNode)
   }, [ctx, homeNodeData])
 
+
+  useEffect(() => {
+    if (!('drawUnit' in homeNode)) return
+
+    const gameLoop = (timestamp: number) => {
+      homeNode.drawUnit()
+      requestAnimationFrame(gameLoop)
+    }
+    requestAnimationFrame(gameLoop)
+  }, [homeNode])
 
   return {
     homeNode,
