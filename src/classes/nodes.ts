@@ -2,7 +2,7 @@ export class Node {
   id: string
   ctx: CanvasRenderingContext2D
   position: [number, number]
-  resources?: {
+  resources: {
     stone?: number
     wood?: number
     food?: number
@@ -33,11 +33,10 @@ export class Node {
   drawUnit() {
     this.ctx.font = `${this.size}px serif`
     this.ctx.fillText(this.emoji, this.position[0], this.position[1])
-    this.notes = [
-      ...Object.keys(this.resources).map(key => `${key}: ${this.resources[key]}`),
-    ].filter(Boolean)
-
-    this.notes.map((note, i) => {
+    Object.keys(this.resources)
+    .map(key => `${key}: ${this.resources[key]}`)
+    .filter(Boolean)
+    .forEach((note, i) => {
       this.ctx.font = `16px serif`
       this.ctx.fillText(note, this.position[0], this.position[1] + 20 * (i + 1))
     })
@@ -56,13 +55,16 @@ export class Node {
 
     this.resources[resource] += transferAmount
     targetNode.resources[resource] -= transferAmount
+
+    console.log('transfer', this.emoji, this.resources)
+    console.log('transfer', targetNode.emoji, targetNode.resources)
   }
 }
 
 export class ResourceNode extends Node {
   transportNode?: TransportNode
 
-  constructor({ ctx, position, homeNode, emoji, size, transportNode, resources, id }: {
+  constructor({ ctx, position, homeNode, emoji, size, transportNode, resources, id, setHomeResources }: {
     id: string
     ctx: CanvasRenderingContext2D
     homeNode: { position: [number, number] }
@@ -74,9 +76,11 @@ export class ResourceNode extends Node {
       wood?: number
       food?: number
     }
+    setHomeResources: () => void
     transportNode?: { emoji: string; size: number; speed: number; strength: number }
   }) {
     super({ ctx, position, size, emoji, resources, id })
+    console.log('TransportNode setHomeResources:', setHomeResources)  // Add this to check the function
 
     if (transportNode) {
       this.transportNode = new TransportNode({
@@ -90,6 +94,7 @@ export class ResourceNode extends Node {
         speed: transportNode.speed,
         strength: transportNode.strength,
         dexterity: transportNode.dexterity,
+        setHomeResources: setHomeResources,
       })
     }
   }
@@ -113,6 +118,9 @@ export class TransportNode extends Node {
   strength: number
   dexterity: number
 
+  // state
+  setHomeResources = () => {}
+
   constructor({
     ctx,
     emoji,
@@ -125,6 +133,7 @@ export class TransportNode extends Node {
     strength,
     dexterity,
     resources,
+    setHomeResources,
   }: {
     ctx: CanvasRenderingContext2D
     emoji: string
@@ -136,7 +145,10 @@ export class TransportNode extends Node {
     speed: number
     strength: number
     dexterity: number
+    setHomeResources: () => void
   }) {
+    console.log('TransportNode setHomeResources:', setHomeResources)  // Add this to check the function
+
     super({ ctx, position: homeNode.position, emoji, size, resources, id})
     this.parentNode = parentNode
     this.position = position
@@ -146,6 +158,7 @@ export class TransportNode extends Node {
     this.strength = strength
     this.dexterity = dexterity
     this.resources = {}
+    this.setHomeResources = setHomeResources
   }
 
   drawUnit() { super.drawUnit() }
@@ -174,7 +187,7 @@ export class TransportNode extends Node {
     const loadingTime = 1000 / this.dexterity
 
     setTimeout(() => {
-      this.transferResources(targetNode, resource)
+      super.transferResources(targetNode, resource)
       this.isLoading = false
       this.targetNode = this.homeNode
     }, loadingTime)
@@ -189,21 +202,9 @@ export class TransportNode extends Node {
     }, unloadingTime)
   }
 
-  transferResources(targetNode: Node, resource: string) {
-    if (!this.resources || !targetNode.resources || !(resource in targetNode.resources)) return
-
-    const availableAmount = targetNode.resources[resource] || 0
-    const transferAmount = Math.min(availableAmount, this.strength)
-
-    // Add the resource to the TransportNode's payload (this.resources)
-    if (!this.resources[resource]) {
-      this.resources[resource] = 0
-    }
-    this.resources[resource] += transferAmount
-    targetNode.resources[resource] -= transferAmount
-  }
 
   deliverResources(targetNode: Node) {
+
     if (!this.resources || !targetNode.resources) return
 
     // Deliver all resources from TransportNode to the target node (homeNode)
@@ -215,7 +216,25 @@ export class TransportNode extends Node {
 
       // Clear resources in the TransportNode after delivery
       this.resources[resource] = 0
+
+      console.log('deliver', this.emoji, this.resources, this.targetNode.resources)
+      this.setHomeResources(this.targetNode.resources)
     })
+
+    // if (!this.resources || !targetNode.resources || !(resource in targetNode.resources)) return
+
+    // const availableAmount = targetNode.resources[resource] || 0
+    // const transferAmount = Math.min(availableAmount, this.strength)
+
+    // // Transfer resource from targetNode to this node
+    // if (!this.resources[resource]) {
+    //   this.resources[resource] = 0
+    // }
+
+    // this.resources[resource] += transferAmount
+    // targetNode.resources[resource] -= transferAmount
+
+    // console.log(this.resources)
   }
 
   hasArrived(node = this.targetNode): boolean {

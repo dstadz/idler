@@ -4,6 +4,7 @@ import { Node, ResourceNode } from '@/classes'
 export const useResourceNodes = ({
   ctx,
   homeNode,
+  setHomeResources,
   resourceNodesData,
 }) => {
   const [resourceNodes, setResourceNodes] = useState({} as ResourceNodeType[])
@@ -12,10 +13,10 @@ export const useResourceNodes = ({
 
     const newResourceNodes = resourceNodesData
     .map(node => new ResourceNode(
-      { ctx, ...node, homeNode, id: `${Math.random()}` }
+      { ctx, ...node, homeNode, id: `${Math.random()}`, setHomeResources }
     ))
     setResourceNodes(newResourceNodes)
-  }, [ctx, homeNode, resourceNodesData])
+  }, [ctx, homeNode, resourceNodesData, setHomeResources])
 
   const drawResourceNodes = () => {
     resourceNodes.forEach(node => {

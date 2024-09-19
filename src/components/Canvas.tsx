@@ -1,49 +1,43 @@
 import { useRef, useEffect, useState } from 'react'
-import { Node, ResourceNode } from '@/classes'
 import { useCanvas, useHomeNode, useResourceNodes } from '@/hooks'
 
 const Canvas = ({
-  homeNodeData,
+  canvasRef,
   resourceNodesData,
-  updateResourceValues,
+  homeNode,
+  drawHomeNode,
+  setHomeResources,
 }: {
-  homeNodeData: NodeType
   resourceNodesData: ResourceNodeType[]
-  updateResourceValues: ({
-    updatedNodes,
-    updatedHomeNode,
-  }: {
-    updatedNodes: ResourceNodeType[]
-    updatedHomeNode: NodeType
-  }) => void
 }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
   const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
-
-  const { homeNode, drawHomeNode } = useHomeNode({
-    ctx,
-    homeNodeData,
-  })
 
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
     homeNode,
     resourceNodesData,
+    setHomeResources,
   })
 
   useEffect(() => {
     if (!resourceNodes.length) return
-
     const gameLoop = (timestamp: number) => {
       clearWholeRect(canvasRef.current)
-      drawFPS(timestamp)
 
+      drawFPS(timestamp)
       drawHomeNode()
       drawResourceNodes()
       requestAnimationFrame(gameLoop)
     }
     requestAnimationFrame(gameLoop)
-  }, [drawHomeNode, resourceNodes, drawResourceNodes, drawFPS, clearWholeRect])
+  }, [
+    resourceNodes,
+    clearWholeRect,
+    canvasRef,
+    drawFPS,
+    drawHomeNode,
+    drawResourceNodes,
+  ])
 
   return (
     <canvas

@@ -1,1 +1,1 @@
-export { Node, ResourceNode, TransportNode } from './canvas'
+export { Node, ResourceNode, TransportNode } from './nodes'
