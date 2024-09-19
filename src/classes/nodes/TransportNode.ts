@@ -1,107 +1,4 @@
-export class Node {
-  id: string
-  ctx: CanvasRenderingContext2D
-  position: [number, number]
-  resources: {
-    stone?: number
-    wood?: number
-    food?: number
-  }
-  emoji: string
-  size: number
-
-  constructor({ id, ctx, position, resources = {}, emoji, size }: {
-    id: string
-    ctx: CanvasRenderingContext2D
-    position: [number, number]
-    resources?: {
-      stone?: number
-      wood?: number
-      food?: number
-    }
-    emoji: string
-    size: number
-  }) {
-    this.id = id
-    this.ctx = ctx
-    this.position = position
-    this.resources = resources
-    this.emoji = emoji
-    this.size = size
-  }
-
-  drawUnit() {
-    this.ctx.font = `${this.size}px serif`
-    this.ctx.fillText(this.emoji, this.position[0], this.position[1])
-    Object.keys(this.resources)
-    .map(key => `${key}: ${this.resources[key]}`)
-    .filter(Boolean)
-    .forEach((note, i) => {
-      this.ctx.font = `16px serif`
-      this.ctx.fillText(note, this.position[0], this.position[1] + 20 * (i + 1))
-    })
-  }
-
-  transferResources(targetNode: Node, resource: string) {
-    if (!this.resources || !targetNode.resources || !(resource in targetNode.resources)) return
-
-    const availableAmount = targetNode.resources[resource] || 0
-    const transferAmount = Math.min(availableAmount, this.strength)
-
-    // Transfer resource from targetNode to this node
-    if (!this.resources[resource]) {
-      this.resources[resource] = 0
-    }
-
-    this.resources[resource] += transferAmount
-    targetNode.resources[resource] -= transferAmount
-
-    console.log('transfer', this.emoji, this.resources)
-    console.log('transfer', targetNode.emoji, targetNode.resources)
-  }
-}
-
-export class ResourceNode extends Node {
-  transportNode?: TransportNode
-
-  constructor({ ctx, position, homeNode, emoji, size, transportNode, resources, id, setHomeResources }: {
-    id: string
-    ctx: CanvasRenderingContext2D
-    homeNode: { position: [number, number] }
-    position: [number, number]
-    emoji: string
-    size: number
-    resources?: {
-      stone?: number
-      wood?: number
-      food?: number
-    }
-    setHomeResources: () => void
-    transportNode?: { emoji: string; size: number; speed: number; strength: number }
-  }) {
-    super({ ctx, position, size, emoji, resources, id })
-    console.log('TransportNode setHomeResources:', setHomeResources)  // Add this to check the function
-
-    if (transportNode) {
-      this.transportNode = new TransportNode({
-        id,
-        ctx,
-        homeNode,
-        parentNode: this,
-        position: this.position,
-        emoji: transportNode.emoji,
-        size: transportNode.size,
-        speed: transportNode.speed,
-        strength: transportNode.strength,
-        dexterity: transportNode.dexterity,
-        setHomeResources: setHomeResources,
-      })
-    }
-  }
-
-  drawUnit() { super.drawUnit() }
-}
-
+import { Node, ResourceNode } from '../nodes'
 export class TransportNode extends Node {
   // locked
   parentNode: ResourceNode
@@ -147,7 +44,6 @@ export class TransportNode extends Node {
     dexterity: number
     setHomeResources: () => void
   }) {
-    console.log('TransportNode setHomeResources:', setHomeResources)  // Add this to check the function
 
     super({ ctx, position: homeNode.position, emoji, size, resources, id})
     this.parentNode = parentNode
@@ -204,7 +100,6 @@ export class TransportNode extends Node {
 
 
   deliverResources(targetNode: Node) {
-
     if (!this.resources || !targetNode.resources) return
 
     // Deliver all resources from TransportNode to the target node (homeNode)
@@ -217,24 +112,12 @@ export class TransportNode extends Node {
       // Clear resources in the TransportNode after delivery
       this.resources[resource] = 0
 
-      console.log('deliver', this.emoji, this.resources, this.targetNode.resources)
-      this.setHomeResources(this.targetNode.resources)
+      console.log('deliver', this.emoji, this.resources, this.targetNode.emoji, this.targetNode.resources)
+      // this.setHomeResources(prev => {
+      //   console.log(prev)
+      //   return {...this.targetNode.resources}
+      // })
     })
-
-    // if (!this.resources || !targetNode.resources || !(resource in targetNode.resources)) return
-
-    // const availableAmount = targetNode.resources[resource] || 0
-    // const transferAmount = Math.min(availableAmount, this.strength)
-
-    // // Transfer resource from targetNode to this node
-    // if (!this.resources[resource]) {
-    //   this.resources[resource] = 0
-    // }
-
-    // this.resources[resource] += transferAmount
-    // targetNode.resources[resource] -= transferAmount
-
-    // console.log(this.resources)
   }
 
   hasArrived(node = this.targetNode): boolean {

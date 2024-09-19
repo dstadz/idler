@@ -1,5 +1,5 @@
+import { ResourceNode } from '@/classes'
 import { useRef, useEffect, useState } from 'react'
-import { Node, ResourceNode } from '@/classes'
 
 export const useResourceNodes = ({
   ctx,
