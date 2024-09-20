@@ -112,7 +112,7 @@ export class TransportNode extends Node {
       // Clear resources in the TransportNode after delivery
       this.resources[resource] = 0
 
-      console.log('deliver', this.emoji, this.resources, this.targetNode.emoji, this.targetNode.resources)
+      // console.log('deliver', this.emoji, this.resources, this.targetNode.emoji, this.targetNode.resources)
       // this.setHomeResources(prev => {
       //   console.log(prev)
       //   return {...this.targetNode.resources}

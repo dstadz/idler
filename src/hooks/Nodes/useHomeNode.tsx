@@ -1,10 +1,13 @@
 import { useEffect, useState, useCallback } from 'react'
+import { useAtom } from 'jotai'
+
 import { Node } from '@/classes'
 import { RESOURCES } from '@/utils/contants'
+import { resourcesAtom } from '@/atoms/resources'
 
 export const useHomeNode = ({ ctx, homeNodeData }) => {
   const [homeNode, setHomeNode] = useState<NodeType>({} as NodeType)
-  const [homeResources, setHomeResources] = useState(Object.keys(RESOURCES).map(r => `${RESOURCES[r].emoji}: 0`))
+  const [homeResources, setHomeResources] = useAtom(resourcesAtom)
 
   useEffect(() => {
     if (!ctx || !homeNodeData) return
@@ -19,15 +22,14 @@ export const useHomeNode = ({ ctx, homeNodeData }) => {
   }, [ctx, homeNodeData])
 
   useEffect(() => {
-    // Update resources when homeNode changes
     if (!homeNode || !homeNode.resources) return
 
-    setHomeResources(homeNode.resources) // Set the correct resources from homeNode
-  }, [homeNode])
+    setHomeResources(homeNode.resources)
+  }, [homeNode, setHomeResources])
 
   const drawHomeNode = useCallback(() => {
     homeNode.drawUnit()
-  }, [homeNode, homeResources])
+  }, [homeNode])
 
   return {
     homeNode,
