@@ -32,14 +32,23 @@ export class Node {
 
   drawUnit() {
     this.ctx.font = `${this.size}px serif`
-    this.ctx.fillText(this.emoji, this.position[0], this.position[1])
+    this.ctx.fillText(
+      this.emoji,
+      this.position[0],
+      this.position[1] + this.size,
+    )
+
+    this.ctx.font = `16px serif`
     Object.keys(this.resources)
-    .map(key => `${key}: ${this.resources[key]}`)
-    .filter(Boolean)
-    .forEach((note, i) => {
-      this.ctx.font = `16px serif`
-      this.ctx.fillText(note, this.position[0], this.position[1] + 20 * (i + 1))
-    })
+      .map(key => `${key}: ${this.resources[key]}`)
+      .filter(Boolean)
+      .forEach((note, i) => {
+        this.ctx.fillText(
+          note,
+          this.position[0],
+          this.position[1] + this.size + 20 * (i + 1),
+        )
+      })
   }
 
   transferResources(targetNode: Node, resource: string) {
@@ -48,7 +57,6 @@ export class Node {
     const availableAmount = targetNode.resources[resource] || 0
     const transferAmount = Math.min(availableAmount, this.strength)
 
-    // Transfer resource from targetNode to this node
     if (!this.resources[resource]) {
       this.resources[resource] = 0
     }
