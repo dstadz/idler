@@ -34,6 +34,7 @@ export class TransportNode extends Node {
     size,
     position,
     id,
+    uuid,
     parentNode,
     homeNode,
     speed,
@@ -53,7 +54,7 @@ export class TransportNode extends Node {
     dexterity: number
   }) {
 
-    super({ ctx, position: homeNode.position, emoji, size, resources, id})
+    super({ ctx, position: homeNode.position, emoji, size, resources, id, uuid })
     this.parentNode = parentNode
     this.position = position
     this.homeNode = homeNode
@@ -62,6 +63,8 @@ export class TransportNode extends Node {
     this.strength = strength
     this.dexterity = dexterity
     this.resources = {}
+    this.id = id
+    this.uuid = uuid
 
   }
 
@@ -80,8 +83,8 @@ export class TransportNode extends Node {
     */
 
   handleArrival(arrivalNode = this.targetNode) {
-    console.log(`🚀  ~ handleArrival :`, this.isLoading, arrivalNode.emoji, arrivalNode.resources)
     this.isLoading = true
+    console.log(`🚀  ~ handleArrival :`, this.isLoading, arrivalNode.emoji, arrivalNode.resources)
 
     if (arrivalNode instanceof ResourceNode) {
       const randResource = Object.keys(arrivalNode.resources)[Math.floor(Math.random() * Object.keys(arrivalNode.resources).length)]
@@ -144,15 +147,7 @@ export class TransportNode extends Node {
     })
   }
 
-  hasArrived(node = this.targetNode): boolean {
-    return (
-      Math.abs(this.position[0] - node.position[0]) < this.speed &&
-      Math.abs(this.position[1] - node.position[1]) < this.speed
-    )
-  }
-
   updatePosition() {
-    console.log(`🚀  ~ updatePosition ~ isLoading:`, this.isLoading)
 
     if (this.isLoading) return
     const { position: targetPosition } = this.targetNode

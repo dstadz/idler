@@ -1,10 +1,9 @@
 import { TransportNode, Node } from "../nodes"
 
 export class ResourceNode extends Node {
-  transportNode?: TransportNode
-
-  constructor({ ctx, position, homeNode, emoji, size, transportNode, resources, id, setHomeResources }: {
+  constructor({ ctx, position, homeNode, emoji, size, transportNode, resources, id, uuid, setHomeResources }: {
     id: string
+    uuid: string
     ctx: CanvasRenderingContext2D
     homeNode: Node
     position: [number, number]
@@ -15,26 +14,9 @@ export class ResourceNode extends Node {
       wood?: number
       food?: number
     }
-    setHomeResources: () => void
-    transportNode?: { emoji: string; size: number; speed: number; strength: number }
   }) {
-    super({ ctx, position, size, emoji, resources, id })
+    super({ ctx, position, size, emoji, resources, id, uuid})
 
-    if (transportNode) {
-      this.transportNode = new TransportNode({
-        id,
-        ctx,
-        homeNode,
-        parentNode: this,
-        position: this.position,
-        emoji: transportNode.emoji,
-        size: transportNode.size,
-        speed: transportNode.speed,
-        strength: transportNode.strength,
-        dexterity: transportNode.dexterity,
-        setHomeResources: setHomeResources,
-      })
-    }
   }
 
   drawUnit() { super.drawUnit() }

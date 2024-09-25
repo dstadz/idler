@@ -1,12 +1,11 @@
 'use client'
 
-import React, { use, useCallback, useEffect, useRef, useState } from 'react'
+import React, { useMemo, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
 import { RESOURCES } from '@/utils/contants'
-import { homeNodeData, resourceNodesData } from '@/data'
+import { homeNodeData, resourceNodesData, transportNodesData } from '@/data'
 import { useAtom } from 'jotai'
 import { Node, ResourceNode, TransportNode } from '@/classes'
-import { transportNodesData } from '@/data'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
 
 const OverworldPage = () => {
@@ -32,11 +31,11 @@ const OverworldPage = () => {
   ])
 
   useEffect(() => {
-    if (!resourceNodes.length) return
+    if (!resourceNodes.length || !transportNodes.length) return
     const rafId = requestAnimationFrame(gameLoop)
 
     return () => cancelAnimationFrame(rafId)  // Clean up on component unmount
-  }, [gameLoop, resourceNodes])
+  }, [gameLoop, resourceNodes, transportNodes])
 
   return (
     <Stack flexDirection="row" justifyContent="space-between">

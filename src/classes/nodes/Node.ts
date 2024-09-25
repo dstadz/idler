@@ -1,5 +1,6 @@
 export class Node {
   id: string
+  uuid: string
   ctx: CanvasRenderingContext2D
   position: [number, number]
   resources: {
@@ -10,8 +11,9 @@ export class Node {
   emoji: string
   size: number
 
-  constructor({ id, ctx, position, resources = {}, emoji, size }: {
+  constructor({ id, uuid='00', ctx, position, resources = {}, emoji, size }: {
     id: string
+    uuid: string
     ctx: CanvasRenderingContext2D
     position: [number, number]
     resources?: {
@@ -23,6 +25,7 @@ export class Node {
     size: number
   }) {
     this.id = id
+    this.uuid = uuid
     this.ctx = ctx
     this.position = position
     this.resources = resources
@@ -31,6 +34,7 @@ export class Node {
   }
 
   drawUnit() {
+    console.log(this.emoji, this.uuid)
     this.ctx.font = `${this.size}px serif`
     this.ctx.fillText(
       this.emoji,
