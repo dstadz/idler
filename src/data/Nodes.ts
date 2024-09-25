@@ -4,9 +4,10 @@ export const homeNodeData: NodeType = {
   position: [400, 400],
   emoji: '🏰',
   size: 40,
-  inventory: {},
-  resources: {},
-}
+  resources: {
+    [RESOURCES.FOOD.emoji]: 2000,
+    [RESOURCES.WOOD.emoji]: 1000,
+  },}
 
 export const resourceNodesData: ResourceNodeType[] = [
   {

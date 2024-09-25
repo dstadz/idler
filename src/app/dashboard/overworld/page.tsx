@@ -2,15 +2,51 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
-import Canvas from '@/components/Canvas'
 import { RESOURCES } from '@/utils/contants'
 import { homeNodeData, resourceNodesData } from '@/data'
-import { useCanvas, useHomeNode } from '@/hooks'
+import { useCanvas, useHomeNode, useResourceNodes } from '@/hooks'
 
 const OverworldPage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { ctx, clearWholeRect, drawFPS } = useCanvas(canvasRef)
-  const { homeNode, drawHomeNode, homeResources, setHomeResources } = useHomeNode({ ctx, homeNodeData })
+  const {
+    homeNode,
+    homeResources,
+    drawHomeNode,
+    setHomeResources,
+  } = useHomeNode({ ctx, homeNodeData })
+
+
+  useEffect(() => {
+    // console.log('🚀  homeResources:', homeResources)
+  }, [homeResources])
+
+  const { resourceNodes, drawResourceNodes } = useResourceNodes({
+    ctx,
+    homeNode,
+    resourceNodesData,
+    setHomeResources,
+  })
+
+  useEffect(() => {
+    if (!resourceNodes.length) return
+    const gameLoop = (timestamp: number) => {
+      clearWholeRect(canvasRef.current)
+      drawFPS(timestamp)
+      drawHomeNode()
+      drawResourceNodes()
+      requestAnimationFrame(gameLoop)
+    }
+    requestAnimationFrame(gameLoop)
+  }, [
+    resourceNodes,
+    clearWholeRect,
+    canvasRef,
+    drawFPS,
+    drawHomeNode,
+    drawResourceNodes,
+  ])
+
 
   return (
     <Stack flexDirection="row" justifyContent="space-between">
@@ -40,12 +76,11 @@ const OverworldPage = () => {
       </Box>
       <Box>
         This is the Overworld Page Content
-        <Canvas
-          canvasRef={canvasRef}
-          resourceNodesData={resourceNodesData}
-          homeNode={homeNode}
-          drawHomeNode={drawHomeNode}
-          setHomeResources={setHomeResources}
+        <canvas
+          ref={canvasRef}
+          width={800}
+          height={600}
+          className="border-2 border-purple-500 border-rounded"
         />
       </Box>
     </Stack>

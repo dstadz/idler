@@ -1,4 +1,15 @@
 import { Node, ResourceNode } from '../nodes'
+
+function debounce(func, wait) {
+  let timeout
+  return (...args) => {
+    clearTimeout(timeout)
+    timeout = setTimeout(() => {
+      func.apply(this, args)
+    }, 1000)
+  }
+}
+
 export class TransportNode extends Node {
   // locked
   parentNode: ResourceNode
@@ -55,6 +66,7 @@ export class TransportNode extends Node {
     this.dexterity = dexterity
     this.resources = {}
     this.setHomeResources = setHomeResources
+
   }
 
   drawUnit() { super.drawUnit() }
@@ -98,25 +110,18 @@ export class TransportNode extends Node {
     }, unloadingTime)
   }
 
-
   deliverResources(targetNode: Node) {
     if (!this.resources || !targetNode.resources) return
 
-    // Deliver all resources from TransportNode to the target node (homeNode)
     Object.keys(this.resources).forEach(resource => {
       if (!targetNode.resources[resource]) {
         targetNode.resources[resource] = 0
       }
       targetNode.resources[resource] += this.resources[resource]
+      this.setHomeResources({...this.targetNode.resources})
 
-      // Clear resources in the TransportNode after delivery
       this.resources[resource] = 0
 
-      // console.log('deliver', this.emoji, this.resources, this.targetNode.emoji, this.targetNode.resources)
-      // this.setHomeResources(prev => {
-      //   console.log(prev)
-      //   return {...this.targetNode.resources}
-      // })
     })
   }
 
