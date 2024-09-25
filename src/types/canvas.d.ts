@@ -1,6 +1,7 @@
 
 type NodeType = {
   position: [number, number]
+  resources: Record<string, number>
   emoji: string
   size: number
 }
@@ -14,5 +15,3 @@ type TransportNodeType = {
 type ResourceNodeType = NodeType & {
   transportNode?: TransportNodeType
 }
-
-// Canvas

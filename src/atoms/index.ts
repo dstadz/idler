@@ -1,0 +1,1 @@
+export { resourcesAtom } from './resources'

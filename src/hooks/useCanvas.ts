@@ -7,15 +7,15 @@ import {
 } from 'react'
 
 export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
-
-  // initialize context
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
+  useEffect(() => () => setCtx(null), [])
+
   useEffect(() => {
     const canvas = canvasRef.current
-    if (canvas) {
-      const context = canvas.getContext('2d')
-      setCtx(context)
-    }
+    if (!canvas) return
+
+    const context = canvas.getContext('2d')
+    setCtx(context)
   }, [canvasRef])
 
   const clearWholeRect = useCallback((canvas: HTMLCanvasElement | null) => {
@@ -24,10 +24,11 @@ export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
   }, [ctx])
 
 
+  let fpsTime = 0
+  let frameCount = 0
   const fpsRef = useRef(0)
   let lastFrameTime = performance.now()
-  let frameCount = 0
-  let fpsTime = 0
+
   const drawFPS = useCallback((timestamp: number) => {
     if (!ctx) return
     const deltaTime = timestamp - lastFrameTime
