@@ -1,5 +1,5 @@
 import { TransportNode } from '@/classes'
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useEffect, useState, useCallback } from 'react'
 
 export const useTransportNodes = ({
   ctx,
@@ -29,9 +29,13 @@ export const useTransportNodes = ({
       })
 
     setTransportNodes(newTransportNodes)
-  }, [ctx, homeNode, resourceNodes])
+  }, [ctx, homeNode, resourceNodes, transportNodesData])
 
-  const drawTransportNodes = () => transportNodes.forEach(node => node?.drawUnit())
+  const drawTransportNodes = useCallback(() => {
+    transportNodes.forEach(node => {
+      node.drawUnit()
+    })
+  }, [transportNodes])
 
   return {
     transportNodes,

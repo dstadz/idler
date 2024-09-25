@@ -3,7 +3,7 @@ import { useAtom } from 'jotai'
 
 import { Node } from '@/classes'
 import { RESOURCES } from '@/utils/contants'
-import { resourcesAtom } from '@/atoms/resources'
+import { resourcesAtom } from '@/atoms'
 
 export const useHomeNode = ({ ctx, homeNodeData }) => {
   const [homeNode, setHomeNode] = useState<NodeType>({} as NodeType)

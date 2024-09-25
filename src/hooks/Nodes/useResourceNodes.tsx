@@ -15,7 +15,10 @@ export const useResourceNodes = ({
     setResourceNodes(newResourceNodes)
   }, [ctx, homeNode, resourceNodesData])
 
-  const drawResourceNodes = () => resourceNodes.forEach(node => node.drawUnit())
+  const drawResourceNodes = () => {
+    // console.log('drawResourceNodes')
+    resourceNodes.forEach(node => node.drawUnit())
+  }
 
   return {
     resourceNodes,

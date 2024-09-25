@@ -5,9 +5,8 @@ import { Box, Stack, Typography } from '@mui/material'
 import { RESOURCES } from '@/utils/contants'
 import { homeNodeData, resourceNodesData } from '@/data'
 import { useAtom } from 'jotai'
-import { resourcesAtom } from '@/atoms/resources'
 import { Node, ResourceNode, TransportNode } from '@/classes'
-import { transportNodesData } from '@/data/Nodes'
+import { transportNodesData } from '@/data'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
 
 const OverworldPage = () => {
@@ -31,9 +30,12 @@ const OverworldPage = () => {
     drawResourceNodes,
     drawTransportNodes,
   ])
+
   useEffect(() => {
     if (!resourceNodes.length) return
-    requestAnimationFrame(gameLoop)
+    const rafId = requestAnimationFrame(gameLoop)
+
+    return () => cancelAnimationFrame(rafId)  // Clean up on component unmount
   }, [gameLoop, resourceNodes])
 
   return (

@@ -51,17 +51,4 @@ export class Node {
       })
   }
 
-  transferResources(targetNode: Node, resource: string) {
-    if (!this.resources || !targetNode.resources || !(resource in targetNode.resources)) return
-
-    const availableAmount = targetNode.resources[resource] || 0
-    const transferAmount = Math.min(availableAmount, this.strength)
-
-    if (!this.resources[resource]) {
-      this.resources[resource] = 0
-    }
-
-    this.resources[resource] += transferAmount
-    targetNode.resources[resource] -= transferAmount
-  }
 }

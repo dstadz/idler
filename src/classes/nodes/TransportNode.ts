@@ -80,6 +80,7 @@ export class TransportNode extends Node {
     */
 
   handleArrival(arrivalNode = this.targetNode) {
+    console.log(`🚀  ~ handleArrival :`, this.isLoading, arrivalNode.emoji, arrivalNode.resources)
     this.isLoading = true
 
     if (arrivalNode instanceof ResourceNode) {
@@ -91,16 +92,34 @@ export class TransportNode extends Node {
   }
 
   startLoading(targetNode: Node, resource: string) {
+    console.log(`🚀  ~ startLoading ~:`, this.isLoading, targetNode.emoji, targetNode.resources)
+
     const loadingTime = 1000 / this.dexterity
 
     setTimeout(() => {
-      super.transferResources(targetNode, resource)
+      if (!this.resources || !targetNode.resources || !(resource in targetNode.resources)) return
+
+      const availableAmount = targetNode.resources[resource] || 0
+      const transferAmount = Math.min(availableAmount, this.strength)
+      console.log({
+        this: this.emoji,
+        target: targetNode.emoji,
+        resource, transferAmount, availableAmount})
+
+      if (!this.resources[resource]) {
+        this.resources[resource] = 0
+      }
+
+      this.resources[resource] += transferAmount
+      targetNode.resources[resource] -= transferAmount
       this.isLoading = false
       this.targetNode = this.homeNode
     }, loadingTime)
   }
 
   startUnloading(targetNode: Node) {
+    console.log(`🚀  ~ startUnloading ~ :`, this.isLoading, targetNode.emoji, targetNode.resources)
+
     const unloadingTime = 1000 / this.dexterity
     setTimeout(() => {
       this.deliverResources(targetNode)
@@ -110,6 +129,8 @@ export class TransportNode extends Node {
   }
 
   deliverResources(targetNode: Node) {
+    console.log(`🚀  ~ deliverResources :`, this.isLoading,  targetNode.emoji, targetNode.resources)
+
     if (!this.resources || !targetNode.resources) return
 
     Object.keys(this.resources).forEach(resource => {
@@ -131,6 +152,8 @@ export class TransportNode extends Node {
   }
 
   updatePosition() {
+    console.log(`🚀  ~ updatePosition ~ isLoading:`, this.isLoading)
+
     if (this.isLoading) return
     const { position: targetPosition } = this.targetNode
     if (
