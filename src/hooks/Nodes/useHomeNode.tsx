@@ -12,7 +12,11 @@ export const useHomeNode = ({ ctx, homeNodeData }) => {
   useEffect(() => {
     if (!ctx || !homeNodeData) return
 
-    const newHomeNode = new Node({ ctx, ...homeNodeData, uuid: (Math.random().toString(36).slice(2, 10)) })
+    const newHomeNode = new Node({
+      ctx,
+      ...homeNodeData,
+      uuid: (Math.random().toString(36).slice(2, 10)),
+    })
 
     setHomeNode(newHomeNode)
   }, [ctx, homeNodeData])

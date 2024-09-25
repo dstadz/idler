@@ -11,7 +11,11 @@ export const useResourceNodes = ({
     if (!ctx || !homeNode || !resourceNodesData) return
 
     const newResourceNodes = resourceNodesData
-      .map(node => new ResourceNode({ ctx, ...node, homeNode, uuid: (Math.random().toString(36).slice(2, 10)),
+      .map(node => new ResourceNode({
+        ctx,
+        ...node,
+        homeNode,
+        uuid: (Math.random().toString(36).slice(2, 10)),
       }))
     setResourceNodes(newResourceNodes)
   }, [ctx, homeNode, resourceNodesData])

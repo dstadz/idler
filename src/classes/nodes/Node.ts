@@ -34,7 +34,6 @@ export class Node {
   }
 
   drawUnit() {
-    console.log(this.emoji, this.uuid)
     this.ctx.font = `${this.size}px serif`
     this.ctx.fillText(
       this.emoji,

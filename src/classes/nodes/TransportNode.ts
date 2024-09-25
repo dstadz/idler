@@ -84,8 +84,6 @@ export class TransportNode extends Node {
 
   handleArrival(arrivalNode = this.targetNode) {
     this.isLoading = true
-    console.log(`🚀  ~ handleArrival :`, this.isLoading, arrivalNode.emoji, arrivalNode.resources)
-
     if (arrivalNode instanceof ResourceNode) {
       const randResource = Object.keys(arrivalNode.resources)[Math.floor(Math.random() * Object.keys(arrivalNode.resources).length)]
       this.startLoading(arrivalNode, randResource)
@@ -95,8 +93,6 @@ export class TransportNode extends Node {
   }
 
   startLoading(targetNode: Node, resource: string) {
-    console.log(`🚀  ~ startLoading ~:`, this.isLoading, targetNode.emoji, targetNode.resources)
-
     const loadingTime = 1000 / this.dexterity
 
     setTimeout(() => {
@@ -104,10 +100,6 @@ export class TransportNode extends Node {
 
       const availableAmount = targetNode.resources[resource] || 0
       const transferAmount = Math.min(availableAmount, this.strength)
-      console.log({
-        this: this.emoji,
-        target: targetNode.emoji,
-        resource, transferAmount, availableAmount})
 
       if (!this.resources[resource]) {
         this.resources[resource] = 0
@@ -121,8 +113,6 @@ export class TransportNode extends Node {
   }
 
   startUnloading(targetNode: Node) {
-    console.log(`🚀  ~ startUnloading ~ :`, this.isLoading, targetNode.emoji, targetNode.resources)
-
     const unloadingTime = 1000 / this.dexterity
     setTimeout(() => {
       this.deliverResources(targetNode)
@@ -132,8 +122,6 @@ export class TransportNode extends Node {
   }
 
   deliverResources(targetNode: Node) {
-    console.log(`🚀  ~ deliverResources :`, this.isLoading,  targetNode.emoji, targetNode.resources)
-
     if (!this.resources || !targetNode.resources) return
 
     Object.keys(this.resources).forEach(resource => {
@@ -148,7 +136,6 @@ export class TransportNode extends Node {
   }
 
   updatePosition() {
-
     if (this.isLoading) return
     const { position: targetPosition } = this.targetNode
     if (
