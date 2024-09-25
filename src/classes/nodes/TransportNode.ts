@@ -13,7 +13,7 @@ function debounce(func, wait) {
 export class TransportNode extends Node {
   // locked
   parentNode: ResourceNode
-  homeNode: { position: [number, number] }
+  homeNode: Node
 
   // dynamic
   targetNode: Node
@@ -27,7 +27,6 @@ export class TransportNode extends Node {
   dexterity: number
 
   // state
-  setHomeResources = () => {}
 
   constructor({
     ctx,
@@ -41,7 +40,6 @@ export class TransportNode extends Node {
     strength,
     dexterity,
     resources,
-    setHomeResources,
   }: {
     ctx: CanvasRenderingContext2D
     emoji: string
@@ -49,11 +47,10 @@ export class TransportNode extends Node {
     position: [number, number]
     id: string
     parentNode: ResourceNode
-    homeNode: { position: [number, number] }
+    homeNode: Node
     speed: number
     strength: number
     dexterity: number
-    setHomeResources: () => void
   }) {
 
     super({ ctx, position: homeNode.position, emoji, size, resources, id})
@@ -65,11 +62,13 @@ export class TransportNode extends Node {
     this.strength = strength
     this.dexterity = dexterity
     this.resources = {}
-    this.setHomeResources = setHomeResources
 
   }
 
-  drawUnit() { super.drawUnit() }
+  drawUnit() {
+    this.updatePosition()
+    super.drawUnit()
+  }
     /** -- WIP to flip the emoji when moving right
     this.ctx.save()
     const dx = this.targetNode.position[0] - this.position[0]
@@ -81,6 +80,7 @@ export class TransportNode extends Node {
     */
 
   handleArrival(arrivalNode = this.targetNode) {
+    console.log(`🚀 ~ file: TransportNode.ts:84 ~ ~ arrivalNode:`, arrivalNode)
     this.isLoading = true
 
     if (arrivalNode instanceof ResourceNode) {
@@ -118,7 +118,6 @@ export class TransportNode extends Node {
         targetNode.resources[resource] = 0
       }
       targetNode.resources[resource] += this.resources[resource]
-      this.setHomeResources({...this.targetNode.resources})
 
       this.resources[resource] = 0
 
@@ -152,7 +151,5 @@ export class TransportNode extends Node {
         this.position[1] + (dy / distance) * this.speed
       ]
     }
-
-    this.drawUnit()
   }
 }

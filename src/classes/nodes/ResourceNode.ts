@@ -6,7 +6,7 @@ export class ResourceNode extends Node {
   constructor({ ctx, position, homeNode, emoji, size, transportNode, resources, id, setHomeResources }: {
     id: string
     ctx: CanvasRenderingContext2D
-    homeNode: { position: [number, number] }
+    homeNode: Node
     position: [number, number]
     emoji: string
     size: number

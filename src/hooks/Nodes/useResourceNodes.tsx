@@ -4,7 +4,6 @@ import { useRef, useEffect, useState } from 'react'
 export const useResourceNodes = ({
   ctx,
   homeNode,
-  setHomeResources,
   resourceNodesData,
 }) => {
   const [resourceNodes, setResourceNodes] = useState({} as ResourceNodeType[])
@@ -13,10 +12,10 @@ export const useResourceNodes = ({
 
     const newResourceNodes = resourceNodesData
     .map(node => new ResourceNode(
-      { ctx, ...node, homeNode, id: `${Math.random()}`, setHomeResources }
+      { ctx, ...node, homeNode, id: `${Math.random()}` }
     ))
     setResourceNodes(newResourceNodes)
-  }, [ctx, homeNode, resourceNodesData, setHomeResources])
+  }, [ctx, homeNode, resourceNodesData])
 
   const drawResourceNodes = () => {
     resourceNodes.forEach(node => {

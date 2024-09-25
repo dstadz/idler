@@ -23,7 +23,6 @@ export const useHomeNode = ({ ctx, homeNodeData }) => {
 
   useEffect(() => {
     if (!homeNode || !homeNode.resources) return
-
     setHomeResources(homeNode.resources)
   }, [homeNode, setHomeResources])
 
