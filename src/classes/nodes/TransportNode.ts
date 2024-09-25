@@ -80,7 +80,6 @@ export class TransportNode extends Node {
     */
 
   handleArrival(arrivalNode = this.targetNode) {
-    console.log(`🚀 ~ file: TransportNode.ts:84 ~ ~ arrivalNode:`, arrivalNode)
     this.isLoading = true
 
     if (arrivalNode instanceof ResourceNode) {

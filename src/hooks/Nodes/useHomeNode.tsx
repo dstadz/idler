@@ -12,11 +12,7 @@ export const useHomeNode = ({ ctx, homeNodeData }) => {
   useEffect(() => {
     if (!ctx || !homeNodeData) return
 
-    const newHomeNode = new Node({
-      ctx,
-      ...homeNodeData,
-      id: `${Math.random()}`,
-    })
+    const newHomeNode = new Node({ ctx, ...homeNodeData })
 
     setHomeNode(newHomeNode)
   }, [ctx, homeNodeData])
@@ -25,15 +21,11 @@ export const useHomeNode = ({ ctx, homeNodeData }) => {
     if (!homeNode || !homeNode.resources) return
     setHomeResources(homeNode.resources)
   }, [homeNode, setHomeResources])
-
-  const drawHomeNode = useCallback(() => {
-    homeNode.drawUnit()
-  }, [homeNode])
+  const drawHomeNode = useCallback(() => homeNode.drawUnit(), [homeNode])
 
   return {
     homeNode,
     homeResources,
-    setHomeResources,
     drawHomeNode,
   }
 }
