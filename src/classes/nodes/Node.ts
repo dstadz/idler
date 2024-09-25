@@ -40,8 +40,8 @@ export class Node {
 
     this.ctx.font = `16px serif`
     Object.keys(this.resources)
+      .filter(key => this.resources[key] > 0)
       .map(key => `${key}: ${this.resources[key]}`)
-      .filter(Boolean)
       .forEach((note, i) => {
         this.ctx.fillText(
           note,
