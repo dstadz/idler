@@ -7,7 +7,7 @@ import {
 } from 'react'
 
 export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
-  const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D>(null)
   useEffect(() => () => setCtx(null), [])
 
   useEffect(() => {

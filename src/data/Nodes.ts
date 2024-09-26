@@ -1,5 +1,5 @@
 import { NodeType, NodeTypeData, ResourceNodeType, ResourceRecord, TransportNodeType } from "@/types/node"
-import { RESOURCES } from "@/utils/contants"
+import { RESOURCES, RESOURCES_KEYS } from "@/utils/contants"
 
 export const homeNodeData: NodeTypeData = {
   id: 'homeNode',
@@ -7,10 +7,14 @@ export const homeNodeData: NodeTypeData = {
   emoji: '🏰',
   size: 40,
   resources: {
-    [RESOURCES.FOOD.emoji]: 2000,
-    [RESOURCES.WOOD.emoji]: 1000,
+    ...(Object.fromEntries(
+      Object.keys(RESOURCES).map(key => [key, 0])
+    ) as ResourceRecord), // Cast to ResourceRecord to match the expected type
+    [RESOURCES.FOOD.NAME.toUpperCase()]: 1000,
+    [RESOURCES.WOOD.NAME.toUpperCase()]: 1000,
   }
 }
+
 
 export const resourceNodesData: NodeTypeData[] = [
   {
@@ -19,7 +23,10 @@ export const resourceNodesData: NodeTypeData[] = [
     emoji: '🌋',
     size: 40,
     resources: {
-      [RESOURCES.STONE.emoji]: 2000,
+      ...(Object.fromEntries(
+        Object.keys(RESOURCES).map(key => [key, 0])
+      ) as ResourceRecord),
+      [RESOURCES.STONE.NAME.toUpperCase()]: 2000,
     },
   }, {
     id: 'resourceNode2',
@@ -27,8 +34,11 @@ export const resourceNodesData: NodeTypeData[] = [
     emoji: '🌲',
     size: 40,
     resources: {
-      [RESOURCES.FOOD.emoji]: 2000,
-      [RESOURCES.WOOD.emoji]: 1000,
+      ...(Object.fromEntries(
+        Object.keys(RESOURCES).map(key => [key, 0])
+      ) as ResourceRecord),
+      [RESOURCES.FOOD.NAME.toUpperCase()]: 2000,
+      [RESOURCES.WOOD.NAME.toUpperCase()]: 1000,
     },
   }
 ]

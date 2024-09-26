@@ -2,12 +2,12 @@
 
 import React, { useMemo, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
-import { RESOURCES } from '@/utils/contants'
+import { getResourceList, RESOURCES } from '@/utils/contants'
 import { homeNodeData, resourceNodesData, transportNodesData } from '@/data'
 import { useAtom } from 'jotai'
 import { Node, ResourceNode, TransportNode } from '@/classes'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
-import { NodeType, NodeTypeData } from '@/types/node'
+import { NodeType, NodeTypeData, ResourceRecord } from '@/types/node'
 
 type HomeResourcesType = {
   [key: string]: number
@@ -16,12 +16,15 @@ type HomeResourcesType = {
 const OverworldPage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { ctx, drawFPS, clearWholeRect } = useCanvas(canvasRef)
-
-  // Make sure homeResources is typed correctly
   const { homeNode, homeResources, drawHomeNode } = useHomeNode({
     ctx: ctx as CanvasRenderingContext2D,
-    homeNodeData: homeNodeData as NodeTypeData
+    homeNodeData: homeNodeData as NodeTypeData,
   })
+  // Make sure homeResources is typed correctly
+    // Return early if homeNode is still null
+  if (!homeNode) {
+    return <div>Loading home node...</div>
+  }
 
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
@@ -68,12 +71,9 @@ const OverworldPage = () => {
             </Typography>
           </button>
           <Typography>
-            {Object.keys(homeResources).length > 0 ? (
-              Object.keys(homeResources).map((key) => (
-                <div key={key as keyof typeof RESOURCES}>
-                  {key}: {homeResources[key as keyof typeof RESOURCES] || 0}
-                </div>
-              ))
+          {Object.keys(homeResources).length > 0 ? (
+            getResourceList({ resourceObject: homeNode.resources })
+              .map(resource =><div key={resource}>{resource}</div>)
             ) : (
               <div>No resources available</div>
             )}

@@ -56,7 +56,7 @@ export class TransportNode extends Node {
     this.speed = speed
     this.strength = strength
     this.dexterity = dexterity
-    this.resources = {}
+    this.resources = {} as ResourceRecord
     this.id = id
     this.uuid = uuid
 
@@ -76,18 +76,20 @@ export class TransportNode extends Node {
   }
     */
 
-  handleArrival(arrivalNode = this.targetNode) {
+  handleArrival(targetNode = this.targetNode) {
     this.isLoading = true
-    if (arrivalNode instanceof ResourceNode) {
-      const randResource = Object.keys(arrivalNode.resources)[Math.floor(Math.random() * Object.keys(arrivalNode.resources).length)]
-      this.startLoading(arrivalNode, randResource)
-    } else if (arrivalNode === this.homeNode) {
-      this.startUnloading(arrivalNode)
+    if (targetNode instanceof ResourceNode) {
+      this.startLoading(targetNode)
+    } else if (targetNode === this.homeNode) {
+      this.startUnloading(targetNode)
     }
   }
 
-  startLoading(targetNode: Node, resource: string) {
+  startLoading(targetNode: Node) {
     const loadingTime = 1000 / this.dexterity
+    const availableResourceList = Object.keys(targetNode.resources).filter(key => targetNode.resources[key as keyof ResourceRecord] > 0)
+    const ranIdx = Math.floor(Math.random() * availableResourceList.length)
+    const resource = availableResourceList[ranIdx] as keyof ResourceRecord
 
     setTimeout(() => {
       if (!this.resources || !targetNode.resources || !(resource in targetNode.resources)) return
@@ -119,13 +121,13 @@ export class TransportNode extends Node {
     if (!this.resources || !targetNode.resources) return
 
     Object.keys(this.resources).forEach(resource => {
-      if (!targetNode.resources[resource]) {
-        targetNode.resources[resource] = 0
+      const resKey = resource as keyof ResourceRecord
+
+      if (!targetNode.resources[resKey]) {
+        targetNode.resources[resKey] = 0
       }
-      targetNode.resources[resource] += this.resources[resource]
-
-      this.resources[resource] = 0
-
+      targetNode.resources[resKey] += this.resources[resKey]
+      this.resources[resKey] = 0
     })
   }
 

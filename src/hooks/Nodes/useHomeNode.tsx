@@ -5,11 +5,7 @@ import { Node } from '@/classes'
 import { RESOURCES } from '@/utils/contants'
 import { resourcesAtom } from '@/atoms'
 import { NodeType, NodeTypeData } from '@/types/node' // Ensure this import path is correct
-
-interface UseHomeNodeProps {
-  ctx: CanvasRenderingContext2D // Type for the canvas context
-  homeNodeData: NodeTypeData // Ensure this type has the correct structure
-}
+import { UseHomeNodeProps } from '@/interfaces'
 
 export const useHomeNode = ({ ctx, homeNodeData }: UseHomeNodeProps) => {
   const [homeNode, setHomeNode] = useState<NodeType>({} as NodeType) // State for the home node

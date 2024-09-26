@@ -1,11 +1,11 @@
+import { ResourceKey, ResourceRecord } from '@/types/node'
 import { RESOURCES } from '@/utils/contants'
 import { atom } from 'jotai'
 
-type ResourceRecord = keyof typeof RESOURCES
-const resourceAmounts: Record<ResourceRecord, number> = Object.keys(RESOURCES)
+const resourceAmounts: ResourceRecord = Object.keys(RESOURCES)
 .reduce((acc, key) => {
-  acc[key as ResourceRecord] = 0
+  acc[key as ResourceKey] = 0
   return acc
-}, {} as Record<ResourceRecord, number>)
+}, {} as ResourceRecord)
 
 export const resourcesAtom = atom(resourceAmounts)

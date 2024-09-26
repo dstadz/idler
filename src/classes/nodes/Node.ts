@@ -1,4 +1,5 @@
 import { ResourceRecord } from "@/types/node"
+import { getDefaultResources, getResourceList } from "@/utils/contants"
 
 export class Node {
   id: string
@@ -9,12 +10,20 @@ export class Node {
   emoji: string
   size: number
 
-  constructor({ id, uuid='00', ctx, position, resources = {}, emoji, size }: {
+  constructor({
+    id,
+    uuid = '00',
+    ctx,
+    position,
+    resources = getDefaultResources(), // Ensure resources are fully initialized
+    emoji,
+    size,
+  }: {
     id: string
-    uuid: string
+    uuid?: string
     ctx: CanvasRenderingContext2D
     position: [number, number]
-    resources: ResourceRecord
+    resources?: ResourceRecord
     emoji: string
     size: number
   }) {
@@ -34,18 +43,17 @@ export class Node {
       this.position[0],
       this.position[1] + this.size,
     )
-
+    const list = getResourceList({ resourceObject: this.resources })
+    console.log(this.emoji, this.position[0],)
     this.ctx.font = `16px serif`
-    Object.keys(this.resources)
-      .filter(key => this.resources[key] > 0)
-      .map(key => `${key}: ${this.resources[key]}`)
-      .forEach((note, i) => {
-        this.ctx.fillText(
-          note,
-          this.position[0],
-          this.position[1] + this.size + 20 * (i + 1),
-        )
-      })
+    list
+    .filter(note => note !== '') // Filter out empty results
+    .forEach((note, i) => {
+      this.ctx.fillText(
+        note,
+        this.position[0],
+        this.position[1] + this.size + 20 * (i + 1),
+      )
+    })
   }
-
 }
