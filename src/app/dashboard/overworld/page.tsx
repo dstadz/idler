@@ -22,9 +22,6 @@ const OverworldPage = () => {
   })
   // Make sure homeResources is typed correctly
     // Return early if homeNode is still null
-  if (!homeNode) {
-    return <div>Loading home node...</div>
-  }
 
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
@@ -60,6 +57,9 @@ const OverworldPage = () => {
     return () => cancelAnimationFrame(rafId)  // Clean up on component unmount
   }, [gameLoop, resourceNodes, transportNodes])
 
+  if (!homeNode) {
+    return <div>Loading home node...</div>
+  }
   return (
     <Stack flexDirection="row" justifyContent="space-between">
       <Box>

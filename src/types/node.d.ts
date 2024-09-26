@@ -18,20 +18,22 @@ export type NodeType = NodeTypeData & {
 }
 
 export type ResourceNodeType = NodeType & {
-  homeNode: NodeType
+  // homeNode: NodeType
   // drawUnit: () => void
 }
 
-export type TransportNodeType = NodeType & {
-  parentNode: ResourceNodeType
+export type TransportNodeTypeData = NodeType & {
   parentId: string
+  speed: number
+  strength: number
+  dexterity: number
+}
+  export type TransportNodeType = TransportNodeTypeData & {
+  parentNode: ResourceNodeType
   homeNode: NodeType
   targetNode: NodeType
   position: [number, number]
   isLoading: boolean
-  speed: number
-  strength: number
-  dexterity: number
   // drawUnit: () => void
   // handleArrival: (arrivalNode?: NodeType) => void
   // startLoading: (targetNode: NodeType, resource: string) => void

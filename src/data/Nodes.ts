@@ -1,4 +1,4 @@
-import { NodeType, NodeTypeData, ResourceNodeType, ResourceRecord, TransportNodeType } from "@/types/node"
+import { NodeType, NodeTypeData, ResourceNodeType, ResourceRecord, TransportNodeType, TransportNodeTypeData } from "@/types/node"
 import { RESOURCES, RESOURCES_KEYS } from "@/utils/contants"
 
 export const homeNodeData: NodeTypeData = {
@@ -43,7 +43,7 @@ export const resourceNodesData: NodeTypeData[] = [
   }
 ]
 
-export const transportNodesData: Partial<TransportNodeType>[] = [
+export const transportNodesData: TransportNodeTypeData[] = [
   {
     id: 'transportNode1',
     parentId: 'resourceNode1',
