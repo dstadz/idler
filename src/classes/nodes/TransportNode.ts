@@ -1,14 +1,5 @@
+import { ResourceRecord } from '@/types/node'
 import { Node, ResourceNode } from '../nodes'
-
-function debounce(func, wait) {
-  let timeout
-  return (...args) => {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => {
-      func.apply(this, args)
-    }, 1000)
-  }
-}
 
 export class TransportNode extends Node {
   // locked
@@ -18,7 +9,7 @@ export class TransportNode extends Node {
   // dynamic
   targetNode: Node
   position: [number, number]
-  resources: { stone?: number; wood?: number; food?: number } | undefined
+  resources: ResourceRecord
   isLoading: boolean = false
 
   // stats
@@ -47,11 +38,14 @@ export class TransportNode extends Node {
     size: number
     position: [number, number]
     id: string
+    uuid: string
     parentNode: ResourceNode
     homeNode: Node
     speed: number
     strength: number
     dexterity: number
+    resources: ResourceRecord
+
   }) {
 
     super({ ctx, position: homeNode.position, emoji, size, resources, id, uuid })

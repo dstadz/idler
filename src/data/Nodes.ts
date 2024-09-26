@@ -1,6 +1,7 @@
+import { NodeType, NodeTypeData, ResourceNodeType, ResourceRecord, TransportNodeType } from "@/types/node"
 import { RESOURCES } from "@/utils/contants"
 
-export const homeNodeData: NodeType = {
+export const homeNodeData: NodeTypeData = {
   id: 'homeNode',
   position: [400, 400],
   emoji: '🏰',
@@ -8,9 +9,10 @@ export const homeNodeData: NodeType = {
   resources: {
     [RESOURCES.FOOD.emoji]: 2000,
     [RESOURCES.WOOD.emoji]: 1000,
-  },}
+  }
+}
 
-export const resourceNodesData: ResourceNodeType[] = [
+export const resourceNodesData: NodeTypeData[] = [
   {
     id: 'resourceNode1',
     position: [100, 150],
@@ -31,7 +33,7 @@ export const resourceNodesData: ResourceNodeType[] = [
   }
 ]
 
-export const transportNodesData: TransportNodeType[] = [
+export const transportNodesData: Partial<TransportNodeType>[] = [
   {
     id: 'transportNode1',
     parentId: 'resourceNode1',

@@ -7,14 +7,34 @@ import { homeNodeData, resourceNodesData, transportNodesData } from '@/data'
 import { useAtom } from 'jotai'
 import { Node, ResourceNode, TransportNode } from '@/classes'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
+import { NodeType, NodeTypeData } from '@/types/node'
+
+type HomeResourcesType = {
+  [key: string]: number
+}
 
 const OverworldPage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const { ctx, drawFPS, clearWholeRect } = useCanvas(canvasRef)
-  const { homeNode, homeResources, drawHomeNode } = useHomeNode({ ctx, homeNodeData })
-  const { resourceNodes, drawResourceNodes } = useResourceNodes({ ctx, homeNode, resourceNodesData })
-  const { transportNodes, drawTransportNodes } = useTransportNodes({ ctx, homeNode, resourceNodes, transportNodesData })
 
+  // Make sure homeResources is typed correctly
+  const { homeNode, homeResources, drawHomeNode } = useHomeNode({
+    ctx: ctx as CanvasRenderingContext2D,
+    homeNodeData: homeNodeData as NodeTypeData
+  })
+
+  const { resourceNodes, drawResourceNodes } = useResourceNodes({
+    ctx,
+    homeNode,
+    resourceNodesData
+  })
+
+  const { transportNodes, drawTransportNodes } = useTransportNodes({
+    ctx,
+    homeNode,
+    resourceNodes,
+    transportNodesData
+  })
   const gameLoop = useCallback((timestamp: number) => {
     clearWholeRect(canvasRef.current)
     drawFPS(timestamp)
@@ -49,9 +69,9 @@ const OverworldPage = () => {
           </button>
           <Typography>
             {Object.keys(homeResources).length > 0 ? (
-              Object.keys(homeResources).map(key => (
-                <div key={key}>
-                  {key}: {homeResources?.[key] || 0}
+              Object.keys(homeResources).map((key) => (
+                <div key={key as keyof typeof RESOURCES}>
+                  {key}: {homeResources[key as keyof typeof RESOURCES] || 0}
                 </div>
               ))
             ) : (

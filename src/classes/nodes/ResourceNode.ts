@@ -1,7 +1,8 @@
+import { ResourceRecord } from "@/types/node"
 import { TransportNode, Node } from "../nodes"
 
 export class ResourceNode extends Node {
-  constructor({ ctx, position, homeNode, emoji, size, transportNode, resources, id, uuid, setHomeResources }: {
+  constructor({ ctx, position, homeNode, emoji, size, resources, id, uuid }: {
     id: string
     uuid: string
     ctx: CanvasRenderingContext2D
@@ -9,11 +10,7 @@ export class ResourceNode extends Node {
     position: [number, number]
     emoji: string
     size: number
-    resources?: {
-      stone?: number
-      wood?: number
-      food?: number
-    }
+    resources: ResourceRecord
   }) {
     super({ ctx, position, size, emoji, resources, id, uuid})
 

@@ -1,13 +1,11 @@
+import { ResourceRecord } from "@/types/node"
+
 export class Node {
   id: string
   uuid: string
   ctx: CanvasRenderingContext2D
   position: [number, number]
-  resources: {
-    stone?: number
-    wood?: number
-    food?: number
-  }
+  resources: ResourceRecord
   emoji: string
   size: number
 
@@ -16,11 +14,7 @@ export class Node {
     uuid: string
     ctx: CanvasRenderingContext2D
     position: [number, number]
-    resources?: {
-      stone?: number
-      wood?: number
-      food?: number
-    }
+    resources: ResourceRecord
     emoji: string
     size: number
   }) {
