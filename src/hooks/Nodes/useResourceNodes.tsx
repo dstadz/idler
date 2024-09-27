@@ -1,7 +1,6 @@
 import { ResourceNode } from '@/classes'
 import { useRef, useEffect, useState } from 'react'
 import { UseResourceNodeProps  } from '@/interfaces'
-import { ResourceNodeType } from '@/types/node'
 
 export const useResourceNodes = ({
   ctx,
@@ -12,7 +11,7 @@ export const useResourceNodes = ({
   useEffect(() => {
     if (!ctx || !homeNode || !resourceNodesData) return
 
-    const newResourceNodes: ResourceNodeType[] = resourceNodesData
+    const newResourceNodes: ResourceNode[] = resourceNodesData
       .map(node => new ResourceNode({
         ctx,
         ...node,

@@ -3,7 +3,6 @@ import { RESOURCES } from "@/utils/contants"
 // STONE | WOOD | FOOD | GOLD | POWER | ENERGY | WATER
 export type ResourceKey = keyof typeof RESOURCES
 export type ResourceRecord = Record<ResourceKey, number>
-
 export type NodeTypeData = {
   id: string
   position: [number, number]
@@ -11,6 +10,7 @@ export type NodeTypeData = {
   size: number
   resources: ResourceRecord
 }
+
 export type NodeType = NodeTypeData & {
   ctx: CanvasRenderingContext2D
   uuid: string
@@ -18,26 +18,26 @@ export type NodeType = NodeTypeData & {
 }
 
 export type ResourceNodeType = NodeType & {
-  // homeNode: NodeType
-  // drawUnit: () => void
+  homeNode: NodeType
 }
-
-export type TransportNodeTypeData = NodeType & {
+export type TransportNodeTypeData = Omit<NodeTypeData, 'position', 'resources'> & {
   parentId: string
   speed: number
   strength: number
   dexterity: number
 }
-  export type TransportNodeType = TransportNodeTypeData & {
-  parentNode: ResourceNodeType
+
+export type TransportNodeType = Omit<TransportNodeTypeData, 'parentId'> & {
+  parentNode?: ResourceNodeType
   homeNode: NodeType
   targetNode: NodeType
   position: [number, number]
+  resources: ResourceRecord
   isLoading: boolean
-  // drawUnit: () => void
-  // handleArrival: (arrivalNode?: NodeType) => void
-  // startLoading: (targetNode: NodeType, resource: string) => void
-  // startUnloading: (targetNode: NodeType) => void
-  // deliverResources: (targetNode: NodeType) => void
-  // updatePosition: () => void
+  // other dynamic methods or properties...
+  startLoading(targetNode: Node): void
+  updatePosition(): void
+  handleArrival(): void
+  startUnloading(targetNode: Node): void
+
 }

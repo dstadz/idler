@@ -1,13 +1,13 @@
-import { ResourceRecord } from '@/types/node'
+import { ResourceNodeType, ResourceRecord, TransportNodeType } from '@/types/node'
 import { Node, ResourceNode } from '../nodes'
 
 export class TransportNode extends Node {
   // locked
-  parentNode: ResourceNode
+  parentNode?: ResourceNodeType
   homeNode: Node
 
   // dynamic
-  targetNode: Node
+  targetNode: Node | undefined
   position: [number, number]
   resources: ResourceRecord
   isLoading: boolean = false
@@ -32,34 +32,26 @@ export class TransportNode extends Node {
     strength,
     dexterity,
     resources,
-  }: {
-    ctx: CanvasRenderingContext2D
-    emoji: string
-    size: number
-    position: [number, number]
-    id: string
-    uuid: string
-    parentNode: ResourceNode
-    homeNode: Node
-    speed: number
-    strength: number
-    dexterity: number
-    resources: ResourceRecord
+  }: TransportNodeType) {
 
-  }) {
-
-    super({ ctx, position: homeNode.position, emoji, size, resources, id, uuid })
-    this.parentNode = parentNode
+    super({
+      ctx,
+      position: homeNode.position,
+      emoji,
+      size,
+      resources,
+      id,
+      uuid,
+      drawUnit: () => this.drawUnit()
+    })
+    this.parentNode = parentNode || undefined
     this.position = position
     this.homeNode = homeNode
-    this.targetNode = parentNode
+    this.targetNode = parentNode || homeNode
     this.speed = speed
     this.strength = strength
     this.dexterity = dexterity
     this.resources = {} as ResourceRecord
-    this.id = id
-    this.uuid = uuid
-
   }
 
   drawUnit() {

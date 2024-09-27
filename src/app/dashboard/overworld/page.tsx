@@ -5,7 +5,6 @@ import { Box, Stack, Typography } from '@mui/material'
 import { getResourceList, RESOURCES } from '@/utils/contants'
 import { homeNodeData, resourceNodesData, transportNodesData } from '@/data'
 import { useAtom } from 'jotai'
-import { Node, ResourceNode, TransportNode } from '@/classes'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
 import { NodeType, NodeTypeData, ResourceRecord } from '@/types/node'
 
@@ -36,6 +35,8 @@ const OverworldPage = () => {
     transportNodesData
   })
   const gameLoop = useCallback((timestamp: number) => {
+    if (!canvasRef.current) return
+
     clearWholeRect(canvasRef.current)
     drawFPS(timestamp)
     drawHomeNode()

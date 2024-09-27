@@ -1,4 +1,10 @@
-import { NodeType, NodeTypeData, ResourceNodeType, ResourceRecord, TransportNodeType, TransportNodeTypeData } from "@/types/node"
+import {
+  NodeType,
+  NodeTypeData,
+  ResourceRecord,
+  TransportNodeType,
+  TransportNodeTypeData,
+} from "@/types/node"
 import { RESOURCES, RESOURCES_KEYS } from "@/utils/contants"
 
 export const homeNodeData: NodeTypeData = {
@@ -9,7 +15,7 @@ export const homeNodeData: NodeTypeData = {
   resources: {
     ...(Object.fromEntries(
       Object.keys(RESOURCES).map(key => [key, 0])
-    ) as ResourceRecord), // Cast to ResourceRecord to match the expected type
+    ) as ResourceRecord),
     [RESOURCES.FOOD.NAME.toUpperCase()]: 1000,
     [RESOURCES.WOOD.NAME.toUpperCase()]: 1000,
   }
