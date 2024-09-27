@@ -1,5 +1,5 @@
 import { NodeType, ResourceRecord } from "@/types/node"
-import { getDefaultResources, getResourceList } from "@/utils/contants"
+import { getDefaultResources, getResourceList } from "@/utils/constants"
 
 export class Node {
   id: string
@@ -15,7 +15,7 @@ export class Node {
     uuid = '00',
     ctx,
     position,
-    resources = getDefaultResources(), // Ensure resources are fully initialized
+    resources = getDefaultResources(),
     emoji,
     size,
   }: NodeType) {

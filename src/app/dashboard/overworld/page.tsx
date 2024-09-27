@@ -2,7 +2,7 @@
 
 import React, { useMemo, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
-import { getResourceList, RESOURCES } from '@/utils/contants'
+import { getResourceList, RESOURCES } from '@/utils/constants'
 import { homeNodeData, resourceNodesData, transportNodesData } from '@/data'
 import { useAtom } from 'jotai'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'

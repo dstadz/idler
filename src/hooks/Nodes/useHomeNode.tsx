@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useAtom } from 'jotai'
 
 import { Node } from '@/classes'
-import { RESOURCES } from '@/utils/contants'
+import { RESOURCES } from '@/utils/constants'
 import { resourcesAtom } from '@/atoms'
 import { NodeType, NodeTypeData } from '@/types/node' // Ensure this import path is correct
 import { UseHomeNodeProps } from '@/interfaces'

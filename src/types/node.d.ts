@@ -1,4 +1,4 @@
-import { RESOURCES } from "@/utils/contants"
+import { RESOURCES } from "@/utils/constants"
 
 // STONE | WOOD | FOOD | GOLD | POWER | ENERGY | WATER
 export type ResourceKey = keyof typeof RESOURCES
@@ -14,7 +14,7 @@ export type NodeTypeData = {
 export type NodeType = NodeTypeData & {
   ctx: CanvasRenderingContext2D
   uuid: string
-  drawUnit: () => void
+  drawUnit(): void
 }
 
 export type ResourceNodeType = NodeType & {

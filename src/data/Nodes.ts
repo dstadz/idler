@@ -5,7 +5,7 @@ import {
   TransportNodeType,
   TransportNodeTypeData,
 } from "@/types/node"
-import { RESOURCES, RESOURCES_KEYS } from "@/utils/contants"
+import { RESOURCES, RESOURCES_KEYS } from "@/utils/constants"
 
 export const homeNodeData: NodeTypeData = {
   id: 'homeNode',

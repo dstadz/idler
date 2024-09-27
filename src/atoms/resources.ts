@@ -1,5 +1,5 @@
 import { ResourceKey, ResourceRecord } from '@/types/node'
-import { RESOURCES } from '@/utils/contants'
+import { RESOURCES } from '@/utils/constants'
 import { atom } from 'jotai'
 
 const resourceAmounts: ResourceRecord = Object.keys(RESOURCES)
