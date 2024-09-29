@@ -13,8 +13,6 @@ const OverworldPage = () => {
     ctx: ctx as CanvasRenderingContext2D,
     homeNodeId: 'homeNode123',
   })
-  // Make sure homeResources is typed correctly
-    // Return early if homeNode is still null
 
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
@@ -49,7 +47,7 @@ const OverworldPage = () => {
     if (!resourceNodes.length || !transportNodes.length) return
     const rafId = requestAnimationFrame(gameLoop)
 
-    return () => cancelAnimationFrame(rafId)  // Clean up on component unmount
+    return () => cancelAnimationFrame(rafId)
   }, [gameLoop, resourceNodes, transportNodes])
 
   if (!homeNode) {

@@ -22,7 +22,6 @@ export class TransportNode extends CanvasNode {
     ctx,
     emoji,
     size,
-    position,
     id,
     uuid,
     parentNode,
