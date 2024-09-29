@@ -1,23 +1,38 @@
-import { RESOURCES } from "@/utils/contants"
+import {
+  NodeTypeData,
+  NodeTypeRawData,
+  ResourceRecord,
+  TransportNodeType,
+  TransportNodeTypeData,
+} from "@/types/node"
+import { RESOURCES, RESOURCES_KEYS } from "@/utils/constants"
 
-export const homeNodeData: NodeType = {
-  id: 'homeNode',
+export const homeNodeData: NodeTypeRawData = {
+  id: 'homeNode123',
   position: [400, 400],
   emoji: '🏰',
   size: 40,
   resources: {
-    [RESOURCES.FOOD.emoji]: 2000,
-    [RESOURCES.WOOD.emoji]: 1000,
-  },}
+    ...(Object.fromEntries(
+      Object.keys(RESOURCES).map(key => [key, 0])
+    ) as ResourceRecord),
+    [RESOURCES.FOOD.NAME.toUpperCase()]: 1000,
+    [RESOURCES.WOOD.NAME.toUpperCase()]: 1000,
+  }
+}
 
-export const resourceNodesData: ResourceNodeType[] = [
+
+export const resourceNodesData: NodeTypeRawData[] = [
   {
     id: 'resourceNode1',
     position: [100, 150],
     emoji: '🌋',
     size: 40,
     resources: {
-      [RESOURCES.STONE.emoji]: 2000,
+      ...(Object.fromEntries(
+        Object.keys(RESOURCES).map(key => [key, 0])
+      ) as ResourceRecord),
+      [RESOURCES.STONE.NAME.toUpperCase()]: 2000,
     },
   }, {
     id: 'resourceNode2',
@@ -25,13 +40,16 @@ export const resourceNodesData: ResourceNodeType[] = [
     emoji: '🌲',
     size: 40,
     resources: {
-      [RESOURCES.FOOD.emoji]: 2000,
-      [RESOURCES.WOOD.emoji]: 1000,
+      ...(Object.fromEntries(
+        Object.keys(RESOURCES).map(key => [key, 0])
+      ) as ResourceRecord),
+      [RESOURCES.FOOD.NAME.toUpperCase()]: 2000,
+      [RESOURCES.WOOD.NAME.toUpperCase()]: 1000,
     },
   }
 ]
 
-export const transportNodesData: TransportNodeType[] = [
+export const transportNodesData: TransportNodeTypeData[] = [
   {
     id: 'transportNode1',
     parentId: 'resourceNode1',

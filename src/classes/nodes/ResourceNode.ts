@@ -1,23 +1,28 @@
-import { TransportNode, Node } from "../nodes"
+import { CanvasNode } from './CanvasNode'
+import { ResourceNodeType } from "@/types/node"
 
-export class ResourceNode extends Node {
-  constructor({ ctx, position, homeNode, emoji, size, transportNode, resources, id, uuid, setHomeResources }: {
-    id: string
-    uuid: string
-    ctx: CanvasRenderingContext2D
-    homeNode: Node
-    position: [number, number]
-    emoji: string
-    size: number
-    resources?: {
-      stone?: number
-      wood?: number
-      food?: number
-    }
-  }) {
-    super({ ctx, position, size, emoji, resources, id, uuid})
+export class ResourceNode extends CanvasNode {
+  homeNode: CanvasNode
 
+  constructor({
+    id,
+    uuid,
+    ctx,
+    position,
+    homeNode,
+    emoji,
+    size,
+    resources,
+  }: ResourceNodeType) {
+    super({
+      id,
+      uuid,
+      ctx,
+      position,
+      size,
+      emoji,
+      resources,
+    })
+    this.homeNode = homeNode
   }
-
-  drawUnit() { super.drawUnit() }
 }

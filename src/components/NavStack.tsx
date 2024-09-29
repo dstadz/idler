@@ -6,7 +6,7 @@ import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { NAV_TABS } from '@/utils/contants'
+import { NAV_TABS } from '@/utils/constants'
 
 interface TabItem {
   title: string

@@ -1,27 +1,32 @@
 import { ResourceNode } from '@/classes'
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
+import { UseResourceNodeProps } from '@/interfaces'
 
 export const useResourceNodes = ({
   ctx,
   homeNode,
   resourceNodesData,
-}) => {
-  const [resourceNodes, setResourceNodes] = useState([] as ResourceNodeType[])
+}: UseResourceNodeProps) => {
+  const [resourceNodes, setResourceNodes] = useState<ResourceNode[]>([])
+
   useEffect(() => {
     if (!ctx || !homeNode || !resourceNodesData) return
 
-    const newResourceNodes = resourceNodesData
+    const newResourceNodes: ResourceNode[] = resourceNodesData
       .map(node => new ResourceNode({
         ctx,
-        ...node,
+        id: node.id,
+        position: node.position,
+        size: node.size,
+        emoji: node.emoji,
+        resources: node.resources,
         homeNode,
-        uuid: (Math.random().toString(36).slice(2, 10)),
+        uuid: Math.random().toString(36).slice(2, 10),
       }))
     setResourceNodes(newResourceNodes)
   }, [ctx, homeNode, resourceNodesData])
 
   const drawResourceNodes = () => {
-    // console.log('drawResourceNodes')
     resourceNodes.forEach(node => node.drawUnit())
   }
 

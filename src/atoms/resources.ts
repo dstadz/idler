@@ -1,9 +1,11 @@
-import { RESOURCES } from '@/utils/contants'
+import { ResourceKey, ResourceRecord } from '@/types/node'
+import { RESOURCES } from '@/utils/constants'
 import { atom } from 'jotai'
 
-const resourceAmounts = {}
-for (const resource in RESOURCES) {
-  resourceAmounts[resource] = 0
-}
+const resourceAmounts: ResourceRecord = Object.keys(RESOURCES)
+.reduce((acc, key) => {
+  acc[key as ResourceKey] = 0
+  return acc
+}, {} as ResourceRecord)
 
 export const resourcesAtom = atom(resourceAmounts)

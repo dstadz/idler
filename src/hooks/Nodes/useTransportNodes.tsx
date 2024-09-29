@@ -1,4 +1,6 @@
 import { TransportNode } from '@/classes'
+import { UseTransportNodeProps } from '@/interfaces'
+import { TransportNodeType } from '@/types/node'
 import { useMemo, useEffect, useState, useCallback } from 'react'
 
 export const useTransportNodes = ({
@@ -6,7 +8,7 @@ export const useTransportNodes = ({
   homeNode,
   transportNodesData,
   resourceNodes,
-}) => {
+}: UseTransportNodeProps) => {
 
   // Memoizing the transport nodes calculation
   const newTransportNodes = useMemo(() => {

@@ -8,7 +8,20 @@ import {
 
 export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
-  useEffect(() => () => setCtx(null), [])
+
+  useEffect(() => {
+    return () => setCtx(null)
+  }, [])
+
+  useEffect(() => {
+    if (canvasRef.current) {
+      const context = canvasRef.current.getContext('2d')
+      if (context) {
+        setCtx(context)
+      }
+    }
+  }, [canvasRef])
+
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -18,7 +31,7 @@ export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
     setCtx(context)
   }, [canvasRef])
 
-  const clearWholeRect = useCallback((canvas: HTMLCanvasElement | null) => {
+  const clearWholeRect = useCallback((canvas: HTMLCanvasElement) => {
     if (!canvas || !ctx) return
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }, [ctx])

@@ -1,24 +1,14 @@
-import { Node, ResourceNode } from '../nodes'
+import { NodeType, ResourceRecord, TransportNodeType } from '@/types/node'
+import { CanvasNode, ResourceNode } from '../nodes'
 
-function debounce(func, wait) {
-  let timeout
-  return (...args) => {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => {
-      func.apply(this, args)
-    }, 1000)
-  }
-}
-
-export class TransportNode extends Node {
+export class TransportNode extends CanvasNode {
   // locked
-  parentNode: ResourceNode
-  homeNode: Node
+  parentNode?: ResourceNode
+  homeNode: NodeType
 
   // dynamic
-  targetNode: Node
-  position: [number, number]
-  resources: { stone?: number; wood?: number; food?: number } | undefined
+  targetNode: NodeType
+  resources: ResourceRecord
   isLoading: boolean = false
 
   // stats
@@ -41,31 +31,24 @@ export class TransportNode extends Node {
     strength,
     dexterity,
     resources,
-  }: {
-    ctx: CanvasRenderingContext2D
-    emoji: string
-    size: number
-    position: [number, number]
-    id: string
-    parentNode: ResourceNode
-    homeNode: Node
-    speed: number
-    strength: number
-    dexterity: number
-  }) {
+  }: TransportNodeType) {
 
-    super({ ctx, position: homeNode.position, emoji, size, resources, id, uuid })
-    this.parentNode = parentNode
-    this.position = position
+    super({
+      ctx,
+      position: homeNode.position,
+      emoji,
+      size,
+      resources,
+      id,
+      uuid,
+    })
     this.homeNode = homeNode
-    this.targetNode = parentNode
+    this.parentNode = parentNode || undefined
     this.speed = speed
     this.strength = strength
     this.dexterity = dexterity
-    this.resources = {}
-    this.id = id
-    this.uuid = uuid
-
+    this.targetNode = parentNode || homeNode
+    this.resources = {} as ResourceRecord
   }
 
   drawUnit() {
@@ -82,23 +65,25 @@ export class TransportNode extends Node {
   }
     */
 
-  handleArrival(arrivalNode = this.targetNode) {
+  handleArrival() {
     this.isLoading = true
-    if (arrivalNode instanceof ResourceNode) {
-      const randResource = Object.keys(arrivalNode.resources)[Math.floor(Math.random() * Object.keys(arrivalNode.resources).length)]
-      this.startLoading(arrivalNode, randResource)
-    } else if (arrivalNode === this.homeNode) {
-      this.startUnloading(arrivalNode)
+    if (this.targetNode instanceof ResourceNode) {
+      this.startLoading()
+    } else if (this.targetNode === this.homeNode) {
+      this.startUnloading()
     }
   }
 
-  startLoading(targetNode: Node, resource: string) {
+  startLoading() {
     const loadingTime = 1000 / this.dexterity
+    const availableResourceList = Object.keys(this.targetNode.resources).filter(key => this.targetNode.resources[key as keyof ResourceRecord] > 0)
+    const ranIdx = Math.floor(Math.random() * availableResourceList.length)
+    const resource = availableResourceList[ranIdx] as keyof ResourceRecord
 
     setTimeout(() => {
-      if (!this.resources || !targetNode.resources || !(resource in targetNode.resources)) return
+      if (!this.resources || !this.targetNode.resources || !(resource in this.targetNode.resources)) return
 
-      const availableAmount = targetNode.resources[resource] || 0
+      const availableAmount = this.targetNode.resources[resource] || 0
       const transferAmount = Math.min(availableAmount, this.strength)
 
       if (!this.resources[resource]) {
@@ -106,39 +91,41 @@ export class TransportNode extends Node {
       }
 
       this.resources[resource] += transferAmount
-      targetNode.resources[resource] -= transferAmount
+      this.targetNode.resources[resource] -= transferAmount
       this.isLoading = false
       this.targetNode = this.homeNode
     }, loadingTime)
   }
 
-  startUnloading(targetNode: Node) {
+  startUnloading() {
     const unloadingTime = 1000 / this.dexterity
     setTimeout(() => {
-      this.deliverResources(targetNode)
+      this.deliverResources()
       this.isLoading = false
-      this.targetNode = this.parentNode
+      this.targetNode = this.parentNode || this.homeNode
     }, unloadingTime)
   }
 
-  deliverResources(targetNode: Node) {
-    if (!this.resources || !targetNode.resources) return
+  deliverResources() {
+    if (!this.resources || !this.targetNode.resources) return
 
     Object.keys(this.resources).forEach(resource => {
-      if (!targetNode.resources[resource]) {
-        targetNode.resources[resource] = 0
+      const resKey = resource as keyof ResourceRecord
+
+      if (!this.targetNode.resources[resKey]) {
+        this.targetNode.resources[resKey] = 0
       }
-      targetNode.resources[resource] += this.resources[resource]
-
-      this.resources[resource] = 0
-
+      this.targetNode.resources[resKey] += this.resources[resKey]
+      this.resources[resKey] = 0
     })
   }
-
   updatePosition() {
     if (this.isLoading) return
-    const { position: targetPosition } = this.targetNode
+
+    const targetPosition = this.targetNode?.position
+
     if (
+      !targetPosition ||
       targetPosition?.length !== 2 ||
       this.position?.length !== 2
     ) return
