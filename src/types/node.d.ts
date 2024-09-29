@@ -1,25 +1,29 @@
-import { Node } from "@/classes"
+import { CanvasNode } from "@/classes"
 import { RESOURCES } from "@/utils/constants"
 
 // STONE | WOOD | FOOD | GOLD | POWER | ENERGY | WATER
 export type ResourceKey = keyof typeof RESOURCES
 export type ResourceRecord = Record<ResourceKey, number>
-export type NodeTypeData = {
+
+export type NodeTypeRawData = {
   id: string
+  uuid?: string
   position: [number, number]
+  resources: ResourceRecord
   emoji: string
   size: number
-  resources: ResourceRecord
+}
+export type NodeTypeData = NodeTypeRawData & {
+  ctx: CanvasRenderingContext2D
 }
 
 export type NodeType = NodeTypeData & {
   ctx: CanvasRenderingContext2D
   uuid: string
-  // drawUnit: () => void
 }
 
 export type ResourceNodeType = NodeType & {
-  homeNode: Node
+  homeNode: CanvasNode
 }
 export type TransportNodeTypeData = Omit<NodeTypeData, 'position', 'resources'> & {
   parentId: string

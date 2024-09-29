@@ -1,13 +1,14 @@
 import {
   NodeTypeData,
+  NodeTypeRawData,
   ResourceRecord,
   TransportNodeType,
   TransportNodeTypeData,
 } from "@/types/node"
 import { RESOURCES, RESOURCES_KEYS } from "@/utils/constants"
 
-export const homeNodeData: NodeTypeData = {
-  id: 'homeNode',
+export const homeNodeData: NodeTypeRawData = {
+  id: 'homeNode123',
   position: [400, 400],
   emoji: '🏰',
   size: 40,
@@ -21,7 +22,7 @@ export const homeNodeData: NodeTypeData = {
 }
 
 
-export const resourceNodesData: NodeTypeData[] = [
+export const resourceNodesData: NodeTypeRawData[] = [
   {
     id: 'resourceNode1',
     position: [100, 150],

@@ -1,7 +1,7 @@
 import { NodeType, ResourceRecord, TransportNodeType } from '@/types/node'
-import { Node, ResourceNode } from '../nodes'
+import { CanvasNode, ResourceNode } from '../nodes'
 
-export class TransportNode extends Node {
+export class TransportNode extends CanvasNode {
   // locked
   parentNode?: ResourceNode
   homeNode: NodeType
@@ -41,7 +41,6 @@ export class TransportNode extends Node {
       resources,
       id,
       uuid,
-      // drawUnit: () => this.drawUnit(),
     })
     this.homeNode = homeNode
     this.parentNode = parentNode || undefined

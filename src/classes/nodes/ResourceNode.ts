@@ -1,8 +1,8 @@
-import { ResourceNodeType, ResourceRecord } from "@/types/node"
-import { TransportNode, Node } from "../nodes"
+import { CanvasNode } from './CanvasNode'
+import { ResourceNodeType } from "@/types/node"
 
-export class ResourceNode extends Node {
-  homeNode: Node
+export class ResourceNode extends CanvasNode {
+  homeNode: CanvasNode
 
   constructor({
     id,
@@ -13,7 +13,7 @@ export class ResourceNode extends Node {
     emoji,
     size,
     resources,
-  } : ResourceNodeType) {
+  }: ResourceNodeType) {
     super({
       id,
       uuid,
@@ -22,10 +22,7 @@ export class ResourceNode extends Node {
       size,
       emoji,
       resources,
-      // drawUnit: () => this.drawUnit()
     })
     this.homeNode = homeNode
   }
-
-  drawUnit() { super.drawUnit() }
 }

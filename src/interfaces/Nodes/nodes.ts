@@ -1,19 +1,20 @@
-import { NodeType, NodeTypeData, ResourceNodeType, TransportNodeType } from "@/types/node"
+import { CanvasNode } from "@/classes/nodes/CanvasNode"
+import { NodeType, NodeTypeData, NodeTypeRawData, ResourceNodeType, TransportNodeType } from "@/types/node"
 
 export interface UseHomeNodeProps {
-  ctx: CanvasRenderingContext2D // Type for the canvas context
-  homeNodeData: NodeTypeData // Ensure this type has the correct structure
+  ctx: CanvasRenderingContext2D
+  homeNodeId: string
 }
 
 export interface UseResourceNodeProps {
-  ctx: CanvasRenderingContext2D | null // Type for the canvas context
-  homeNode: NodeType // Ensure this type has the correct structure
-  resourceNodesData: NodeTypeData[] // Ensure this type has the correct structure
+  ctx: CanvasRenderingContext2D | null
+  homeNode: CanvasNode
+  resourceNodesData: NodeTypeRawData[]
 }
 
 export interface UseTransportNodeProps {
-  ctx: CanvasRenderingContext2D | null// Type for the canvas context
-  homeNode: NodeType // Ensure this type has the correct structure
+  ctx: CanvasRenderingContext2D | null
+  homeNode: CanvasNode
   resourceNodes: ResourceNode[]
-  transportNodesData: TransportNodeType[] // Ensure this type has the correct structure
+  transportNodesData: TransportNodeType[]
 }

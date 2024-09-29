@@ -1,7 +1,7 @@
-import { NodeType, ResourceRecord } from "@/types/node"
+import { NodeType, NodeTypeData, ResourceRecord } from "@/types/node"
 import { getDefaultResources, getResourceList } from "@/utils/constants"
 
-export class Node {
+export class CanvasNode {
   id: string
   uuid: string
   ctx: CanvasRenderingContext2D
@@ -18,7 +18,7 @@ export class Node {
     resources = getDefaultResources(),
     emoji,
     size,
-  }: NodeType) {
+  }: NodeTypeData) {
     this.id = id
     this.uuid = uuid
     this.ctx = ctx

@@ -1,27 +1,29 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useAtom } from 'jotai'
 
-import { Node } from '@/classes'
+import { CanvasNode } from '@/classes'
 import { RESOURCES } from '@/utils/constants'
 import { resourcesAtom } from '@/atoms'
-import { NodeTypeData } from '@/types/node'
+import { NodeType } from '@/types/node'
 import { UseHomeNodeProps } from '@/interfaces'
+import { homeNodeData } from '@/data'
 
-export const useHomeNode = ({ ctx, homeNodeData }: UseHomeNodeProps) => {
-  const [homeNode, setHomeNode] = useState<Node>({} as Node)
+export const useHomeNode = ({ ctx, homeNodeId }: UseHomeNodeProps) => {
+  const [homeNode, setHomeNode] = useState<CanvasNode>({} as CanvasNode)
   const [homeResources, setHomeResources] = useAtom(resourcesAtom)
 
   useEffect(() => {
     if (!ctx || !homeNodeData) return
+    const dataRes = [homeNodeData].find(({ id }) => id === homeNodeId)
 
-    const newHomeNode = new Node({
+    const newHomeNode = new CanvasNode({
       ctx,
       ...homeNodeData,
       uuid: (Math.random().toString(36).slice(2, 10)),
     })
 
     setHomeNode(newHomeNode)
-  }, [ctx, homeNodeData])
+  }, [ctx, homeNodeId])
 
   useEffect(() => {
     if (!homeNode || !homeNode.resources) return
@@ -29,7 +31,7 @@ export const useHomeNode = ({ ctx, homeNodeData }: UseHomeNodeProps) => {
   }, [homeNode, setHomeResources])
 
   const drawHomeNode = useCallback(() => {
-    if (homeNode) {
+    if (homeNode instanceof CanvasNode) {
       homeNode.drawUnit()
     }
   }, [homeNode])

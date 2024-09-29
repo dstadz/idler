@@ -3,7 +3,7 @@
 import React, { useMemo, useCallback, useEffect, useRef, useState } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
 import { getResourceList, RESOURCES } from '@/utils/constants'
-import { homeNodeData, resourceNodesData, transportNodesData } from '@/data'
+import { resourceNodesData, transportNodesData } from '@/data'
 import { useAtom } from 'jotai'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
 import { NodeTypeData, ResourceRecord } from '@/types/node'
@@ -17,7 +17,7 @@ const OverworldPage = () => {
   const { ctx, drawFPS, clearWholeRect } = useCanvas(canvasRef)
   const { homeNode, homeResources, drawHomeNode } = useHomeNode({
     ctx: ctx as CanvasRenderingContext2D,
-    homeNodeData: homeNodeData as NodeTypeData,
+    homeNodeId: 'homeNode123',
   })
   // Make sure homeResources is typed correctly
     // Return early if homeNode is still null
