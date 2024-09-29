@@ -1,5 +1,5 @@
 "use client"
-
+import React from 'react'
 import { Provider as JotaiProvider } from 'jotai'
 import { SessionProvider } from "next-auth/react"
 import "./globals.css"

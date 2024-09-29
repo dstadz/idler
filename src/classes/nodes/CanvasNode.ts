@@ -1,4 +1,4 @@
-import { NodeType, NodeTypeData, ResourceRecord } from "@/types/node"
+import { NodeTypeData, ResourceRecord } from "@/types/node"
 import { getDefaultResources, getResourceList } from "@/utils/constants"
 
 export class CanvasNode {

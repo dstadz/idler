@@ -1,11 +1,9 @@
 import {
-  NodeTypeData,
   NodeTypeRawData,
   ResourceRecord,
-  TransportNodeType,
   TransportNodeTypeData,
 } from "@/types/node"
-import { RESOURCES, RESOURCES_KEYS } from "@/utils/constants"
+import { RESOURCES } from "@/utils/constants"
 
 export const homeNodeData: NodeTypeRawData = {
   id: 'homeNode123',

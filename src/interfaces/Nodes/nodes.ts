@@ -1,6 +1,6 @@
 import { ResourceNode } from "@/classes"
 import { CanvasNode } from "@/classes/nodes/CanvasNode"
-import { NodeType, NodeTypeData, NodeTypeRawData, ResourceNodeType, TransportNodeType } from "@/types/node"
+import { NodeTypeRawData, TransportNodeType } from "@/types/node"
 
 export interface UseHomeNodeProps {
   ctx: CanvasRenderingContext2D
