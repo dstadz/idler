@@ -1,3 +1,77 @@
 {
-  "extends": "next/core-web-vitals"
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest/globals": true
+  },
+  "parser": "@babel/eslint-parser",
+  "extends": ["plugin:react/recommended"],
+  "parserOptions": {
+    "requireConfigFile": false,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["react"],
+  "rules": {
+    "array-bracket-spacing": "off",
+    "arrow-parens": ["warn", "as-needed"],
+    "arrow-body-style": ["warn", "as-needed"],
+    "camelcase": [1],
+    "class-methods-use-this": [1],
+    "computed-property-spacing": "off",
+    "react/destructuring-assignment": ["warn", "always"],
+    "eol-last": ["error", "always"],
+    "function-paren-newline": "off",
+    "implicit-arrow-linebreak": ["off"],
+    "import/extensions": "off",
+    "import/no-unresolved": "off",
+    "import/prefer-default-export": "off",
+    "import/no-extraneous-dependencies": "off",
+    "indent": "off",
+    "max-len": ["error", { "code": 150 }],
+    "no-case-declarations": [1],
+    "no-confusing-arrow": "off",
+    "no-multiple-empty-lines": [2, { "max": 1, "maxEOF": 0, "maxBOF": 0 }],
+    "no-param-reassign": [1],
+    "no-plusplus": "off",
+    "no-return-assign": [1],
+    "no-shadow": [1],
+    "no-undef": [1],
+    "no-underscore-dangle": [0, "always"],
+    "no-use-before-define": [2, { "functions": false }],
+    "object-curly-newline": "off",
+    "object-curly-spacing": [2, "always"],
+    "operator-linebreak": "off",
+    "prefer-const": 1,
+    "quotes": [1, "single", "avoid-escape"],
+    "react/forbid-prop-types": "off",
+    "react/jsx-curly-newline": "off",
+    "react/react-in-jsx-scope": "off",
+    "react/jsx-filename-extension": 0,
+    "react/jsx-one-expression-per-line": "off",
+    "react/jsx-props-no-spreading": "off",
+    "react/jsx-wrap-multilines": "off",
+    "react/no-array-index-key": [1],
+    "react/prefer-es6-class": 0,
+    "react/prop-types": [1],
+    "semi": [0, "never"],
+    "space-in-parens": [0, "always"],
+    "template-curly-spacing": ["error", "never"],
+    "no-unused-vars": "warn"
+  },
+  "overrides": [
+    {
+      "files": ["test/end-to-end/**/*.ts"],
+      "extends": ["plugin:playwright/playwright-test"],
+      "rules": {
+        "jest/no-done-callback": "off"
+      }
+    }
+  ],
+  "globals": {
+    "_": true
+  }
 }
