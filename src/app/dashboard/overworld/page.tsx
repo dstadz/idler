@@ -6,7 +6,7 @@ import { getResourceList, RESOURCES } from '@/utils/constants'
 import { homeNodeData, resourceNodesData, transportNodesData } from '@/data'
 import { useAtom } from 'jotai'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
-import { NodeType, NodeTypeData, ResourceRecord } from '@/types/node'
+import { NodeTypeData, ResourceRecord } from '@/types/node'
 
 type HomeResourcesType = {
   [key: string]: number

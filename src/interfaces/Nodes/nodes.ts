@@ -14,6 +14,6 @@ export interface UseResourceNodeProps {
 export interface UseTransportNodeProps {
   ctx: CanvasRenderingContext2D | null// Type for the canvas context
   homeNode: NodeType // Ensure this type has the correct structure
-  resourceNodes: ResourceNodeType[]
+  resourceNodes: ResourceNode[]
   transportNodesData: TransportNodeType[] // Ensure this type has the correct structure
 }

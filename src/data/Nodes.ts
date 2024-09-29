@@ -1,5 +1,4 @@
 import {
-  NodeType,
   NodeTypeData,
   ResourceRecord,
   TransportNodeType,

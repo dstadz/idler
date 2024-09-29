@@ -7,7 +7,7 @@ export const useResourceNodes = ({
   homeNode,
   resourceNodesData,
 }: UseResourceNodeProps ) => {
-  const [resourceNodes, setResourceNodes] = useState([] as ResourceNodeType[])
+  const [resourceNodes, setResourceNodes] = useState([] as ResourceNode[])
   useEffect(() => {
     if (!ctx || !homeNode || !resourceNodesData) return
 
@@ -22,7 +22,6 @@ export const useResourceNodes = ({
   }, [ctx, homeNode, resourceNodesData])
 
   const drawResourceNodes = () => {
-    // console.log('drawResourceNodes')
     resourceNodes.forEach(node => node.drawUnit())
   }
 

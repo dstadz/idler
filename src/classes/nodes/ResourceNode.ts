@@ -2,6 +2,8 @@ import { ResourceNodeType, ResourceRecord } from "@/types/node"
 import { TransportNode, Node } from "../nodes"
 
 export class ResourceNode extends Node {
+  homeNode: Node
+
   constructor({
     id,
     uuid,
@@ -20,8 +22,9 @@ export class ResourceNode extends Node {
       size,
       emoji,
       resources,
-      drawUnit: () => this.drawUnit()
+      // drawUnit: () => this.drawUnit()
     })
+    this.homeNode = homeNode
   }
 
   drawUnit() { super.drawUnit() }

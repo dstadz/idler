@@ -1,3 +1,4 @@
+import { ResourceRecord } from '@/types/node'
 import {
   Map as MapIcon,
 } from '@mui/icons-material'
@@ -61,7 +62,7 @@ export const RESOURCES = {
 export const RESOURCES_KEYS = Object.keys(RESOURCES) as (keyof typeof RESOURCES)[]
 
 export const getResourceList = ({
-  resourceObject,
+  resourceObject = getDefaultResources(),
 }) => {
   if (!resourceObject) return []
   const resourceList = Object.keys(resourceObject)

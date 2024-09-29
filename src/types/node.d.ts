@@ -1,3 +1,4 @@
+import { Node } from "@/classes"
 import { RESOURCES } from "@/utils/constants"
 
 // STONE | WOOD | FOOD | GOLD | POWER | ENERGY | WATER
@@ -14,11 +15,11 @@ export type NodeTypeData = {
 export type NodeType = NodeTypeData & {
   ctx: CanvasRenderingContext2D
   uuid: string
-  drawUnit(): void
+  // drawUnit: () => void
 }
 
 export type ResourceNodeType = NodeType & {
-  homeNode: NodeType
+  homeNode: Node
 }
 export type TransportNodeTypeData = Omit<NodeTypeData, 'position', 'resources'> & {
   parentId: string
@@ -28,16 +29,11 @@ export type TransportNodeTypeData = Omit<NodeTypeData, 'position', 'resources'> 
 }
 
 export type TransportNodeType = Omit<TransportNodeTypeData, 'parentId'> & {
-  parentNode?: ResourceNodeType
+  parentNode?: ResourceNode
   homeNode: NodeType
   targetNode: NodeType
   position: [number, number]
   resources: ResourceRecord
   isLoading: boolean
   // other dynamic methods or properties...
-  startLoading(targetNode: Node): void
-  updatePosition(): void
-  handleArrival(): void
-  startUnloading(targetNode: Node): void
-
 }

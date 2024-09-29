@@ -38,7 +38,7 @@ export class Node {
     const list = getResourceList({ resourceObject: this.resources })
     this.ctx.font = `16px serif`
     list
-    .filter(note => note !== '') // Filter out empty results
+    .filter(note => note !== '')
     .forEach((note, i) => {
       this.ctx.fillText(
         note,
