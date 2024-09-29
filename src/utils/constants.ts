@@ -78,8 +78,6 @@ export const getResourceList = ({
   return resourceList
 }
 
-
-// Utility function to provide default resources
 export const getDefaultResources = (): ResourceRecord => ({
   STONE: 0,
   WOOD: 0,

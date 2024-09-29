@@ -1,16 +1,10 @@
 'use client'
 
-import React, { useMemo, useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { Box, Stack, Typography } from '@mui/material'
-import { getResourceList, RESOURCES } from '@/utils/constants'
+import { getResourceList } from '@/utils/constants'
 import { resourceNodesData, transportNodesData } from '@/data'
-import { useAtom } from 'jotai'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
-import { NodeTypeData, ResourceRecord } from '@/types/node'
-
-type HomeResourcesType = {
-  [key: string]: number
-}
 
 const OverworldPage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -19,8 +13,6 @@ const OverworldPage = () => {
     ctx: ctx as CanvasRenderingContext2D,
     homeNodeId: 'homeNode123',
   })
-  // Make sure homeResources is typed correctly
-    // Return early if homeNode is still null
 
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
@@ -55,7 +47,7 @@ const OverworldPage = () => {
     if (!resourceNodes.length || !transportNodes.length) return
     const rafId = requestAnimationFrame(gameLoop)
 
-    return () => cancelAnimationFrame(rafId)  // Clean up on component unmount
+    return () => cancelAnimationFrame(rafId)
   }, [gameLoop, resourceNodes, transportNodes])
 
   if (!homeNode) {

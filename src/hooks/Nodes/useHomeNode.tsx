@@ -2,9 +2,7 @@ import { useEffect, useState, useCallback } from 'react'
 import { useAtom } from 'jotai'
 
 import { CanvasNode } from '@/classes'
-import { RESOURCES } from '@/utils/constants'
 import { resourcesAtom } from '@/atoms'
-import { NodeType } from '@/types/node'
 import { UseHomeNodeProps } from '@/interfaces'
 import { homeNodeData } from '@/data'
 
@@ -16,9 +14,10 @@ export const useHomeNode = ({ ctx, homeNodeId }: UseHomeNodeProps) => {
     if (!ctx || !homeNodeData) return
     const dataRes = [homeNodeData].find(({ id }) => id === homeNodeId)
 
+    if (!dataRes) return
     const newHomeNode = new CanvasNode({
       ctx,
-      ...homeNodeData,
+      ...dataRes,
       uuid: (Math.random().toString(36).slice(2, 10)),
     })
 

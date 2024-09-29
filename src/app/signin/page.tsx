@@ -1,18 +1,19 @@
 'use client'
+
 import { signIn } from 'next-auth/react'
 import Link from 'next/link'
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
+  // const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError(null)
-    setLoading(true)
+    // setLoading(true)
 
     const result = await signIn('credentials', {
       redirect: false,
@@ -21,7 +22,7 @@ export default function SignIn() {
       callbackUrl: '/dashboard',
     })
 
-    setLoading(false)
+    // setLoading(false)
 
     if (result?.error) {
       setError('Invalid email or password')

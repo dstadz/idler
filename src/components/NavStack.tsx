@@ -1,21 +1,10 @@
 'use client'
 
-import { useState, useEffect } from 'react'
-import Box from '@mui/material/Box'
+import React, { useState, useEffect } from 'react'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { NAV_TABS } from '@/utils/constants'
-
-interface TabItem {
-  title: string
-  route: string
-}
-
-interface NavStackProps {
-  tabs: TabItem[]
-}
 
 export default function NavStack() {
   const [value, setValue] = useState<number>(0)
@@ -51,7 +40,7 @@ export default function NavStack() {
             key={tab.route}
             label={tab.title}
             value={index}
-            {...(!!Icon ? {icon : <Icon />} : {})}
+            {...(Icon ? {icon : <Icon />} : {})}
             sx={{
               minWidth: 64,
               minHeight: 60,
