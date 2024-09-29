@@ -14,6 +14,7 @@ export const useHomeNode = ({ ctx, homeNodeId }: UseHomeNodeProps) => {
     if (!ctx || !homeNodeData) return
     const dataRes = [homeNodeData].find(({ id }) => id === homeNodeId)
 
+    if (!dataRes) return
     const newHomeNode = new CanvasNode({
       ctx,
       ...dataRes,
