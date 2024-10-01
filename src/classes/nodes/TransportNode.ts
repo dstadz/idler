@@ -17,6 +17,7 @@ export class TransportNode extends CanvasNode {
   dexterity: number
 
   // state
+  addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
 
   constructor({
     ctx,
@@ -30,6 +31,7 @@ export class TransportNode extends CanvasNode {
     strength,
     dexterity,
     resources,
+    addToMainResources,
   }: TransportNodeType) {
     super({
       ctx,
@@ -47,10 +49,10 @@ export class TransportNode extends CanvasNode {
     this.dexterity = dexterity
     this.targetNode = parentNode || homeNode
     this.resources = {} as ResourceRecord
+    this.addToMainResources = addToMainResources
   }
 
-  drawUnit(addToMainResources) {
-    this.addToMainResources = addToMainResources
+  drawUnit() {
     this.updatePosition()
     super.drawUnit()
   }

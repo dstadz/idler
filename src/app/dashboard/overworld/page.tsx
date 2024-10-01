@@ -10,11 +10,7 @@ import { resourcesAtom } from '@/atoms'
 
 const OverworldPage = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
-  const [mainResources, setMainResources] = useAtom(resourcesAtom)
-  const addToMainResources = (resource: string, amount: number) => setMainResources(prev => ({
-    ...prev,
-    [resource]: prev[resource] + amount,
-  }))
+  const [mainResources] = useAtom(resourcesAtom)
 
   const { homeNode, drawHomeNode } = useHomeNode({
     ctx: ctx as CanvasRenderingContext2D,
@@ -47,13 +43,7 @@ const OverworldPage = () => {
     // Drawing game-related nodes
     drawHomeNode()
     drawResourceNodes()
-    drawTransportNodes(addToMainResources)
-
-    // Oscillating circle logic
-    ctx.fillStyle = '#000000'
-    ctx.beginPath()
-    ctx.arc(50, 100, 20 * Math.sin(frameCountRef.current * 0.005) ** 2, 0, 2 * Math.PI)
-    ctx.fill()
+    drawTransportNodes()
 
     frameCountRef.current += 1
     const rafIdRefCurrent = requestAnimationFrame(gameLoop)
