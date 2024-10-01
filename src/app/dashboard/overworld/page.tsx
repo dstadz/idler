@@ -5,11 +5,14 @@ import { Box, Stack, Typography } from '@mui/material'
 import { getResourceList } from '@/utils/constants'
 import { resourceNodesData, transportNodesData } from '@/data'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
+import { useAtom } from 'jotai'
+import { resourcesAtom } from '@/atoms'
 
 const OverworldPage = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { ctx, drawFPS, clearWholeRect } = useCanvas(canvasRef)
-  const { homeNode, homeResources, drawHomeNode } = useHomeNode({
+  const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
+  const [mainResources] = useAtom(resourcesAtom)
+
+  const { homeNode, drawHomeNode } = useHomeNode({
     ctx: ctx as CanvasRenderingContext2D,
     homeNodeId: 'homeNode123',
   })
@@ -17,59 +20,52 @@ const OverworldPage = () => {
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
     homeNode,
-    resourceNodesData
+    resourceNodesData,
   })
 
   const { transportNodes, drawTransportNodes } = useTransportNodes({
     ctx,
     homeNode,
     resourceNodes,
-    transportNodesData
+    transportNodesData,
   })
+
+  const rafIdRef = useRef<number | null>(null)
   const gameLoop = useCallback((timestamp: number) => {
     if (!canvasRef.current) return
 
     clearWholeRect(canvasRef.current)
     drawFPS(timestamp)
+
     drawHomeNode()
     drawResourceNodes()
     drawTransportNodes()
-    requestAnimationFrame(gameLoop)
-  }, [
-    clearWholeRect,
-    drawFPS,
-    drawHomeNode,
-    drawResourceNodes,
-    drawTransportNodes,
-  ])
+
+    const rafIdRefCurrent = requestAnimationFrame(gameLoop)
+    rafIdRef.current = rafIdRefCurrent
+  }, [clearWholeRect, drawFPS, drawHomeNode, drawResourceNodes, drawTransportNodes, ctx])
 
   useEffect(() => {
-    if (!resourceNodes.length || !transportNodes.length) return
-    const rafId = requestAnimationFrame(gameLoop)
+    if (
+      !homeNode ||
+      !resourceNodes.length ||
+      !transportNodes.length  ||
+      rafIdRef.current
+    ) return
 
-    return () => cancelAnimationFrame(rafId)
-  }, [gameLoop, resourceNodes, transportNodes])
+    requestAnimationFrame(gameLoop)
+  }, [gameLoop, homeNode, resourceNodes, transportNodes])
 
-  if (!homeNode) {
-    return <div>Loading home node...</div>
-  }
   return (
     <Stack flexDirection="row" justifyContent="space-between">
       <Box>
         Home
         <div>
-          <button onClick={() => console.log(homeNode.resources)}>
-            <Typography>
-              {homeNode.emoji}:
-            </Typography>
-          </button>
-          <Typography>
-          {Object.keys(homeResources).length > 0 ? (
-            getResourceList({ resourceObject: homeNode.resources })
-              .map(resource =><div key={resource}>{resource}</div>)
-            ) : (
-              <div>No resources available</div>
-            )}
+        <Typography>
+        {Object.keys(mainResources).length > 0 ? (
+              getResourceList({ resourceObject: mainResources })
+                .map(resource => <div key={resource}>{resource}</div>)
+            ) : 'No resources available'}
           </Typography>
         </div>
       </Box>
@@ -80,6 +76,7 @@ const OverworldPage = () => {
           width={800}
           height={600}
           className="border-2 border-purple-500 border-rounded"
+          onClick={handleClick}
         />
       </Box>
     </Stack>

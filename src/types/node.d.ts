@@ -39,5 +39,4 @@ export type TransportNodeType = Omit<TransportNodeTypeData, 'parentId'> & {
   position: [number, number]
   resources: ResourceRecord
   isLoading: boolean
-  // other dynamic methods or properties...
 }

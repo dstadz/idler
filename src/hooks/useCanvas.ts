@@ -3,11 +3,22 @@ import {
   useEffect,
   useState,
   useCallback,
-  RefObject,
-} from 'react'
+  } from 'react'
 
-export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
+export const useCanvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
+  const [coords, setCoords] = useState<[number, number]>([0, 0])
+
+  const handleClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
+
+    if (!ctx || !canvasRef.current) return
+    const rect = canvasRef.current.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    console.log([x, y], rect)
+    setCoords([x, y])
+  }, [ctx])
 
   useEffect(() => {
     return () => setCtx(null)
@@ -22,7 +33,6 @@ export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
     }
   }, [canvasRef])
 
-
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -36,7 +46,6 @@ export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }, [ctx])
 
-
   let fpsTime = 0
   let frameCount = 0
   const fpsRef = useRef(0)
@@ -48,7 +57,6 @@ export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
     lastFrameTime = timestamp
     frameCount++
     fpsTime += deltaTime
-
     if (fpsTime >= 1000) {
       fpsRef.current = frameCount
       frameCount = 0
@@ -59,7 +67,12 @@ export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
 
   return {
     ctx,
+    canvasRef,
     clearWholeRect,
     drawFPS,
+
+    coords,
+    handleClick,
+
   }
 }

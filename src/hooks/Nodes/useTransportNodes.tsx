@@ -1,6 +1,8 @@
+import { resourcesAtom } from '@/atoms'
 import { TransportNode } from '@/classes'
 import { UseTransportNodeProps } from '@/interfaces'
-import { TransportNodeType } from '@/types/node'
+import { ResourceRecord, TransportNodeType } from '@/types/node'
+import { useAtom } from 'jotai'
 import { useMemo, useEffect, useState, useCallback } from 'react'
 
 export const useTransportNodes = ({
@@ -9,6 +11,11 @@ export const useTransportNodes = ({
   transportNodesData,
   resourceNodes,
 }: UseTransportNodeProps) => {
+  const [, setMainResources] = useAtom(resourcesAtom)
+  const addToMainResources = (resource: keyof ResourceRecord, amount: number) => setMainResources(prev => ({
+    ...prev,
+    [resource]: prev[resource] + amount,
+  }))
 
   const newTransportNodes = useMemo(() => {
     if (!ctx || !homeNode || !transportNodesData || resourceNodes.length === 0) {
@@ -19,6 +26,7 @@ export const useTransportNodes = ({
         ctx,
         ...node,
         homeNode,
+        addToMainResources,
         uuid: (Math.random().toString(36).slice(2, 10)),
         position: homeNode.position,
         parentNode: resourceNodes.find(({ id }) => id === node.parentId),
