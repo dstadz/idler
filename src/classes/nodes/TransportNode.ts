@@ -49,7 +49,8 @@ export class TransportNode extends CanvasNode {
     this.resources = {} as ResourceRecord
   }
 
-  drawUnit() {
+  drawUnit(addToMainResources) {
+    this.addToMainResources = addToMainResources
     this.updatePosition()
     super.drawUnit()
   }
@@ -114,6 +115,7 @@ export class TransportNode extends CanvasNode {
         this.targetNode.resources[resKey] = 0
       }
       this.targetNode.resources[resKey] += this.resources[resKey]
+      this.addToMainResources(resKey, this.resources[resKey])
       this.resources[resKey] = 0
     })
   }

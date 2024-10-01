@@ -10,7 +10,11 @@ import { resourcesAtom } from '@/atoms'
 
 const OverworldPage = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
-  const [mainResources] = useAtom(resourcesAtom)
+  const [mainResources, setMainResources] = useAtom(resourcesAtom)
+  const addToMainResources = (resource: string, amount: number) => setMainResources(prev => ({
+    ...prev,
+    [resource]: prev[resource] + amount,
+  }))
 
   const { homeNode, drawHomeNode } = useHomeNode({
     ctx: ctx as CanvasRenderingContext2D,
@@ -43,7 +47,7 @@ const OverworldPage = () => {
     // Drawing game-related nodes
     drawHomeNode()
     drawResourceNodes()
-    drawTransportNodes()
+    drawTransportNodes(addToMainResources)
 
     // Oscillating circle logic
     ctx.fillStyle = '#000000'
@@ -73,11 +77,11 @@ const OverworldPage = () => {
   }, [gameLoop, homeNode, resourceNodes, transportNodes])
 
   // Prevent state re-renders from affecting the game loop
-  // useEffect(() => {
-  //   if (!mainResources) return
+  useEffect(() => {
+    if (!mainResources) return
 
-  //   console.log(mainResources)
-  // }, [mainResources])
+    console.log(mainResources)
+  }, [mainResources])
 
   return (
     <Stack flexDirection="row" justifyContent="space-between">
@@ -96,7 +100,7 @@ const OverworldPage = () => {
           </button>
           <Typography>
             {Object.keys(mainResources).length > 0 ? (
-              getResourceList({ resourceObject: mainResources.resources })
+              getResourceList({ resourceObject: mainResources })
                 .map(resource => <div key={resource}>{resource}</div>)
             ) : (
               <div>No resources available</div>

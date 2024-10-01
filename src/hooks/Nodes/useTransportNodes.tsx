@@ -31,8 +31,8 @@ export const useTransportNodes = ({
     setTransportNodes(newTransportNodes)
   }, [newTransportNodes])
 
-  const drawTransportNodes = useCallback(() => {
-    transportNodes.forEach(node => node.drawUnit())
+  const drawTransportNodes = useCallback((addToMainResources) => {
+    transportNodes.forEach(node => node.drawUnit(addToMainResources))
   }, [transportNodes])
 
   return {
