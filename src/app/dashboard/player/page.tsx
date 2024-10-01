@@ -5,7 +5,7 @@ import React from 'react'
 const PlayerPage = () => {
   return (
     <div>
-      This is the Civvie Page Content
+      This is the Player Page Content
     </div>
   )
 }

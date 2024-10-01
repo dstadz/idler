@@ -30,8 +30,8 @@ const OverworldPage = () => {
     transportNodesData,
   })
 
-  const rafIdRef = useRef<number | null>(null)  // Track the animation frame
-  const frameCountRef = useRef(0)  // Keep track of the frame count
+  const rafIdRef = useRef<number | null>(null)
+  const frameCountRef = useRef(0)
 
   // Consolidated game loop that draws everything
   const gameLoop = useCallback((timestamp: number) => {
@@ -52,21 +52,23 @@ const OverworldPage = () => {
     ctx.fill()
 
     frameCountRef.current += 1
-    // rafIdRef.current =
-    requestAnimationFrame(gameLoop)
+    const rafIdRefCurrent = requestAnimationFrame(gameLoop)
+    rafIdRef.current = rafIdRefCurrent
   }, [clearWholeRect, drawFPS, drawHomeNode, drawResourceNodes, drawTransportNodes, ctx])
 
   useEffect(() => {
     if (!homeNode || !resourceNodes.length || !transportNodes.length) return
 
     if (!rafIdRef.current) {
-      rafIdRef.current = requestAnimationFrame(gameLoop)  // Start the loop
+      const rafIdRefCurrent = requestAnimationFrame(gameLoop)
+      rafIdRef.current = rafIdRefCurrent
     }
 
     return () => {
-      if (rafIdRef.current) {
-        cancelAnimationFrame(rafIdRef.current)  // Clean up any existing loops
-      }
+      console.log(`🚀 ~ file: page.tsx:71 ~ return ~ rafIdRef.current:`, rafIdRef.current)
+      // if (rafIdRef.current) {
+      //   cancelAnimationFrame(rafIdRef.current)  // Clean up any existing loops
+      // }
     }
   }, [gameLoop, homeNode, resourceNodes, transportNodes])
 
