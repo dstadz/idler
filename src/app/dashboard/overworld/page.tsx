@@ -31,8 +31,6 @@ const OverworldPage = () => {
   })
 
   const rafIdRef = useRef<number | null>(null)
-  const frameCountRef = useRef(0)
-
   const gameLoop = useCallback((timestamp: number) => {
     if (!canvasRef.current) return
 
@@ -43,48 +41,31 @@ const OverworldPage = () => {
     drawResourceNodes()
     drawTransportNodes()
 
-    frameCountRef.current += 1
     const rafIdRefCurrent = requestAnimationFrame(gameLoop)
     rafIdRef.current = rafIdRefCurrent
   }, [clearWholeRect, drawFPS, drawHomeNode, drawResourceNodes, drawTransportNodes, ctx])
 
   useEffect(() => {
-    if (!homeNode || !resourceNodes.length || !transportNodes.length) return
+    if (
+      !homeNode ||
+      !resourceNodes.length ||
+      !transportNodes.length  ||
+      rafIdRef.current
+    ) return
 
-    if (!rafIdRef.current) {
-      const rafIdRefCurrent = requestAnimationFrame(gameLoop)
-      rafIdRef.current = rafIdRefCurrent
-    }
+    requestAnimationFrame(gameLoop)
   }, [gameLoop, homeNode, resourceNodes, transportNodes])
-
-  useEffect(() => {
-    if (!mainResources) return
-
-    console.log(mainResources)
-  }, [mainResources])
 
   return (
     <Stack flexDirection="row" justifyContent="space-between">
       <Box>
         Home
         <div>
-          <button onClick={() => console.log(homeNode.resources)}>
-            <Typography>
-              {homeNode.emoji}:
-            </Typography>
-          </button>
-          <button onClick={() => console.log(mainResources)}>
-            <Typography>
-              main:
-            </Typography>
-          </button>
-          <Typography>
-            {Object.keys(mainResources).length > 0 ? (
+        <Typography>
+        {Object.keys(mainResources).length > 0 ? (
               getResourceList({ resourceObject: mainResources })
                 .map(resource => <div key={resource}>{resource}</div>)
-            ) : (
-              <div>No resources available</div>
-            )}
+            ) : 'No resources available'}
           </Typography>
         </div>
       </Box>
