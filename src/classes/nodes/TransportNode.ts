@@ -31,7 +31,6 @@ export class TransportNode extends CanvasNode {
     dexterity,
     resources,
   }: TransportNodeType) {
-
     super({
       ctx,
       position: homeNode.position,

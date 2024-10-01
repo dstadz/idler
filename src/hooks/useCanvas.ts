@@ -3,11 +3,23 @@ import {
   useEffect,
   useState,
   useCallback,
-  RefObject,
-} from 'react'
+  } from 'react'
 
-export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
+export const useCanvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
+  const [coords, setCoords] = useState([] as [number, number])
+
+
+
+  const handleClick = useCallback((event: MouseEvent) => {
+    if (!ctx) return
+    const rect = canvasRef.current?.getBoundingClientRect()
+    const x = event.clientX - rect?.left
+    const y = event.clientY - rect?.top
+    console.log([x, y], rect)
+    setCoords([x, y])
+  }, [ctx])
 
   useEffect(() => {
     return () => setCtx(null)
@@ -48,18 +60,27 @@ export const useCanvas = (canvasRef: RefObject<HTMLCanvasElement>) => {
     lastFrameTime = timestamp
     frameCount++
     fpsTime += deltaTime
-
     if (fpsTime >= 1000) {
+      // console.log({ref: fpsRef.current, frameCount, deltaTime,fpsTime, })
+      console.log(coords)
       fpsRef.current = frameCount
       frameCount = 0
       fpsTime = 0
     }
     ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
+    ctx.fillText(`fpsTime: ${fpsTime}`, 10, 40)
+    ctx.fillText(`framecount: ${frameCount}`, 10, 60)
+    ctx.fillText(`lastFrameTime: ${lastFrameTime}`, 10, 80)
   }, [ctx])
 
   return {
     ctx,
+    canvasRef,
     clearWholeRect,
     drawFPS,
+
+    coords,
+    handleClick,
+
   }
 }

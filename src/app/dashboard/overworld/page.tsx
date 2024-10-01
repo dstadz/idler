@@ -5,11 +5,14 @@ import { Box, Stack, Typography } from '@mui/material'
 import { getResourceList } from '@/utils/constants'
 import { resourceNodesData, transportNodesData } from '@/data'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
+import { useAtom } from 'jotai'
+import { resourcesAtom } from '@/atoms'
 
 const OverworldPage = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { ctx, drawFPS, clearWholeRect } = useCanvas(canvasRef)
-  const { homeNode, homeResources, drawHomeNode } = useHomeNode({
+  const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
+  const [mainResources] = useAtom(resourcesAtom)
+
+  const { homeNode, drawHomeNode } = useHomeNode({
     ctx: ctx as CanvasRenderingContext2D,
     homeNodeId: 'homeNode123',
   })
@@ -17,42 +20,63 @@ const OverworldPage = () => {
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
     homeNode,
-    resourceNodesData
+    resourceNodesData,
   })
 
   const { transportNodes, drawTransportNodes } = useTransportNodes({
     ctx,
     homeNode,
     resourceNodes,
-    transportNodesData
+    transportNodesData,
   })
+
+  const rafIdRef = useRef<number | null>(null)  // Track the animation frame
+  const frameCountRef = useRef(0)  // Keep track of the frame count
+
+  // Consolidated game loop that draws everything
   const gameLoop = useCallback((timestamp: number) => {
     if (!canvasRef.current) return
 
     clearWholeRect(canvasRef.current)
     drawFPS(timestamp)
+
+    // Drawing game-related nodes
     drawHomeNode()
     drawResourceNodes()
     drawTransportNodes()
+
+    // Oscillating circle logic
+    ctx.fillStyle = '#000000'
+    ctx.beginPath()
+    ctx.arc(50, 100, 20 * Math.sin(frameCountRef.current * 0.005) ** 2, 0, 2 * Math.PI)
+    ctx.fill()
+
+    frameCountRef.current += 1
+    // rafIdRef.current =
     requestAnimationFrame(gameLoop)
-  }, [
-    clearWholeRect,
-    drawFPS,
-    drawHomeNode,
-    drawResourceNodes,
-    drawTransportNodes,
-  ])
+  }, [clearWholeRect, drawFPS, drawHomeNode, drawResourceNodes, drawTransportNodes, ctx])
 
   useEffect(() => {
-    if (!resourceNodes.length || !transportNodes.length) return
-    const rafId = requestAnimationFrame(gameLoop)
+    if (!homeNode || !resourceNodes.length || !transportNodes.length) return
 
-    return () => cancelAnimationFrame(rafId)
-  }, [gameLoop, resourceNodes, transportNodes])
+    if (!rafIdRef.current) {
+      rafIdRef.current = requestAnimationFrame(gameLoop)  // Start the loop
+    }
 
-  if (!homeNode) {
-    return <div>Loading home node...</div>
-  }
+    return () => {
+      if (rafIdRef.current) {
+        cancelAnimationFrame(rafIdRef.current)  // Clean up any existing loops
+      }
+    }
+  }, [gameLoop, homeNode, resourceNodes, transportNodes])
+
+  // Prevent state re-renders from affecting the game loop
+  // useEffect(() => {
+  //   if (!mainResources) return
+
+  //   console.log(mainResources)
+  // }, [mainResources])
+
   return (
     <Stack flexDirection="row" justifyContent="space-between">
       <Box>
@@ -63,10 +87,15 @@ const OverworldPage = () => {
               {homeNode.emoji}:
             </Typography>
           </button>
+          <button onClick={() => console.log(mainResources)}>
+            <Typography>
+              main:
+            </Typography>
+          </button>
           <Typography>
-          {Object.keys(homeResources).length > 0 ? (
-            getResourceList({ resourceObject: homeNode.resources })
-              .map(resource =><div key={resource}>{resource}</div>)
+            {Object.keys(mainResources).length > 0 ? (
+              getResourceList({ resourceObject: mainResources.resources })
+                .map(resource => <div key={resource}>{resource}</div>)
             ) : (
               <div>No resources available</div>
             )}
@@ -80,6 +109,7 @@ const OverworldPage = () => {
           width={800}
           height={600}
           className="border-2 border-purple-500 border-rounded"
+          onClick={handleClick}
         />
       </Box>
     </Stack>
