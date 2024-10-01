@@ -10,8 +10,6 @@ export const useCanvas = () => {
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
   const [coords, setCoords] = useState<[number, number]>([0, 0])
 
-
-
   const handleClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
 
     if (!ctx || !canvasRef.current) return
@@ -35,7 +33,6 @@ export const useCanvas = () => {
     }
   }, [canvasRef])
 
-
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -48,7 +45,6 @@ export const useCanvas = () => {
     if (!canvas || !ctx) return
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }, [ctx])
-
 
   let fpsTime = 0
   let frameCount = 0
