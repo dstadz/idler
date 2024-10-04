@@ -8,23 +8,27 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
+  id       String   @id @default(uuid())
   name     String
-  email    String @unique
+  email    String   @unique
   password String
+
+  entities Entity[]
 }
 
 model Entity {
-  id        String   @id @default(uuid())
-  // resources Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String   @id @default(uuid())
+  resourceInventoryId String
+  ResourceInventory   ResourceInventory @relation(fields: [resourceInventoryId], references: [id])
+  userId              String
+  User                User @relation(fields: [userId], references: [id])
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
   // Relations to Unit and Building (one-to-one relationship)
   unit                Unit?
   building            Building?
-  ResourceInventory   ResourceInventory @relation(fields: [resourceInventoryId], references: [id])
-  resourceInventoryId String
 
   @@map("entities")
 }
