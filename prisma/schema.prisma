@@ -21,33 +21,53 @@ model Entity {
   updatedAt DateTime @updatedAt
 
   // Relations to Unit and Building (one-to-one relationship)
-  unit      Unit?
-  building  Building?
+  unit                Unit?
+  building            Building?
+  ResourceInventory   ResourceInventory @relation(fields: [resourceInventoryId], references: [id])
+  resourceInventoryId String
 
   @@map("entities")
 }
 
 model Unit {
-  id        String   @id @default(uuid())
-  entityId  String   @unique
-  entity    Entity   @relation(fields: [entityId], references: [id])
+  id       String @id @default(uuid())
+  entityId String @unique
+  entity   Entity @relation(fields: [entityId], references: [id])
 
   // Unit-specific fields
-  stats     Int      // e.g., health, attack
-  unitType  String   // e.g., infantry, tank
+  stats    Int // e.g., health, attack
+  unitType String // e.g., infantry, tank
 
   @@map("units")
 }
 
 model Building {
-  id           String   @id @default(uuid())
-  entityId     String   @unique
-  entity       Entity   @relation(fields: [entityId], references: [id])
+  id       String @id @default(uuid())
+  entityId String @unique
+  entity   Entity @relation(fields: [entityId], references: [id])
 
-  // Building-specific fields
-  position     String   // e.g., x, y position
-  level        Int      // Building level
-  techUnlocked Boolean  // Has this building unlocked certain technologies?
+  type      String // HomeNode, SatelliteNode, etc.
+  xPos      Float // X coordinate
+  yPos      Float // Y coordinate
+  resources Int
+
+  level        Int // Building level
+  techUnlocked Boolean // Has this building unlocked certain technologies?
 
   @@map("buildings")
+}
+
+model ResourceInventory {
+  id String @id @default(uuid())
+
+  wood   Int      @default(0)
+  stone  Int      @default(0)
+  iron   Int      @default(0)
+  food   Int      @default(0)
+  gold   Int      @default(0)
+  power  Int      @default(0)
+  energy Int      @default(0)
+  water  Int      @default(0)
+  // Add more resource fields as needed
+  Entity Entity[]
 }
