@@ -14,22 +14,22 @@ export class CanvasNode {
     id,
     uuid = '00',
     ctx,
-    position,
+    position = [0,0],
     resources = getDefaultResources(),
-    emoji,
-    size,
-  }: NodeTypeData) {
-    this.id = id
-    this.uuid = uuid
-    this.ctx = ctx
-    this.position = position
-    this.resources = resources
-    this.emoji = emoji
-    this.size = size
-  }
+    emoji = '❌',
+    size = 10,
+    }: NodeTypeData) {
+      this.id = id
+      this.uuid = uuid
+      this.ctx = ctx
+      this.position = position
+      this.resources = resources
+      this.emoji = emoji
+      this.size = size
+    }
 
-  drawUnit() {
-    this.ctx.font = `${this.size}px serif`
+    drawUnit() {
+      this.ctx.font = `${this.size}px serif`
     this.ctx.fillText(
       this.emoji,
       this.position[0],

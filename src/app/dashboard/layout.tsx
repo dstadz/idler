@@ -7,6 +7,8 @@ import Stack from '@mui/material/Stack'
 
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
+import { Button } from '@mui/material'
+import { createHomeNode } from '@/hooks/Nodes/useHomeNode'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession()
@@ -36,6 +38,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
       <Stack flexDirection="row">
         <NavStack />
+        <Button onClick={createHomeNode}> Create new Node </Button>
         {children}
       </Stack>
 

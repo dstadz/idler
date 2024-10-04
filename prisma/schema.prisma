@@ -12,66 +12,50 @@ model User {
   name     String
   email    String   @unique
   password String
+  entities Entity[] @relation("UserEntities")
+}
 
-  entities Entity[]
+model ResourceInventory {
+  id       String   @id @default(uuid())
+  wood     Int      @default(0)
+  stone    Int      @default(0)
+  iron     Int      @default(0)
+  food     Int      @default(0)
+  gold     Int      @default(0)
+  power    Int      @default(0)
+  energy   Int      @default(0)
+  water    Int      @default(0)
+  entityId String   @unique // This field needs to exist for the relation
+  Entity   Entity[]
+}
+
+model Building {
+  id           String  @id @default(uuid())
+  entityId     String  @unique
+  type         String
+  xPos         Float
+  yPos         Float
+  level        Int
+  techUnlocked Boolean
+  entity       Entity  @relation("EntityBuilding", fields: [entityId], references: [id]) // Unique relation name
 }
 
 model Entity {
-  id                  String   @id @default(uuid())
+  id                  String            @id @default(uuid())
   resourceInventoryId String
-  ResourceInventory   ResourceInventory @relation(fields: [resourceInventoryId], references: [id])
   userId              String
-  User                User @relation(fields: [userId], references: [id])
-
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
-
-  // Relations to Unit and Building (one-to-one relationship)
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime
+  building            Building?         @relation("EntityBuilding") // Use same unique relation name here
+  resourceInventory   ResourceInventory @relation(fields: [resourceInventoryId], references: [id])
+  user                User              @relation("UserEntities", fields: [userId], references: [id])
   unit                Unit?
-  building            Building?
-
-  @@map("entities")
 }
 
 model Unit {
   id       String @id @default(uuid())
   entityId String @unique
+  stats    Int
+  unitType String
   entity   Entity @relation(fields: [entityId], references: [id])
-
-  // Unit-specific fields
-  stats    Int // e.g., health, attack
-  unitType String // e.g., infantry, tank
-
-  @@map("units")
-}
-
-model Building {
-  id       String @id @default(uuid())
-  entityId String @unique
-  entity   Entity @relation(fields: [entityId], references: [id])
-
-  type      String // HomeNode, SatelliteNode, etc.
-  xPos      Float // X coordinate
-  yPos      Float // Y coordinate
-  resources Int
-
-  level        Int // Building level
-  techUnlocked Boolean // Has this building unlocked certain technologies?
-
-  @@map("buildings")
-}
-
-model ResourceInventory {
-  id String @id @default(uuid())
-
-  wood   Int      @default(0)
-  stone  Int      @default(0)
-  iron   Int      @default(0)
-  food   Int      @default(0)
-  gold   Int      @default(0)
-  power  Int      @default(0)
-  energy Int      @default(0)
-  water  Int      @default(0)
-  // Add more resource fields as needed
-  Entity Entity[]
 }

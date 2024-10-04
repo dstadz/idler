@@ -5,21 +5,6 @@ import {
 } from "@/types/node"
 import { RESOURCES } from "@/utils/constants"
 
-export const homeNodeData: NodeTypeRawData = {
-  id: 'homeNode123',
-  position: [400, 400],
-  emoji: '🏰',
-  size: 40,
-  resources: {
-    ...(Object.fromEntries(
-      Object.keys(RESOURCES).map(key => [key, 0])
-    ) as ResourceRecord),
-    [RESOURCES.FOOD.NAME.toUpperCase()]: 1000,
-    [RESOURCES.WOOD.NAME.toUpperCase()]: 1000,
-  }
-}
-
-
 export const resourceNodesData: NodeTypeRawData[] = [
   {
     id: 'resourceNode1',
