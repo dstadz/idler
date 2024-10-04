@@ -26,31 +26,31 @@ export async function POST(request: Request) {
   try {
     const resourceInventory = await prisma.resourceInventory.create({
       data: {
-        resources: {
-          ...(Object.fromEntries(
-            Object.keys(RESOURCES).map(key => [key, 0])
-          ) as ResourceRecord),
-        },
-      },
+        ...(Object.fromEntries(
+        Object.keys(RESOURCES).map(key => [key.toLowerCase(), 10])
+      ) as ResourceRecord),
+    },
     })
-    console.log(`🚀 ~ file: route.ts:38 ~ POST ~ resourceInventory:`, resourceInventory)
-
-    const entity = await prisma.entities.create({
+    const entity = await prisma.entity.create({
       data: {
-        userId,
         resourceInventoryId: resourceInventory.id,
+        userId,
       },
     })
-    console.log(`🚀 ~ file: route.ts:46 ~ POST ~ entity:`, entity)
+
+    await prisma.resourceInventory.update({
+      where: { id: resourceInventory.id },
+      data: {
+        entityId: entity.id,
+      },
+    })
 
     const homeNode = await prisma.building.create({
       data: {
         entityId: entity.id,
-        resourceInventoryId: resourceInventory.id,
         type: 'HomeNode',
         xPos: Math.floor(Math.random() * 1000),
         yPos: Math.floor(Math.random() * 1000),
-        // resources,
         level: 1,
         techUnlocked: false,
       },

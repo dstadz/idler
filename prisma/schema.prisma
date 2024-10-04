@@ -25,8 +25,8 @@ model ResourceInventory {
   power    Int      @default(0)
   energy   Int      @default(0)
   water    Int      @default(0)
-  entityId String   @unique // This field needs to exist for the relation
-  Entity   Entity[]
+  entityId String?   @unique // This field needs to exist for the relation
+  Entity   Entity?
 }
 
 model Building {
@@ -42,10 +42,10 @@ model Building {
 
 model Entity {
   id                  String            @id @default(uuid())
-  resourceInventoryId String
+  resourceInventoryId String            @unique
   userId              String
   createdAt           DateTime          @default(now())
-  updatedAt           DateTime
+  updatedAt           DateTime          @default(now())
   building            Building?         @relation("EntityBuilding") // Use same unique relation name here
   resourceInventory   ResourceInventory @relation(fields: [resourceInventoryId], references: [id])
   user                User              @relation("UserEntities", fields: [userId], references: [id])
