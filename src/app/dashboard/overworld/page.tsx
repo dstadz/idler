@@ -1,21 +1,18 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef } from 'react'
+import { useAtom } from 'jotai'
 import { Box, Stack, Typography } from '@mui/material'
 import { getResourceList } from '@/utils/constants'
 import { resourceNodesData, transportNodesData } from '@/data'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
-import { useAtom } from 'jotai'
 import { resourcesAtom } from '@/atoms'
 
 const OverworldPage = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
   const [mainResources] = useAtom(resourcesAtom)
 
-  const { homeNode, drawHomeNode } = useHomeNode({
-    ctx: ctx as CanvasRenderingContext2D,
-    homeNodeId: 'homeNode123',
-  })
+  const { homeNode, drawHomeNode, createHomeNode } = useHomeNode(ctx)
 
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,

@@ -24,7 +24,6 @@ export class TransportNode extends CanvasNode {
     emoji,
     size,
     id,
-    uuid,
     parentNode,
     homeNode,
     speed,
@@ -40,7 +39,6 @@ export class TransportNode extends CanvasNode {
       size,
       resources,
       id,
-      uuid,
     })
     this.homeNode = homeNode
     this.parentNode = parentNode || undefined

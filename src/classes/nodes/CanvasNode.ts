@@ -3,7 +3,6 @@ import { getDefaultResources, getResourceList } from "@/utils/constants"
 
 export class CanvasNode {
   id: string
-  uuid: string
   ctx: CanvasRenderingContext2D
   position: [number, number]
   resources: ResourceRecord
@@ -12,32 +11,30 @@ export class CanvasNode {
 
   constructor({
     id,
-    uuid = '00',
     ctx,
     position = [0,0],
     resources = getDefaultResources(),
     emoji = '❌',
     size = 10,
     }: NodeTypeData) {
-      this.id = id
-      this.uuid = uuid
-      this.ctx = ctx
-      this.position = position
-      this.resources = resources
-      this.emoji = emoji
-      this.size = size
-    }
+    this.id = id
+    this.ctx = ctx
+    this.position = position
+    this.resources = resources
+    this.emoji = emoji
+    this.size = size
+  }
 
-    drawUnit() {
-      this.ctx.font = `${this.size}px serif`
+  drawUnit() {
+    this.ctx.font = `${this.size}px serif`
     this.ctx.fillText(
       this.emoji,
       this.position[0],
       this.position[1] + this.size,
     )
-    const list = getResourceList({ resourceObject: this.resources })
+
     this.ctx.font = `16px serif`
-    list
+    getResourceList({ resourceObject: this.resources })
     .filter(note => note !== '')
     .forEach((note, i) => {
       this.ctx.fillText(

@@ -6,7 +6,6 @@ export class ResourceNode extends CanvasNode {
 
   constructor({
     id,
-    uuid,
     ctx,
     position,
     homeNode,
@@ -16,7 +15,6 @@ export class ResourceNode extends CanvasNode {
   }: ResourceNodeType) {
     super({
       id,
-      uuid,
       ctx,
       position,
       size,

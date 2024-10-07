@@ -21,7 +21,6 @@ export const useResourceNodes = ({
         emoji: node.emoji,
         resources: node.resources,
         homeNode,
-        uuid: Math.random().toString(36).slice(2, 10),
       }))
     setResourceNodes(newResourceNodes)
   }, [ctx, homeNode, resourceNodesData])

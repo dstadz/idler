@@ -27,7 +27,6 @@ export const useTransportNodes = ({
         ...node,
         homeNode,
         addToMainResources,
-        uuid: (Math.random().toString(36).slice(2, 10)),
         position: homeNode.position,
         parentNode: resourceNodes.find(({ id }) => id === node.parentId),
       })

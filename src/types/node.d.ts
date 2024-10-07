@@ -7,7 +7,6 @@ export type ResourceRecord = Record<ResourceKey, number>
 
 export type NodeTypeRawData = {
   id: string
-  uuid?: string
   position: [number, number]
   resources: ResourceRecord
   emoji: string
@@ -19,7 +18,6 @@ export type NodeTypeData = NodeTypeRawData & {
 
 export type NodeType = NodeTypeData & {
   ctx: CanvasRenderingContext2D
-  uuid: string
 }
 
 export type ResourceNodeType = NodeType & {
