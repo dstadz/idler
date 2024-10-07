@@ -18,9 +18,13 @@ export const useTransportNodes = ({
   }))
 
   const newTransportNodes = useMemo(() => {
-    if (!ctx || !homeNode || !transportNodesData || resourceNodes.length === 0) {
-      return []
-    }
+    if (
+      !ctx ||
+      !(Object.keys(homeNode).length) ||
+      !transportNodesData ||
+      resourceNodes.length === 0
+    ) return []
+
     return transportNodesData.map(node =>
       new TransportNode({
         ctx,

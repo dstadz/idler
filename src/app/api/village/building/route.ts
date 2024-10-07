@@ -63,3 +63,50 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Failed to create home node' }, { status: 500 })
   }
 }
+
+export async function GET(request: Request) {
+  const session = await getSession({ req: { headers: { cookie: request.headers.get('cookie') } } })
+
+  if (!session) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+
+  const userEmail = session.user.email
+  const user = await prisma.user.findUnique({
+    where: { email: userEmail },
+  })
+
+  if (!user) {
+    return NextResponse.json({ error: 'User not found' }, { status: 404 })
+  }
+
+  const userId = user.id
+
+  try {
+    // Find the home node for the current user
+    const homeNode = await prisma.building.findFirst({
+      where: {
+        entity: {
+          userId: userId,
+        },
+        type: 'HomeNode',
+      },
+      include: {
+        entity: {
+          include: {
+            resourceInventory: true,
+          },
+        },
+      },
+    })
+
+    if (!homeNode) {
+      return NextResponse.json({ error: 'Home node not found' }, { status: 404 })
+    }
+
+    return NextResponse.json({ homeNode }, { status: 200 })
+  } catch (error) {
+    console.error('Error fetching home node:', error)
+    return NextResponse.json({ error: 'Failed to fetch home node' }, { status: 500 })
+  }
+}

@@ -1,21 +1,20 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useAtom } from 'jotai'
+import { getSession } from 'next-auth/react'
 
 import { CanvasNode } from '@/classes'
 import { resourcesAtom } from '@/atoms'
-import { UseHomeNodeProps } from '@/utils/interfaces'
+import { mapDbToCanvasNode } from '@/utils/mappers'
 
-export const createHomeNode = async () => {
-  console.log(`🚀 ~ file: useHomeNode.tsx:33 ~ createHomeNode ~ :`)
+const createHomeNodeAPICall = async (userId: number) => {
   try {
     const response = await fetch('/api/village/building', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', },
-      body: JSON.stringify({ userId: 123 }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
     })
 
     if (!response.ok) {
-      // Handle server-side errors (e.g., 4xx, 5xx)
       const errorData = await response.json()
       throw new Error(errorData.message || 'Failed to create home node')
     }
@@ -26,28 +25,48 @@ export const createHomeNode = async () => {
     return data
   } catch (error) {
     console.error('Error creating home node:', error)
-    throw error // Re-throw to handle it further up the call stack if needed
+    throw error
   }
 }
 
+const fetchHomeNodeAPICall = async () => {
+  try {
+    const response = await fetch(`/api/village/building`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' },
+    })
 
-export const useHomeNode = ({ ctx, homeNodeId }: UseHomeNodeProps) => {
+    if (!response.ok) {
+      const errorData = await response.json()
+      throw new Error(errorData.message || 'Failed to fetch home node')
+    }
+
+    const data = await response.json()
+    return data
+
+  } catch (error) {
+    console.error('Error fetching home node:', error)
+    throw error
+  }
+}
+
+export const useHomeNode = (ctx: CanvasRenderingContext2D) => {
   const [homeNode, setHomeNode] = useState<CanvasNode>({} as CanvasNode)
   const [homeResources, setHomeResources] = useAtom(resourcesAtom)
 
-  // useEffect(() => {
-  //   if (!ctx) return
-  //   const dataRes = [homeNodeData].find(({ id }) => id === homeNodeId)
+  useEffect(() => {
+    const loadHomeNode = async () => {
+      const fetchedData = await fetchHomeNodeAPICall()
 
-  //   if (!dataRes) return
-  //   const newHomeNode = new CanvasNode({
-  //     ctx,
-  //     ...dataRes,
-  //     uuid: (Math.random().toString(36).slice(2, 10)),
-  //   })
+      if (fetchedData) {
+        const newHomeNode = mapDbToCanvasNode(fetchedData, ctx)
+        setHomeNode(newHomeNode)
+      }
+    }
 
-  //   setHomeNode(newHomeNode)
-  // }, [ctx, homeNodeId])
+    if (!ctx) return
+    loadHomeNode()
+  }, [ctx])
 
   useEffect(() => {
     if (!homeNode || !homeNode.resources) return
@@ -60,9 +79,13 @@ export const useHomeNode = ({ ctx, homeNodeId }: UseHomeNodeProps) => {
     }
   }, [homeNode])
 
-  const createHomeNode = () => {
-    setHomeNode(createHomeNode())
-
+  const createHomeNode = async () => {
+    const session = await getSession()
+    if (session?.user?.id) {
+      const userId = session.user.id
+      const newNodeData = await createHomeNodeAPICall(userId)
+      setHomeNode(newNodeData)
+    }
   }
 
   return {

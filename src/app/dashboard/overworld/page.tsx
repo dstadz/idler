@@ -12,7 +12,7 @@ const OverworldPage = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
   const [mainResources] = useAtom(resourcesAtom)
 
-  const { homeNode, drawHomeNode, createHomeNode } = useHomeNode(ctx)
+  const { homeNode, drawHomeNode } = useHomeNode(ctx)
 
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
