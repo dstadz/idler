@@ -1,5 +1,5 @@
 import { NodeTypeData, ResourceRecord } from "@/types/node"
-import { getDefaultResources, getResourceList } from "@/utils/constants"
+import { defaultResources, getResourceList } from "@/utils/constants"
 
 export class CanvasNode {
   id: string
@@ -13,7 +13,7 @@ export class CanvasNode {
     id,
     ctx,
     position = [0,0],
-    resources = getDefaultResources(),
+    resources = defaultResources,
     emoji = '❌',
     size = 10,
     }: NodeTypeData) {

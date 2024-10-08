@@ -1,13 +1,20 @@
 import { CanvasNode } from "@/classes"
+import { ResourceRecord } from "@/types/node"
+import { defaultResources } from "./constants"
 
 // Mapper to convert DB data to CanvasNode
 export function mapDbToCanvasNode(dbData: any, ctx: CanvasRenderingContext2D): CanvasNode {
-  const { id, xPos, yPos, entity, ...dbRest } = dbData.homeNode
+  const { id, xPos, yPos, entity } = dbData.homeNode
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { id: resourceId, entityId, ...resourceObj } = entity.resourceInventory
-  const resources = Object.fromEntries(
-    Object.entries(resourceObj).map(([key, value]) => [key.toUpperCase(), value])
-  )
+  // eslint-enable-next-line @typescript-eslint/no-unused-vars
 
+  const resources: ResourceRecord = {
+    ...defaultResources,
+    ...Object.fromEntries(
+      Object.entries(resourceObj).map(([key, value]) => [key.toUpperCase(), value])
+    )
+  }
 
   return new CanvasNode({
     id,
