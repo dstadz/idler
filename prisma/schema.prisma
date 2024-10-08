@@ -25,7 +25,7 @@ model ResourceInventory {
   power    Int      @default(0)
   energy   Int      @default(0)
   water    Int      @default(0)
-  entityId String?   @unique // This field needs to exist for the relation
+  entityId String?   @unique
   Entity   Entity?
 }
 
@@ -37,7 +37,7 @@ model Building {
   yPos         Float
   level        Int
   techUnlocked Boolean
-  entity       Entity  @relation("EntityBuilding", fields: [entityId], references: [id]) // Unique relation name
+  entity       Entity  @relation("EntityBuilding", fields: [entityId], references: [id])
 }
 
 model Entity {
@@ -46,7 +46,7 @@ model Entity {
   userId              String
   createdAt           DateTime          @default(now())
   updatedAt           DateTime          @default(now())
-  building            Building?         @relation("EntityBuilding") // Use same unique relation name here
+  building            Building?         @relation("EntityBuilding")
   resourceInventory   ResourceInventory @relation(fields: [resourceInventoryId], references: [id])
   user                User              @relation("UserEntities", fields: [userId], references: [id])
   unit                Unit?

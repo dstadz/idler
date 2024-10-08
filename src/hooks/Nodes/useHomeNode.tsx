@@ -1,17 +1,16 @@
 import { useEffect, useState, useCallback } from 'react'
 import { useAtom } from 'jotai'
-import { getSession } from 'next-auth/react'
 
 import { CanvasNode } from '@/classes'
 import { resourcesAtom } from '@/atoms'
 import { mapDbToCanvasNode } from '@/utils/mappers'
 
-const createHomeNodeAPICall = async (userId: number) => {
+const createHomeNodeAPICall = async () => {
   try {
     const response = await fetch('/api/village/building', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ userId }),
+      body: JSON.stringify({ type: 'HomeNode' }),
     })
 
     if (!response.ok) {
@@ -20,7 +19,6 @@ const createHomeNodeAPICall = async (userId: number) => {
     }
 
     const data = await response.json()
-    console.log('Home node created:', data)
 
     return data
   } catch (error) {
@@ -50,23 +48,21 @@ const fetchHomeNodeAPICall = async () => {
   }
 }
 
-export const useHomeNode = (ctx: CanvasRenderingContext2D) => {
+export const useHomeNode = (ctx: CanvasRenderingContext2D | null) => {
   const [homeNode, setHomeNode] = useState<CanvasNode>({} as CanvasNode)
   const [homeResources, setHomeResources] = useAtom(resourcesAtom)
 
   useEffect(() => {
-    const loadHomeNode = async () => {
+    if (!ctx) return
+    (async () => {
       const fetchedData = await fetchHomeNodeAPICall()
 
       if (fetchedData) {
         const newHomeNode = mapDbToCanvasNode(fetchedData, ctx)
         setHomeNode(newHomeNode)
       }
-    }
-
-    if (!ctx) return
-    loadHomeNode()
-  }, [ctx])
+    })()
+    }, [ctx])
 
   useEffect(() => {
     if (!homeNode || !homeNode.resources) return
@@ -80,12 +76,8 @@ export const useHomeNode = (ctx: CanvasRenderingContext2D) => {
   }, [homeNode])
 
   const createHomeNode = async () => {
-    const session = await getSession()
-    if (session?.user?.id) {
-      const userId = session.user.id
-      const newNodeData = await createHomeNodeAPICall(userId)
-      setHomeNode(newNodeData)
-    }
+    const newNodeData = await createHomeNodeAPICall()
+    setHomeNode(newNodeData)
   }
 
   return {
