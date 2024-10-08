@@ -10,16 +10,14 @@ import { resourcesAtom } from '@/atoms'
 
 const OverworldPage = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
+
   const [mainResources] = useAtom(resourcesAtom)
-
   const { homeNode, drawHomeNode } = useHomeNode(ctx)
-
   const { resourceNodes, drawResourceNodes } = useResourceNodes({
     ctx,
     homeNode,
     resourceNodesData,
   })
-
   const { transportNodes, drawTransportNodes } = useTransportNodes({
     ctx,
     homeNode,
@@ -38,19 +36,18 @@ const OverworldPage = () => {
     drawResourceNodes()
     drawTransportNodes()
 
-    const rafIdRefCurrent = requestAnimationFrame(gameLoop)
-    rafIdRef.current = rafIdRefCurrent
-  }, [clearWholeRect, drawFPS, drawHomeNode, drawResourceNodes, drawTransportNodes, ctx])
+    rafIdRef.current = requestAnimationFrame(gameLoop)
+  }, [canvasRef, clearWholeRect, drawFPS, drawHomeNode, drawResourceNodes, drawTransportNodes])
 
   useEffect(() => {
     if (
       !homeNode ||
       !resourceNodes.length ||
-      !transportNodes.length  ||
+      !transportNodes.length ||
       rafIdRef.current
     ) return
 
-    requestAnimationFrame(gameLoop)
+    rafIdRef.current = requestAnimationFrame(gameLoop)
   }, [gameLoop, homeNode, resourceNodes, transportNodes])
 
   return (
@@ -58,8 +55,8 @@ const OverworldPage = () => {
       <Box>
         Home
         <div>
-        <Typography>
-        {Object.keys(mainResources).length > 0 ? (
+          <Typography>
+            {Object.keys(mainResources).length > 0 ? (
               getResourceList({ resourceObject: mainResources })
                 .map(resource => <div key={resource}>{resource}</div>)
             ) : 'No resources available'}
