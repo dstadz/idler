@@ -1,1 +1,1 @@
-export { homeNodeData, resourceNodesData, transportNodesData } from './Nodes'
+export { resourceNodesData, transportNodesData } from './Nodes'

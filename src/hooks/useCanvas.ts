@@ -16,7 +16,6 @@ export const useCanvas = () => {
     const rect = canvasRef.current.getBoundingClientRect()
     const x = event.clientX - rect.left
     const y = event.clientY - rect.top
-    console.log([x, y], rect)
     setCoords([x, y])
   }, [ctx])
 
@@ -73,6 +72,5 @@ export const useCanvas = () => {
 
     coords,
     handleClick,
-
   }
 }

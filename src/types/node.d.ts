@@ -1,13 +1,12 @@
 import { CanvasNode } from "@/classes"
 import { RESOURCES } from "@/utils/constants"
 
-// STONE | WOOD | FOOD | GOLD | POWER | ENERGY | WATER
+// STONE | WOOD | FOOD | GOLD | POWER | ENERGY | WATER | IRON
 export type ResourceKey = keyof typeof RESOURCES
 export type ResourceRecord = Record<ResourceKey, number>
 
 export type NodeTypeRawData = {
   id: string
-  uuid?: string
   position: [number, number]
   resources: ResourceRecord
   emoji: string
@@ -19,7 +18,6 @@ export type NodeTypeData = NodeTypeRawData & {
 
 export type NodeType = NodeTypeData & {
   ctx: CanvasRenderingContext2D
-  uuid: string
 }
 
 export type ResourceNodeType = NodeType & {

@@ -50,19 +50,20 @@ export const NAV_TABS = [
 ]
 
 export const RESOURCES = {
-  STONE: { NAME: 'Stone', EMOJI: '🪨'},
-  WOOD: { NAME: 'Wood', EMOJI: '🪵',},
-  FOOD: { NAME: 'Food', EMOJI: '🍎',},
-  GOLD: { NAME: 'Gold', EMOJI: '🪙'},
-  POWER: { NAME: 'Power', EMOJI: '⚡️'},
-  ENERGY: { NAME: 'Energy', EMOJI: '✨'},
-  WATER: { NAME: 'Water', EMOJI: '💧'},
+  STONE: { NAME: 'Stone', EMOJI: '🪨' },
+  WOOD: { NAME: 'Wood', EMOJI: '🪵' },
+  FOOD: { NAME: 'Food', EMOJI: '🍎' },
+  GOLD: { NAME: 'Gold', EMOJI: '🪙' },
+  POWER: { NAME: 'Power', EMOJI: '⚡️' },
+  ENERGY: { NAME: 'Energy', EMOJI: '✨' },
+  WATER: { NAME: 'Water', EMOJI: '💧' },
+  IRON: { NAME: 'Iron', EMOJI: '⛓️' },
 }
 
 export const RESOURCES_KEYS = Object.keys(RESOURCES) as (keyof typeof RESOURCES)[]
 
 export const getResourceList = ({
-  resourceObject = getDefaultResources(),
+  resourceObject = defaultResources,
 }) => {
   if (!resourceObject) return []
   const resourceList = Object.keys(resourceObject)
@@ -78,7 +79,7 @@ export const getResourceList = ({
   return resourceList
 }
 
-export const getDefaultResources = (): ResourceRecord => ({
+export const defaultResources: ResourceRecord = {
   STONE: 0,
   WOOD: 0,
   FOOD: 0,
@@ -86,4 +87,5 @@ export const getDefaultResources = (): ResourceRecord => ({
   POWER: 0,
   ENERGY: 0,
   WATER: 0,
-})
+  IRON: 0,
+}
