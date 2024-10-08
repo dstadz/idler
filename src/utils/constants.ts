@@ -57,6 +57,7 @@ export const RESOURCES = {
   POWER: { NAME: 'Power', EMOJI: '⚡️' },
   ENERGY: { NAME: 'Energy', EMOJI: '✨' },
   WATER: { NAME: 'Water', EMOJI: '💧' },
+  IRON: { NAME: 'Iron', EMOJI: '⛓️' },
 }
 
 export const RESOURCES_KEYS = Object.keys(RESOURCES) as (keyof typeof RESOURCES)[]
