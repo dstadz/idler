@@ -17,7 +17,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </AccProvider>
     )
     return WrappedProviders
-  }, ({ children }: { children: React.ReactNode }) => <>{children}</>)
+  }, ({ children: layoutChildren }: { children: React.ReactNode }) => <>{layoutChildren}</>)
 
   return (
     <Providers>

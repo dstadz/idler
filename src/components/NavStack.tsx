@@ -40,7 +40,7 @@ export default function NavStack() {
             key={tab.route}
             label={tab.title}
             value={index}
-            {...(Icon ? {icon : <Icon />} : {})}
+            {...(Icon ? { icon : <Icon /> } : {})}
             sx={{
               minWidth: 64,
               minHeight: 60,

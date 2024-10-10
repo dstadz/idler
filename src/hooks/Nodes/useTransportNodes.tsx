@@ -12,12 +12,12 @@ export const useTransportNodes = ({
   resourceNodes,
 }: UseTransportNodeProps) => {
   const [, setMainResources] = useAtom(resourcesAtom)
-  const addToMainResources = (resource: keyof ResourceRecord, amount: number) => setMainResources(prev => ({
-    ...prev,
-    [resource]: prev[resource] + amount,
-  }))
 
   const newTransportNodes = useMemo(() => {
+    const addToMainResources = (resource: keyof ResourceRecord, amount: number) => setMainResources(prev => ({
+      ...prev,
+      [resource]: prev[resource] + amount,
+    }))
     if (
       !ctx ||
       !(Object.keys(homeNode).length) ||
@@ -35,7 +35,7 @@ export const useTransportNodes = ({
         parentNode: resourceNodes.find(({ id }) => id === node.parentId),
       })
     )
-  }, [ctx, homeNode, resourceNodes, transportNodesData])
+  }, [ctx, homeNode, resourceNodes, setMainResources, transportNodesData])
 
   const [transportNodes, setTransportNodes] = useState([] as TransportNodeType[])
   useEffect(() => {
