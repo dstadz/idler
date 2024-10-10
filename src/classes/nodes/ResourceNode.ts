@@ -1,5 +1,5 @@
 import { CanvasNode } from './CanvasNode'
-import { ResourceNodeType } from "@/types/node"
+import { ResourceNodeType } from '@/types/node'
 
 export class ResourceNode extends CanvasNode {
   homeNode: CanvasNode

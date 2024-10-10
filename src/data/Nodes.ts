@@ -2,8 +2,8 @@ import {
   NodeTypeRawData,
   ResourceRecord,
   TransportNodeTypeData,
-} from "@/types/node"
-import { RESOURCES } from "@/utils/constants"
+} from '@/types/node'
+import { RESOURCES } from '@/utils/constants'
 
 export const resourceNodesData: NodeTypeRawData[] = [
   {

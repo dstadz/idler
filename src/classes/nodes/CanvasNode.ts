@@ -1,5 +1,5 @@
-import { NodeTypeData, ResourceRecord } from "@/types/node"
-import { defaultResources, getResourceList } from "@/utils/constants"
+import { NodeTypeData, ResourceRecord } from '@/types/node'
+import { defaultResources, getResourceList } from '@/utils/constants'
 
 export class CanvasNode {
   id: string
@@ -33,7 +33,7 @@ export class CanvasNode {
       this.position[1] + this.size,
     )
 
-    this.ctx.font = `16px serif`
+    this.ctx.font = '16px serif'
     getResourceList({ resourceObject: this.resources })
     .filter(note => note !== '')
     .forEach((note, i) => {
