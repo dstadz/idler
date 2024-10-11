@@ -76,25 +76,27 @@ export class TransportNode extends CanvasNode {
   startLoading() {
     const loadingTime = 1000 / this.dexterity
     const availableResourceList = Object.keys(this.targetNode.resources).filter(key => this.targetNode.resources[key as keyof ResourceRecord] > 0)
+
+    if (availableResourceList.length === 0) {
+        this.isLoading = false
+        return
+    }
+
     const ranIdx = Math.floor(Math.random() * availableResourceList.length)
     const resource = availableResourceList[ranIdx] as keyof ResourceRecord
 
     setTimeout(() => {
-      if (!this.resources || !this.targetNode.resources || !(resource in this.targetNode.resources)) return
+        if (!this.resources || !this.targetNode.resources || !(resource in this.targetNode.resources)) return
 
-      const availableAmount = this.targetNode.resources[resource] || 0
-      const transferAmount = Math.min(availableAmount, this.strength)
+        const availableAmount = this.targetNode.resources[resource] || 0
+        const transferAmount = Math.min(availableAmount, this.strength)
 
-      if (!this.resources[resource]) {
-        this.resources[resource] = 0
-      }
-
-      this.resources[resource] += transferAmount
-      this.targetNode.resources[resource] -= transferAmount
-      this.isLoading = false
-      this.targetNode = this.homeNode
+        this.resources[resource] = (this.resources[resource] || 0) + transferAmount
+        this.targetNode.resources[resource] -= transferAmount
+        this.isLoading = false
+        this.targetNode = this.homeNode
     }, loadingTime)
-  }
+}
 
   startUnloading() {
     const unloadingTime = 1000 / this.dexterity
@@ -110,12 +112,13 @@ export class TransportNode extends CanvasNode {
 
     Object.keys(this.resources).forEach(resource => {
       const resKey = resource as keyof ResourceRecord
+      const amount = this.resources[resKey]
 
       if (!this.targetNode.resources[resKey]) {
         this.targetNode.resources[resKey] = 0
       }
       this.targetNode.resources[resKey] += this.resources[resKey]
-      this.addToMainResources(resKey, this.resources[resKey])
+      this.addToMainResources(resKey, amount)
       this.resources[resKey] = 0
     })
   }

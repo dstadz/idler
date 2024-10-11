@@ -21,7 +21,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     return <p>Loading...</p>
   }
 
-
   if (!session || !session.user) {
     return <div>User not logged in</div>
   }

@@ -29,7 +29,7 @@ const createHomeNodeAPICall = async () => {
 
 const fetchHomeNodeAPICall = async () => {
   try {
-    const response = await fetch(`/api/village/building`, {
+    const response = await fetch('/api/village/building', {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     })

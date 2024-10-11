@@ -2,12 +2,10 @@
 
 import React from 'react'
 
-const PlayerPage = () => {
-  return (
-    <div>
-      This is the Player Page Content
-    </div>
-  )
-}
+const PlayerPage = () => (
+  <div>
+    This is the Player Page Content
+  </div>
+)
 
 export default PlayerPage

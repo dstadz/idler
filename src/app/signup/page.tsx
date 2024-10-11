@@ -30,8 +30,8 @@ export default function SignupPage() {
         setError(result.message || 'Signup failed')
         console.error('Signup failed:', result)
       }
-    } catch (error) {
-      console.error('Error:', error)
+    } catch (catchError) {
+      console.error('Error:', catchError)
       setError('An unexpected error occurred')
     }
   }
@@ -42,21 +42,21 @@ export default function SignupPage() {
         <input
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={e => setName(e.target.value)}
           placeholder="Name"
           required
         />
         <input
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={e => setEmail(e.target.value)}
           placeholder="Email"
           required
         />
         <input
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={e => setPassword(e.target.value)}
           placeholder="Password"
           required
         />

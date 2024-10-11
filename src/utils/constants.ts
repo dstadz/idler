@@ -60,6 +60,11 @@ export const RESOURCES = {
   IRON: { NAME: 'Iron', EMOJI: '⛓️' },
 }
 
+export const defaultResources: ResourceRecord = Object.keys(RESOURCES).reduce((acc, key) => {
+  acc[key as keyof ResourceRecord] = 0
+  return acc
+}, {} as ResourceRecord)
+
 export const RESOURCES_KEYS = Object.keys(RESOURCES) as (keyof typeof RESOURCES)[]
 
 export const getResourceList = ({
@@ -77,15 +82,4 @@ export const getResourceList = ({
       return ''
     })
   return resourceList
-}
-
-export const defaultResources: ResourceRecord = {
-  STONE: 0,
-  WOOD: 0,
-  FOOD: 0,
-  GOLD: 0,
-  POWER: 0,
-  ENERGY: 0,
-  WATER: 0,
-  IRON: 0,
 }

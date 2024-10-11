@@ -1,5 +1,5 @@
-import { CanvasNode } from "@/classes"
-import { RESOURCES } from "@/utils/constants"
+import { CanvasNode, ResourceNode } from '@/classes'
+import { RESOURCES } from '@/utils/constants'
 
 // STONE | WOOD | FOOD | GOLD | POWER | ENERGY | WATER | IRON
 export type ResourceKey = keyof typeof RESOURCES

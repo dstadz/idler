@@ -1,4 +1,4 @@
-import {
+import React, {
   useRef,
   useEffect,
   useState,
@@ -19,9 +19,7 @@ export const useCanvas = () => {
     setCoords([x, y])
   }, [ctx])
 
-  useEffect(() => {
-    return () => setCtx(null)
-  }, [])
+  useEffect(() => () => setCtx(null), [])
 
   useEffect(() => {
     if (canvasRef.current) {
