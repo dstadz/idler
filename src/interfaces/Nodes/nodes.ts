@@ -26,6 +26,11 @@ export interface ResourceInventory {
   water: number
 }
 
+export interface ResourceInventoryData extends ResourceInventory {
+  id?: string
+  entityId?: string
+}
+
 export interface Entity {
   id: string
   resourceInventoryId: string
@@ -33,6 +38,10 @@ export interface Entity {
   createdAt: string
   updatedAt: string
   resourceInventory: ResourceInventory
+}
+
+export interface EntityData extends Entity {
+  resourceInventory: ResourceInventoryData
 }
 
 export interface HomeNode {
@@ -43,7 +52,7 @@ export interface HomeNode {
   yPos: number
   level: number
   techUnlocked: boolean
-  entity: Entity
+  entity: EntityData
 }
 
 export interface ApiResponse {
