@@ -3,7 +3,7 @@
 import React from 'react'
 import { Box, Stack } from '@mui/material'
 
-const OverworldPage = () => {
+const DashboardPage = () => {
 
   return (
     <Stack flexDirection="row" justifyContent="space-between">
@@ -14,4 +14,4 @@ const OverworldPage = () => {
   )
 }
 
-export default OverworldPage
+export default DashboardPage

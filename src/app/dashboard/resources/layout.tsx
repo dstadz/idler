@@ -1,28 +1,12 @@
 'use client'
 import React from 'react'
-import { LayoutProps } from '@/interfaces'
-import { Stack, Typography } from '@mui/material'
-import Link from 'next/link'
-import { getResourceList } from '@/utils/constants'
-
-import { resourcesAtom } from '@/atoms'
 import { useAtom } from 'jotai'
+import { Stack, Typography } from '@mui/material'
 
-const SubNav = ({ subRoutes }: { subRoutes: string[] }) => {
-
-  return (
-      <Stack flexDirection="row">
-        {subRoutes.map(subRoute => (
-          <Link href={`/dashboard/resources/${subRoute}`} key={subRoute}>
-            <Stack key={subRoute} className='border-2 border-purple-500'>
-              {subRoute}
-            </Stack>
-          </Link>
-        ))}
-      </Stack>
-
-  )
-}
+import { LayoutProps } from '@/interfaces'
+import { resourcesAtom } from '@/atoms'
+import { getResourceList } from '@/utils/constants'
+import SubNav from '@/components/SubNav'
 
 const ResourcesLayout = ({ children }: LayoutProps) => {
   const [mainResources] = useAtom(resourcesAtom)

@@ -58,6 +58,92 @@ export const RESOURCES = {
   IRON: { NAME: 'Iron', EMOJI: '⛓️' },
 }
 
+export const ORES = {
+  COPPER: {
+    NAME: 'Copper Ore',
+    // EMOJI: '🪪',
+    SELL_PRICE: 1,
+  },
+  IRON: {
+    NAME: 'Iron Ore',
+    // EMOJI: '🪙',
+    SELL_PRICE: 2,
+  },
+  SILICA: {
+    NAME: 'Silica',
+    // EMOJI: '🪙',
+    SELL_PRICE: 8,
+  },
+}
+
+export const ALLOYS = {
+  COPPER: {
+    NAME: 'Copper Bar',
+    UNLOCK_COST: 0,
+    SELL_PRICE: 1450,
+    TIME_TO_MAKE: 20,
+    COST: [[ORES.COPPER, 1000]],
+  },
+  IRON: {
+    NAME: 'Iron Bar',
+    UNLOCK_COST: 3000,
+    SELL_PRICE: 3000,
+    TIME_TO_MAKE: 30,
+    COST: [[ORES.IRON, 1000]],
+  },
+  SILICON: {
+    NAME: 'Silicon Bar',
+    UNLOCK_COST: 25000,
+    SELL_PRICE: 12500,
+    TIME_TO_MAKE: 60,
+    COST: [[ORES.SILICA, 1000]],
+  },
+
+}
+
+export const ITEMS = {
+  WIRE: {
+    NAME: 'Copper Wire',
+    UNLOCK_COST: 0,
+    SELL_PRICE: 10000,
+    TIME_TO_MAKE: 60,
+    COST: [[ALLOYS.COPPER, 5]],
+  },
+  NAILS : {
+    NAME: 'Iron Nails',
+    UNLOCK_COST: 20000,
+    SELL_PRICE: 20000,
+    TIME_TO_MAKE: 120,
+    COST: [[ALLOYS.IRON, 5]],
+  },
+  BATTERY: {
+    NAME: 'Battery',
+    UNLOCK_COST: 50000,
+    SELL_PRICE: 70000,
+    TIME_TO_MAKE: 240,
+    COST: [[ALLOYS.COPPER, 10]], // , [ITEMS.WIRE, 2]],
+  },
+  GLASS: {
+    NAME: 'Glass',
+    UNLOCK_COST: 200000,
+    SELL_PRICE: 220000,
+    TIME_TO_MAKE: 720,
+    COST: [[ALLOYS.SILICON, 10]],
+  },
+  CIRCIUT: {
+    NAME: 'Circuit',
+    UNLOCK_COST: 400000,
+    SELL_PRICE: 620000,
+    TIME_TO_MAKE: 960,
+    COST: [
+      [ALLOYS.SILICON, 10],
+      [ALLOYS.IRON, 10], // ALUMINUM
+      // [ITEMS.WIRE, 10]
+    ],
+  },
+
+}
+
 export const defaultResources: ResourceRecord = Object.keys(RESOURCES).reduce((acc, key) => {
   acc[key as keyof ResourceRecord] = 0
   return acc
