@@ -7,7 +7,6 @@ import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/h
 
 const Canvas = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
-  console.log(`🚀 ~ file: page.tsx:13 ~ OverworldPage ~ ctx:`, ctx)
 
   const { homeNode, drawHomeNode } = useHomeNode(ctx)
   const { resourceNodes, drawResourceNodes } = useResourceNodes({

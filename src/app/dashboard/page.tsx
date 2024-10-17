@@ -2,7 +2,6 @@
 
 import React from 'react'
 import { Box, Stack } from '@mui/material'
-import Canvas from '@/components/Canvas'
 
 const OverworldPage = () => {
 
@@ -10,7 +9,6 @@ const OverworldPage = () => {
     <Stack flexDirection="row" justifyContent="space-between">
       <Box>
         This is Page Content
-        {/* <Canvas /> */}
       </Box>
     </Stack>
   )
