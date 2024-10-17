@@ -3,10 +3,11 @@ import React, { ReactNode, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 
-import Stack from '@mui/material/Stack'
+import { Stack } from '@mui/material'
 
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
+import Canvas from '@/components/Canvas'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession()
@@ -26,19 +27,21 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <div className="flex flex-col border-2 w-full">
+    <Stack className="flex flex-col w-full h-screen border-2 border-purple-500">
 
-      <div className="border-2 border-yellow-500">
+      <Stack>
         <h1>{session.user.name}s Dashboard</h1>
         <SignOutButton />
-      </div>
+      </Stack>
 
       <Stack flexDirection="row">
         <NavStack />
-        {children}
+        <Stack justifyContent="space-between">
+          {children}
+          <Canvas />
+        </Stack>
       </Stack>
-
-    </div>
+    </Stack>
   )
 }
 
