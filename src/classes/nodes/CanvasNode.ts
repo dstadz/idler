@@ -33,15 +33,15 @@ export class CanvasNode {
       this.position[1] + this.size,
     )
 
-    // this.ctx.font = '16px serif'
-    // getResourceList({ resourceObject: this.resources })
-    // .filter(note => note !== '')
-    // .forEach((note, i) => {
-    //   this.ctx.fillText(
-    //     note,
-    //     this.position[0],
-    //     this.position[1] + this.size + 20 * (i + 1),
-    //   )
-    // })
+    this.ctx.font = '16px serif'
+    getResourceList({ resourceObject: this.resources })
+    .filter(note => note !== '')
+    .forEach((note, i) => {
+      this.ctx.fillText(
+        note,
+        this.position[0],
+        this.position[1] + this.size + 20 * (i + 1),
+      )
+    })
   }
 }

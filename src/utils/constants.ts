@@ -47,17 +47,6 @@ export const NAV_TABS = [
   },
 ]
 
-export const RESOURCES = {
-  STONE: { NAME: 'Stone', EMOJI: '🪨' },
-  WOOD: { NAME: 'Wood', EMOJI: '🪵' },
-  FOOD: { NAME: 'Food', EMOJI: '🍎' },
-  GOLD: { NAME: 'Gold', EMOJI: '🪙' },
-  POWER: { NAME: 'Power', EMOJI: '⚡️' },
-  ENERGY: { NAME: 'Energy', EMOJI: '✨' },
-  WATER: { NAME: 'Water', EMOJI: '💧' },
-  IRON: { NAME: 'Iron', EMOJI: '⛓️' },
-}
-
 export const ORES = {
   COPPER: {
     NAME: 'Copper Ore',
@@ -141,7 +130,91 @@ export const ITEMS = {
       // [ITEMS.WIRE, 10]
     ],
   },
+}
 
+export const PLANETS = [
+  {
+    planet: 'Balor',
+    basePrice: 100,
+    telescopeNumber: 'Default',
+    resources: {
+      Copper: 100
+    },
+    distance: 10
+  },
+  {
+    planet: 'Drasta',
+    basePrice: 200,
+    telescopeNumber: 'Default',
+    resources: {
+      Copper: 80,
+      Iron: 20
+    },
+    distance: 12
+  },
+  {
+    planet: 'Anadius',
+    basePrice: 500,
+    telescopeNumber: 'Default',
+    resources: {
+      Copper: 50,
+      Iron: 50
+    },
+    yield: 50,
+    distance: 14
+  },
+  {
+    planet: 'Dholen',
+    basePrice: 1250,
+    telescopeNumber: 'Default',
+    resources: {
+      Iron: 80,
+      Lead: 20
+    },
+    distance: 15
+  },
+  {
+    planet: 'Verr',
+    basePrice: 5000,
+    telescopeNumber: 1,
+    resources: {
+      Lead: 50,
+      Iron: 30,
+      Copper: 20
+    },
+    distance: 16
+  },
+  {
+    planet: 'Newton',
+    basePrice: 9000,
+    telescopeNumber: 1,
+    resources: {
+      Lead: 100
+    },
+    distance: 18
+  },
+  {
+    planet: 'Widow',
+    basePrice: 15000,
+    telescopeNumber: 1,
+    resources: {
+      Iron: 40,
+      Copper: 40,
+      Silica: 20
+    },
+    distance: 20
+  }
+]
+
+export const RESOURCES = {
+  STONE: { NAME: 'Stone', EMOJI: '🪨' },
+  WOOD: { NAME: 'Wood', EMOJI: '🪵' },
+  FOOD: { NAME: 'Food', EMOJI: '🍎' },
+  GOLD: { NAME: 'Gold', EMOJI: '🪙' },
+  POWER: { NAME: 'Power', EMOJI: '⚡️' },
+  ENERGY: { NAME: 'Energy', EMOJI: '✨' },
+  WATER: { NAME: 'Water', EMOJI: '💧' },
+  IRON: { NAME: 'Iron', EMOJI: '⛓️' },
 }
 
 export const defaultResources: ResourceRecord = Object.keys(RESOURCES).reduce((acc, key) => {

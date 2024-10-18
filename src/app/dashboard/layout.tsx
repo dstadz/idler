@@ -27,7 +27,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <Stack className="flex flex-col w-full h-screen border-2 border-purple-500">
+    <Stack className="flex flex-col w-full h-screen border-2 border-red-500">
 
       <Stack>
         <h1>{session.user.name}s Dashboard</h1>
