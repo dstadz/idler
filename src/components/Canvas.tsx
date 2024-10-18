@@ -1,9 +1,10 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef } from 'react'
-import { Box, Stack } from '@mui/material'
+import { Box } from '@mui/material'
 import { resourceNodesData, transportNodesData } from '@/data'
 import { useCanvas, useHomeNode, useResourceNodes, useTransportNodes } from '@/hooks'
+import { usePlanets } from '@/hooks/Nodes/usePlanetsNode'
 
 const Canvas = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
@@ -21,6 +22,12 @@ const Canvas = () => {
     transportNodesData,
   })
 
+
+  const { drawPlanets } = usePlanets({
+    ctx,
+    homeNode,
+  })
+
   const rafIdRef = useRef<number | null>(null)
   const gameLoop = useCallback((timestamp: number) => {
     if (!canvasRef.current) return
@@ -32,8 +39,18 @@ const Canvas = () => {
     drawResourceNodes()
     drawTransportNodes()
 
+    drawPlanets()
+
     rafIdRef.current = requestAnimationFrame(gameLoop)
-  }, [canvasRef, clearWholeRect, drawFPS, drawHomeNode, drawResourceNodes, drawTransportNodes])
+  }, [
+    canvasRef,
+    clearWholeRect,
+    drawFPS,
+    drawHomeNode,
+    drawResourceNodes,
+    drawTransportNodes,
+    drawPlanets,
+  ])
 
   useEffect(() => {
     if (
@@ -47,18 +64,16 @@ const Canvas = () => {
   }, [gameLoop, homeNode, resourceNodes, transportNodes])
 
   return (
-    <Stack flexDirection="row" justifyContent="space-between">
-      <Box>
-        This is the Canvas
-        <canvas
-          ref={canvasRef}
-          width={800}
-          height={600}
-          className="border-2 border-purple-500 border-rounded"
-          onClick={handleClick}
-        />
-      </Box>
-    </Stack>
+    <Box>
+      This is the Canvas
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={600}
+        className="border-2 border-purple-500 border-rounded"
+        onClick={handleClick}
+      />
+    </Box>
   )
 }
 
