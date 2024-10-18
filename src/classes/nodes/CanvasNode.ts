@@ -26,21 +26,21 @@ export class CanvasNode {
   }
 
   drawUnit() {
-    this.ctx.font = `${this.size}px serif`
-    this.ctx.fillText(
-      this.emoji,
-      this.position[0],
-      this.position[1] + this.size,
-    )
+    const centerFill = (size = this.size) => [
+      this.position[0] - size / 2,
+      this.position[1] + size / 2,
+    ]
 
+    this.ctx.font = `${this.size}px serif`
+    this.ctx.fillText(this.emoji, ...centerFill())
     this.ctx.font = '16px serif'
     getResourceList({ resourceObject: this.resources })
     .filter(note => note !== '')
     .forEach((note, i) => {
       this.ctx.fillText(
         note,
-        this.position[0],
-        this.position[1] + this.size + 20 * (i + 1),
+        centerFill()[0],
+        centerFill()[1] + 20 * (i + 1),
       )
     })
   }

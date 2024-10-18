@@ -23,12 +23,10 @@ export class Planet extends CanvasNode {
     position,
     homeNode,
     emoji,
-    size,
+    size = 40,
     resources,
-    mineRateLevel,
-    shipSpeedLevel,
-    cargoLevel,
-    // addToMainResources,
+    levels,
+    addToMainResources,
   }: PlanetType) {
     super({
       id,
@@ -40,24 +38,25 @@ export class Planet extends CanvasNode {
     })
 
     this.homeNode = homeNode
-    this.mineRate = mineRates[mineRateLevel]
-    this.shipSpeed = shipSpeeds[shipSpeedLevel]
-    this.cargo = cargos[cargoLevel]
+    this.mineRate = mineRates[levels.mineRate]
+    this.shipSpeed = shipSpeeds[levels.shipSpeed]
+    this.cargo = cargos[levels.cargo]
+
 
     // Initialize the ship (TransportNode) with valid parameters
-    // this.ship = new TransportNode({
-    //   id,
-    //   ctx,
-    //   size,
-    //   emoji,
-    //   parentNode: this,
-    //   homeNode,
-    //   speed: this.shipSpeed,
-    //   strength: this.cargo,
-    //   dexterity: 5000,
-    //   resources,
-    //   addToMainResources,
-    // })
+    this.ship = new TransportNode({
+      id,
+      ctx,
+      size: 10,
+      emoji: '🚀',
+      parentNode: this,
+      homeNode,
+      speed: this.shipSpeed,
+      strength: this.cargo,
+      dexterity: 5,
+      resources,
+      addToMainResources,
+    })
   }
 
   mine() {

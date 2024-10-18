@@ -1,5 +1,5 @@
 import { NodeType, ResourceRecord, TransportNodeType } from '@/types/node'
-import { CanvasNode, ResourceNode } from '../nodes'
+import { CanvasNode, Planet, ResourceNode } from '../nodes'
 
 export class TransportNode extends CanvasNode {
   // locked
@@ -66,7 +66,10 @@ export class TransportNode extends CanvasNode {
 
   handleArrival() {
     this.isLoading = true
-    if (this.targetNode instanceof ResourceNode) {
+    if (
+      this.targetNode instanceof ResourceNode ||
+      this.targetNode instanceof Planet
+    ) {
       this.startLoading()
     } else if (this.targetNode === this.homeNode) {
       this.startUnloading()
