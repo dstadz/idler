@@ -7,7 +7,7 @@ import { Stack } from '@mui/material'
 
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
-import Canvas from '@/components/Canvas'
+import PlanetCanvas from '@/components/canvas/PlanetCanvas'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const { data: session, status } = useSession()
@@ -38,7 +38,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         <NavStack />
         <Stack justifyContent="space-between">
           {children}
-          <Canvas />
+          <PlanetCanvas />
         </Stack>
       </Stack>
     </Stack>
