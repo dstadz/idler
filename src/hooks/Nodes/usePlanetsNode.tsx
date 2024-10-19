@@ -16,8 +16,9 @@ const PLANETS = planetsStatic.map(planet => ({
   id: `planet${planet.id}`,
   position: [500, 100],
   resources: {
-    ...(Object.fromEntries(
-      Object.keys(RESOURCES).map(key => [key, 0])
+    ...(Object.fromEntries(Object.keys(RESOURCES)
+      .map(key => [key, 0])
+      .filter(([, amount]) => amount > 0)
     ) as ResourceRecord),
     [RESOURCES.WATER.NAME.toUpperCase()]: 2000,
     [RESOURCES.WOOD.NAME.toUpperCase()]: 1000,
@@ -60,6 +61,7 @@ export const usePlanets = ({
 
   const drawPlanets = () => {
     planets.forEach(node => {
+      node.update()
       node.drawUnit()
       node.ship.drawUnit()
     })

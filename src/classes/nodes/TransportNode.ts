@@ -78,7 +78,8 @@ export class TransportNode extends CanvasNode {
 
   startLoading() {
     const loadingTime = 1000 / this.dexterity
-    const availableResourceList = Object.keys(this.targetNode.resources).filter(key => this.targetNode.resources[key as keyof ResourceRecord] > 0)
+    const availableResourceList = Object.keys(this.targetNode.resources)
+      .filter(key => this.targetNode.resources[key as keyof ResourceRecord] > 1)
 
     if (availableResourceList.length === 0) {
         this.isLoading = false
@@ -91,12 +92,12 @@ export class TransportNode extends CanvasNode {
     setTimeout(() => {
         if (!this.resources || !this.targetNode.resources || !(resource in this.targetNode.resources)) return
 
+        this.isLoading = false
         const availableAmount = this.targetNode.resources[resource] || 0
-        const transferAmount = Math.min(availableAmount, this.strength)
+        const transferAmount = Math.min(Math.floor(availableAmount), this.strength)
 
         this.resources[resource] = (this.resources[resource] || 0) + transferAmount
         this.targetNode.resources[resource] -= transferAmount
-        this.isLoading = false
         this.targetNode = this.homeNode
     }, loadingTime)
 }

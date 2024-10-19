@@ -42,15 +42,14 @@ export class Planet extends CanvasNode {
     this.shipSpeed = shipSpeeds[levels.shipSpeed]
     this.cargo = cargos[levels.cargo]
 
-
     // Initialize the ship (TransportNode) with valid parameters
     this.ship = new TransportNode({
       id,
       ctx,
       size: 10,
       emoji: '🚀',
-      parentNode: this,
       homeNode,
+      parentNode: this,
       speed: this.shipSpeed,
       strength: this.cargo,
       dexterity: 5,
@@ -60,6 +59,14 @@ export class Planet extends CanvasNode {
   }
 
   mine() {
-    this.resources.ORE += this.mineRate
+    const randIdx = Math.floor(Math.random() * Object.keys(this.resources).length)
+    const randResource = Object.keys(this.resources)[randIdx]
+    this.resources[randResource] = Math.round(
+      this.resources[randResource] * 1000 + this.mineRate
+    ) / 1000
+  }
+
+  update() {
+    this.mine()
   }
 }
