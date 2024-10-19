@@ -4,15 +4,19 @@ import React, { useState, useEffect } from 'react'
 import Tab from '@mui/material/Tab'
 import Tabs from '@mui/material/Tabs'
 import { useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
+
 import { NAV_TABS } from '@/utils/constants'
 
 export default function NavStack() {
-  const [value, setValue] = useState<number>(0)
-  const [mounted, setMounted] = useState(false)
   const router = useRouter()
+  const pathname = usePathname()
+  const [value, setValue] = useState<number>(-1)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
+    setValue(NAV_TABS.findIndex((tab) => tab.route === pathname.split('/')[2]))
   }, [])
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -34,13 +38,13 @@ export default function NavStack() {
       orientation="vertical"
     >
       {NAV_TABS.map((tab, index) => {
-        const Icon = tab?.icon
+        // const Icon = tab?.icon
         return (
           <Tab
             key={tab.route}
             label={tab.title}
             value={index}
-            {...(Icon ? { icon : <Icon /> } : {})}
+            // {...(Icon ? { icon : <Icon /> } : {})}
             sx={{
               minWidth: 64,
               minHeight: 60,
