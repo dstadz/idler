@@ -37,7 +37,7 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
   }
 
   useEffect(() => {
-    if (!ctx || !homeNode) return
+    if (!ctx || Object.keys(homeNode).length === 0) return
 
     const newPlanets = PLANETS.map(node =>
       new Planet({

@@ -11,12 +11,13 @@ import { NAV_TABS } from '@/utils/constants'
 export default function NavStack() {
   const router = useRouter()
   const pathname = usePathname()
-  const [value, setValue] = useState<number>(-1)
+  const [value, setValue] = useState<number>(0)
   const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
     setMounted(true)
-    setValue(NAV_TABS.findIndex((tab) => tab.route === pathname.split('/')[2]))
+    const index = NAV_TABS.findIndex((tab) => tab.route === pathname)
+    setValue(index === -1 ? 0 : index)
   }, [])
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {

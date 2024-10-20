@@ -1,10 +1,12 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef } from 'react'
-import { useCanvas } from '@/hooks'
+import { useCanvas, useHomeNode, usePlanetNodes } from '@/hooks'
 
-const Canvas = ({ drawNodes, nodes, }) => {
+const Canvas = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
+  const { homeNode, drawHomeNode } = useHomeNode(ctx)
+  const { planets, drawPlanets } = usePlanetNodes({ctx, homeNode})
 
   const rafIdRef = useRef<number | null>(null)
   const gameLoop = useCallback((timestamp: number) => {
@@ -13,20 +15,27 @@ const Canvas = ({ drawNodes, nodes, }) => {
     clearWholeRect(canvasRef.current)
     drawFPS(timestamp)
 
-    drawNodes.forEach(draw => draw())
+    drawHomeNode()
+    drawPlanets()
     rafIdRef.current = requestAnimationFrame(gameLoop)
   }, [
     canvasRef,
     clearWholeRect,
     drawFPS,
-    drawNodes,
+    drawHomeNode,
+    drawPlanets,
   ])
 
   useEffect(() => {
-    if (nodes.length === 0 || !rafIdRef.current ) return
+    if (
+      !homeNode ||
+      Object.keys(homeNode).length === 0 ||
+      planets.length === 0 ||
+      rafIdRef.current
+    ) return
 
     rafIdRef.current = requestAnimationFrame(gameLoop)
-  }, [gameLoop, nodes])
+  }, [gameLoop, planets, homeNode])
 
   return <canvas
     ref={canvasRef}
