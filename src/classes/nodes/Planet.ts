@@ -1,9 +1,7 @@
 import { CanvasNode } from './CanvasNode'
 import { PlanetType, ResourceRecord } from '@/types/node'
 import { TransportNode } from './TransportNode'
-
-
-
+import { getOreList } from '@/utils/constants'
 
 const mineRates = [1, 2, 3, 4, 5]
 const shipSpeeds = [1, 2, 3, 4, 5]
@@ -68,5 +66,23 @@ export class Planet extends CanvasNode {
 
   update() {
     this.mine()
+  }
+
+  drawUnit(): void {
+    super.drawUnit()
+    const centerFill = (size = this.size) => [
+      this.position[0] - size / 2,
+      this.position[1] + size / 2,
+    ]
+    // this.ship.drawUnit()
+    getOreList({ resourceObject: this.resources })
+    .filter(note => note !== '')
+    .forEach((note, i) => {
+      this.ctx.fillText(
+        note,
+        centerFill()[0],
+        centerFill()[1] + 20 * (i + 1),
+      )
+    })
   }
 }

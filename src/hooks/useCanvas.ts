@@ -24,7 +24,7 @@ export const useCanvas = () => {
       const context = canvasRef.current.getContext('2d')
       if (context) setCtx(context)
     }
-    return () => setCtx(null) // Cleanup when unmounted
+    return () => setCtx(null)
   }, [])
 
   const clearWholeRect = useCallback((canvas: HTMLCanvasElement) => {
