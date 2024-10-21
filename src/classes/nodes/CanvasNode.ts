@@ -8,6 +8,7 @@ export class CanvasNode {
   resources: ResourceRecord
   emoji: string
   size: number
+  centerDrawPoint: (size?: number) => [number, number]
 
   constructor({
     id,

@@ -1,34 +1,31 @@
+
 import { NodeType, ResourceRecord, TransportNodeType } from '@/types/node'
 import { CanvasNode, Planet, ResourceNode } from '../nodes'
 
 export class TransportNode extends CanvasNode {
-  // locked
-  parentNode?: ResourceNode
   homeNode: NodeType
-
-  // dynamic
+  parentNode?: ResourceNode
   targetNode: NodeType
-  resources: ResourceRecord
-  isLoading: boolean = false
-
-  // stats
+  position: [number, number]
+  isLoading: boolean
   speed: number
   strength: number
   dexterity: number
-
-  // state
+  resources: ResourceRecord
   addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
 
   constructor({
-    ctx,
-    emoji,
-    size,
     id,
-    parentNode,
+    ctx,
+    size = 10,
+    emoji = '❌',
     homeNode,
-    speed,
-    strength,
-    dexterity,
+    parentNode,
+    targetNode = homeNode,
+    isLoading = false,
+    speed = 1,
+    strength = 1,
+    dexterity = 1,
     resources,
     addToMainResources,
   }: TransportNodeType) {
@@ -41,12 +38,12 @@ export class TransportNode extends CanvasNode {
       id,
     })
     this.homeNode = homeNode
-    this.parentNode = parentNode || undefined
+    this.parentNode = parentNode
+    this.targetNode = targetNode
+    this.isLoading = isLoading
     this.speed = speed
     this.strength = strength
     this.dexterity = dexterity
-    this.targetNode = parentNode || homeNode
-    this.resources = {} as ResourceRecord
     this.addToMainResources = addToMainResources
   }
 
@@ -100,7 +97,7 @@ export class TransportNode extends CanvasNode {
         this.targetNode.resources[resource] -= transferAmount
         this.targetNode = this.homeNode
     }, loadingTime)
-}
+  }
 
   startUnloading() {
     const unloadingTime = 1000 / this.dexterity

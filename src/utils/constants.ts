@@ -242,7 +242,6 @@ export const getResourceList = ({
   return resourceList
 }
 
-
 export const getOreList = ({
   resourceObject = defaultResources,
 }) => {

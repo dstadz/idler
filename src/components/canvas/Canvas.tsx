@@ -20,14 +20,13 @@ const Canvas = () => {
 
       rafIdRef.current = requestAnimationFrame(gameLoop)
     },
-    [ctx, clearWholeRect, drawFPS, drawHomeNode, drawPlanets]
+    [ctx, canvasRef, clearWholeRect, drawFPS, drawHomeNode, drawPlanets]
   )
 
   useEffect(() => {
     const canStart = ctx && homeNode && planets.length > 0
 
     if (!canStart || rafIdRef.current) return
-    console.log(`🚀 ~ file: Canvas.tsx:42 ~ useEffect ~ rafIdRef.current:`, rafIdRef.current)
     rafIdRef.current = requestAnimationFrame(gameLoop)
 
     return () => {

@@ -1,5 +1,5 @@
 import { CanvasNode } from './CanvasNode'
-import { PlanetType, ResourceRecord } from '@/types/node'
+import { PlanetType } from '@/types/node'
 import { TransportNode } from './TransportNode'
 import { getOreList } from '@/utils/constants'
 
@@ -9,7 +9,6 @@ const cargos = [1, 2, 3, 4, 5]
 
 export class Planet extends CanvasNode {
   homeNode: CanvasNode
-  yield: ResourceRecord
   mineRate: number
   shipSpeed: number
   cargo: number

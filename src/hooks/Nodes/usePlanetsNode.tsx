@@ -39,7 +39,6 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     [setMainResources]
   )
 
-
   useEffect(() => {
     if (!ctx || Object.keys(homeNode).length === 0) return
 
@@ -86,7 +85,6 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
       })
 
       if (clickedPlanet) {
-        console.log(`🚀 ~ file: usePlanetsNode.tsx:87 ~ usePlanetNodes ~ clickedPlanet:`, clickedPlanet)
         setSelectedPlanet(clickedPlanet)
       }
     },

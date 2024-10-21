@@ -16,9 +16,9 @@ export default function NavStack() {
 
   useEffect(() => {
     setMounted(true)
-    const index = NAV_TABS.findIndex((tab) => tab.route === pathname)
+    const index = NAV_TABS.findIndex(tab => tab.route === pathname)
     setValue(index === -1 ? 0 : index)
-  }, [])
+  }, [pathname])
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue)
