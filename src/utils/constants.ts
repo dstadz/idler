@@ -241,3 +241,14 @@ export const getResourceList = ({
     })
   return resourceList
 }
+
+
+export const getOreList = ({
+  resourceObject = defaultResources,
+}) => {
+  if (!resourceObject) return []
+  const resourceList = Object.keys(resourceObject)
+    .filter(key => resourceObject[key] > 0)
+    .map(key =>  `${key}: ${resourceObject[key]}`)
+  return resourceList
+}

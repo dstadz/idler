@@ -6,44 +6,48 @@ import { useCanvas, useHomeNode, usePlanetNodes } from '@/hooks'
 const Canvas = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
   const { homeNode, drawHomeNode } = useHomeNode(ctx)
-  const { planets, drawPlanets } = usePlanetNodes({ctx, homeNode})
-
+  const { planets, drawPlanets } = usePlanetNodes({ ctx, homeNode })
   const rafIdRef = useRef<number | null>(null)
-  const gameLoop = useCallback((timestamp: number) => {
-    if (!canvasRef.current) return
 
-    clearWholeRect(canvasRef.current)
-    drawFPS(timestamp)
+  const gameLoop = useCallback(
+    (timestamp: number) => {
+      if (!ctx || !canvasRef.current) return
 
-    drawHomeNode()
-    drawPlanets()
-    rafIdRef.current = requestAnimationFrame(gameLoop)
-  }, [
-    canvasRef,
-    clearWholeRect,
-    drawFPS,
-    drawHomeNode,
-    drawPlanets,
-  ])
+      clearWholeRect(canvasRef.current)
+      drawFPS(timestamp)
+      drawHomeNode()
+      drawPlanets()
+
+      rafIdRef.current = requestAnimationFrame(gameLoop)
+    },
+    [ctx, clearWholeRect, drawFPS, drawHomeNode, drawPlanets]
+  )
 
   useEffect(() => {
-    if (
-      !homeNode ||
-      Object.keys(homeNode).length === 0 ||
-      planets.length === 0 ||
-      rafIdRef.current
-    ) return
+    const canStart = ctx && homeNode && planets.length > 0
 
+    if (!canStart || rafIdRef.current) return
+    console.log(`🚀 ~ file: Canvas.tsx:42 ~ useEffect ~ rafIdRef.current:`, rafIdRef.current)
     rafIdRef.current = requestAnimationFrame(gameLoop)
-  }, [gameLoop, planets, homeNode])
 
-  return <canvas
-    ref={canvasRef}
-    width={800}
-    height={600}
-    className="border-2 border-purple-500 border-rounded"
-    onClick={handleClick}
-  />
+    return () => {
+      if (rafIdRef.current) {
+        // cancelAnimationFrame(rafIdRef.current)
+        console.log('Game loop stopped')
+      }
+      // rafIdRef.current = null
+    }
+  }, [ctx, homeNode, planets, gameLoop])
+
+  return (
+    <canvas
+      ref={canvasRef}
+      width={800}
+      height={600}
+      className="border-2 border-purple-500 rounded"
+      onClick={handleClick}
+    />
+  )
 }
 
 export default Canvas

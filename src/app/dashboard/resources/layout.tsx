@@ -18,12 +18,12 @@ const ResourcesLayout = ({ children }: LayoutProps) => {
     {children}
     <Stack>
 
-    <Typography>
+    <Stack>
         {Object.keys(mainResources).length > 0 ? (
           getResourceList({ resourceObject: mainResources })
-            .map(resource => <div key={resource}>{resource}</div>)
+            .map(resource => <Typography key={resource}>{resource}</Typography>)
         ) : 'No resources available'}
-      </Typography>
+      </Stack>
     </Stack>
   </div>
 )}

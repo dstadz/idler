@@ -29,12 +29,16 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
   const [planets, setPlanets] = useState<Planet[]>([])
   const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null)
   const [, setMainResources] = useAtom(resourcesAtom)
-  const addToMainResources = (resource: keyof ResourceRecord, amount: number) => {
-    setMainResources(prev => ({
-      ...prev,
-      [resource]: prev[resource] + amount,
-    }))
-  }
+  const addToMainResources = useCallback(
+    (resource: keyof ResourceRecord, amount: number) => {
+      setMainResources(prev => ({
+        ...prev,
+        [resource]: prev[resource] + amount,
+      }))
+    },
+    [setMainResources]
+  )
+
 
   useEffect(() => {
     if (!ctx || Object.keys(homeNode).length === 0) return

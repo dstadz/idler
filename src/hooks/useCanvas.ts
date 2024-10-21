@@ -3,15 +3,15 @@ import React, {
   useEffect,
   useState,
   useCallback,
-  } from 'react'
+} from 'react'
 
 export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
   const [coords, setCoords] = useState<[number, number]>([0, 0])
+  const fpsRef = useRef(0)
 
   const handleClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-
     if (!ctx || !canvasRef.current) return
     const rect = canvasRef.current.getBoundingClientRect()
     const x = event.clientX - rect.left
@@ -19,34 +19,21 @@ export const useCanvas = () => {
     setCoords([x, y])
   }, [ctx])
 
-  useEffect(() => () => setCtx(null), [])
-
   useEffect(() => {
     if (canvasRef.current) {
       const context = canvasRef.current.getContext('2d')
-      if (context) {
-        setCtx(context)
-      }
+      if (context) setCtx(context)
     }
-  }, [canvasRef])
-
-  useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-
-    const context = canvas.getContext('2d')
-    setCtx(context)
-  }, [canvasRef])
+    return () => setCtx(null) // Cleanup when unmounted
+  }, [])
 
   const clearWholeRect = useCallback((canvas: HTMLCanvasElement) => {
-    if (!canvas || !ctx) return
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
   }, [ctx])
 
-  let fpsTime = 0
-  let frameCount = 0
-  const fpsRef = useRef(0)
   let lastFrameTime = performance.now()
+  let frameCount = 0
+  let fpsTime = 0
 
   const drawFPS = useCallback((timestamp: number) => {
     if (!ctx) return
@@ -54,11 +41,13 @@ export const useCanvas = () => {
     lastFrameTime = timestamp
     frameCount++
     fpsTime += deltaTime
+
     if (fpsTime >= 1000) {
       fpsRef.current = frameCount
       frameCount = 0
       fpsTime = 0
     }
+
     ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
   }, [ctx])
 
@@ -67,7 +56,6 @@ export const useCanvas = () => {
     canvasRef,
     clearWholeRect,
     drawFPS,
-
     coords,
     handleClick,
   }
