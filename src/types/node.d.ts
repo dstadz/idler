@@ -46,7 +46,7 @@ export type TransportNodeType = NodeType & TransportNodeTypeData & {
 
 export type PlanetType = Omit<NodeTypeData, 'position', 'resources'> & {
   homeNode: CanvasNode
-  yield: ResourceRecord
+  yields: ResourceRecord
   mineRate: number
   shipSpeed: number
   cargo: number

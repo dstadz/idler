@@ -139,6 +139,10 @@ export const PLANETS = [
       [ORES.COPPER.NAME]: 50,
       [ORES.IRON.NAME]: 50,
     },
+    yields: {
+      [ORES.COPPER.NAME]: 50,
+      [ORES.IRON.NAME]: 50,
+    },
     position: [200, 400],
   },
   {
@@ -150,6 +154,10 @@ export const PLANETS = [
       [ORES.IRON.NAME]: 50,
       [ORES.SILICA.NAME]: 20,
     },
+    yields: {
+      [ORES.IRON.NAME]: 80,
+      [ORES.SILICA.NAME]: 20,
+    },
     position: [700, 300],
   },
   // {
@@ -157,10 +165,9 @@ export const PLANETS = [
   //   basePrice: 500,
   //   telescopeNumber: 'Default',
   //   resources: {
-  //     Copper: 50,
   //     Iron: 50
   //   },
-  //   yield: 50,
+  //   yields: {
   //   distance: 14
   // },
   // {
@@ -178,7 +185,7 @@ export const PLANETS = [
   //   basePrice: 5000,
   //   telescopeNumber: 1,
   //   resources: {
-  //     Lead: 50,
+  //     Lead: {
   //     Iron: 30,
   //     Copper: 20
   //   },

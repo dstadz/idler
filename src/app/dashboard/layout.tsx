@@ -38,9 +38,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     if (!session) router.push('/signin')
   }, [session, status, router])
 
-  useEffect(() => {
-    console.log(selectedPlanet)
-  }, [selectedPlanet])
 
 
   if (status === 'loading' || !session) {
@@ -54,14 +51,13 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
   const resourceRows = Object.keys(selectedPlanet.resources).map(name => {
     const resource = selectedPlanet.resources[name as keyof ResourceRecord]
-    console.log(`🚀 ~ file: layout.tsx:66 ~  ~ :`, resource, name)
     return ({
       id: name,
       image: resource.image,
       name: name,
-      yield: resource.yield,
+      yields: selectedPlanet.yields[name],
       rate: resource.rate,
-      inventory: resource.inventory,
+      amount: resource.amount,
     })
   })
 
@@ -76,9 +72,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       ),
     },
     { field: 'name', headerName: 'Name', width: 150 },
-    { field: 'yield', headerName: 'Yield', width: 100, type: 'number' },
+    { field: 'yields', headerName: 'Yield', width: 100, type: 'number' },
     { field: 'rate', headerName: 'Rate', width: 100, type: 'number' },
-    { field: 'inventory', headerName: 'Inventory', width: 150, type: 'number' },
+    { field: 'amount', headerName: 'Amount', width: 150, type: 'number' },
   ]
 
   return (

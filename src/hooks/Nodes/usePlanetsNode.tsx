@@ -40,13 +40,14 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     const newPlanets = PLANETS.map(node =>
       new Planet({
         ctx,
+        homeNode,
         id: node.id,
         position: node.position,
         size: node.size,
         emoji: node.emoji,
         resources: node.resources,
-        homeNode,
         levels: node.levels,
+        yields: node.yields,
         addToMainResources,
       })
     )
