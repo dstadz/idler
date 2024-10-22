@@ -1,9 +1,14 @@
-import React from 'react'
-export default function Home() {
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1>Dashboard</h1>
+'use client'
 
-    </div>
-  )
-}
+import React from 'react'
+import { Box, Stack } from '@mui/material'
+
+const DashboardPage = () => (
+  <Stack flexDirection="row" justifyContent="space-between">
+    <Box>
+      This is Page Content
+    </Box>
+  </Stack>
+)
+
+export default DashboardPage

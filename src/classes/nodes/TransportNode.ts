@@ -1,34 +1,30 @@
 import { NodeType, ResourceRecord, TransportNodeType } from '@/types/node'
-import { CanvasNode, ResourceNode } from '../nodes'
+import { CanvasNode, Planet, ResourceNode } from '../nodes'
 
 export class TransportNode extends CanvasNode {
-  // locked
-  parentNode?: ResourceNode
   homeNode: NodeType
-
-  // dynamic
+  parentNode?: ResourceNode
   targetNode: NodeType
-  resources: ResourceRecord
-  isLoading: boolean = false
-
-  // stats
+  // position: [number, number]
+  isLoading: boolean
   speed: number
   strength: number
   dexterity: number
-
-  // state
+  // resources: ResourceRecord
   addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
 
   constructor({
-    ctx,
-    emoji,
-    size,
     id,
-    parentNode,
+    ctx,
+    size = 10,
+    emoji = '❌',
     homeNode,
-    speed,
-    strength,
-    dexterity,
+    parentNode,
+    targetNode = homeNode,
+    isLoading = false,
+    speed = 1,
+    strength = 1,
+    dexterity = 1,
     resources,
     addToMainResources,
   }: TransportNodeType) {
@@ -41,12 +37,12 @@ export class TransportNode extends CanvasNode {
       id,
     })
     this.homeNode = homeNode
-    this.parentNode = parentNode || undefined
+    this.parentNode = parentNode
+    this.targetNode = targetNode
+    this.isLoading = isLoading
     this.speed = speed
     this.strength = strength
     this.dexterity = dexterity
-    this.targetNode = parentNode || homeNode
-    this.resources = {} as ResourceRecord
     this.addToMainResources = addToMainResources
   }
 
@@ -66,7 +62,10 @@ export class TransportNode extends CanvasNode {
 
   handleArrival() {
     this.isLoading = true
-    if (this.targetNode instanceof ResourceNode) {
+    if (
+      this.targetNode instanceof ResourceNode ||
+      this.targetNode instanceof Planet
+    ) {
       this.startLoading()
     } else if (this.targetNode === this.homeNode) {
       this.startUnloading()
@@ -75,7 +74,8 @@ export class TransportNode extends CanvasNode {
 
   startLoading() {
     const loadingTime = 1000 / this.dexterity
-    const availableResourceList = Object.keys(this.targetNode.resources).filter(key => this.targetNode.resources[key as keyof ResourceRecord] > 0)
+    const availableResourceList = Object.keys(this.targetNode.resources)
+      .filter(key => this.targetNode.resources[key as keyof ResourceRecord] > 1)
 
     if (availableResourceList.length === 0) {
         this.isLoading = false
@@ -88,15 +88,15 @@ export class TransportNode extends CanvasNode {
     setTimeout(() => {
         if (!this.resources || !this.targetNode.resources || !(resource in this.targetNode.resources)) return
 
+        this.isLoading = false
         const availableAmount = this.targetNode.resources[resource] || 0
-        const transferAmount = Math.min(availableAmount, this.strength)
+        const transferAmount = Math.min(Math.floor(availableAmount), this.strength)
 
         this.resources[resource] = (this.resources[resource] || 0) + transferAmount
         this.targetNode.resources[resource] -= transferAmount
-        this.isLoading = false
         this.targetNode = this.homeNode
     }, loadingTime)
-}
+  }
 
   startUnloading() {
     const unloadingTime = 1000 / this.dexterity

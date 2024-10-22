@@ -1,52 +1,210 @@
 import { ResourceRecord } from '@/types/node'
 import {
-  Map as MapIcon,
+  // Map as MapIcon,
 } from '@mui/icons-material'
 
 export const NAV_TABS = [
+  // {
+  //   // icon: <LocalOffer />,
+  //   title: 'Player',
+  //   route: 'player',
+  //   // matchPath: '/app/purchases/:id*',
+  // },
   {
+    // icon: ,
+    title: 'Resources',
+    route: 'resources',
+  },
+  {
+    // icon: ,
+    title: 'Crafting',
+    route: 'crafting',
+  },
+  {
+    // icon: ,
+    title: 'Research',
+    route: 'research',
+  },
+{
     // icon: <LocalOffer />,
     title: 'Civvies',
     route: 'civvies',
-    // matchPath: '/app/purchases/:id*',
-    // treatmentKeys: ['app-route-purchases'],
-  },
-  {
-    // icon: <LocalOffer />,
-    title: 'Player',
-    route: 'player',
-    // matchPath: '/app/purchases/:id*',
-    // treatmentKeys: ['app-route-purchases'],
-  },
-  // {
-  //   icon: ,
-  //   title: 'Village',
-  //   route: 'village',
-  // },
-  // {
-  //   // icon: ,
-  //   title: 'Research',
-  //   route: 'research',
-  // },
-  {
-    icon: MapIcon,
-    title: 'Overworld',
-    route: 'overworld',
   },
   // {
   //   // icon: ,
   //   title: 'Achievements',
   //   route: 'achievements',
-  // },{
-  //   // icon: ,
-  //   title: 'Resources',
-  //   route: 'resources',
+  // },
+  {
+    // icon: ,
+    title: 'Store',
+    route: 'store',
+  },
+  {
+    // icon: ,
+    title: 'Village',
+    route: 'village',
+  },
+]
+
+export const ORES = {
+  COPPER: {
+    NAME: 'Copper Ore',
+    // EMOJI: '🪪',
+    SELL_PRICE: 1,
+  },
+  IRON: {
+    NAME: 'Iron Ore',
+    // EMOJI: '🪙',
+    SELL_PRICE: 2,
+  },
+  SILICA: {
+    NAME: 'Silica',
+    // EMOJI: '🪙',
+    SELL_PRICE: 8,
+  },
+}
+
+export const ALLOYS = {
+  COPPER: {
+    NAME: 'Copper Bar',
+    UNLOCK_COST: 0,
+    SELL_PRICE: 1450,
+    TIME_TO_MAKE: 20,
+    COST: [[ORES.COPPER, 1000]],
+  },
+  IRON: {
+    NAME: 'Iron Bar',
+    UNLOCK_COST: 3000,
+    SELL_PRICE: 3000,
+    TIME_TO_MAKE: 30,
+    COST: [[ORES.IRON, 1000]],
+  },
+  SILICON: {
+    NAME: 'Silicon Bar',
+    UNLOCK_COST: 25000,
+    SELL_PRICE: 12500,
+    TIME_TO_MAKE: 60,
+    COST: [[ORES.SILICA, 1000]],
+  },
+
+}
+
+export const ITEMS = {
+  WIRE: {
+    NAME: 'Copper Wire',
+    UNLOCK_COST: 0,
+    SELL_PRICE: 10000,
+    TIME_TO_MAKE: 60,
+    COST: [[ALLOYS.COPPER, 5]],
+  },
+  NAILS : {
+    NAME: 'Iron Nails',
+    UNLOCK_COST: 20000,
+    SELL_PRICE: 20000,
+    TIME_TO_MAKE: 120,
+    COST: [[ALLOYS.IRON, 5]],
+  },
+  BATTERY: {
+    NAME: 'Battery',
+    UNLOCK_COST: 50000,
+    SELL_PRICE: 70000,
+    TIME_TO_MAKE: 240,
+    COST: [[ALLOYS.COPPER, 10]], // , [ITEMS.WIRE, 2]],
+  },
+  GLASS: {
+    NAME: 'Glass',
+    UNLOCK_COST: 200000,
+    SELL_PRICE: 220000,
+    TIME_TO_MAKE: 720,
+    COST: [[ALLOYS.SILICON, 10]],
+  },
+  CIRCIUT: {
+    NAME: 'Circuit',
+    UNLOCK_COST: 400000,
+    SELL_PRICE: 620000,
+    TIME_TO_MAKE: 960,
+    COST: [
+      [ALLOYS.SILICON, 10],
+      [ALLOYS.IRON, 10], // ALUMINUM
+      // [ITEMS.WIRE, 10]
+    ],
+  },
+}
+
+export const PLANETS = [
+  {
+    planetName: 'Balor',
+    emoji: '🪐',
+    basePrice: 100,
+    telescopeNumber: 'Default',
+    resources: {
+      Copper: 100
+    },
+    distance: 10
+  },
+  // {
+  //   planetName: 'Drasta',
+  //   basePrice: 200,
+  //   telescopeNumber: 'Default',
+  //   resources: {
+  //     Copper: 80,
+  //     Iron: 20
+  //   },
+  //   distance: 12
   // },
   // {
-  //   // icon: ,
-  //   title: 'Inventory',
-  //   route: 'inventory',
+  //   planetName: 'Anadius',
+  //   basePrice: 500,
+  //   telescopeNumber: 'Default',
+  //   resources: {
+  //     Copper: 50,
+  //     Iron: 50
+  //   },
+  //   yield: 50,
+  //   distance: 14
   // },
+  // {
+  //   planetName: 'Dholen',
+  //   basePrice: 1250,
+  //   telescopeNumber: 'Default',
+  //   resources: {
+  //     Iron: 80,
+  //     Lead: 20
+  //   },
+  //   distance: 15
+  // },
+  // {
+  //   planetName: 'Verr',
+  //   basePrice: 5000,
+  //   telescopeNumber: 1,
+  //   resources: {
+  //     Lead: 50,
+  //     Iron: 30,
+  //     Copper: 20
+  //   },
+  //   distance: 16
+  // },
+  // {
+  //   planetName: 'Newton',
+  //   basePrice: 9000,
+  //   telescopeNumber: 1,
+  //   resources: {
+  //     Lead: 100
+  //   },
+  //   distance: 18
+  // },
+  // {
+  //   planetName: 'Widow',
+  //   basePrice: 15000,
+  //   telescopeNumber: 1,
+  //   resources: {
+  //     Iron: 40,
+  //     Copper: 40,
+  //     Silica: 20
+  //   },
+  //   distance: 20
+  // }
 ]
 
 export const RESOURCES = {
@@ -81,5 +239,15 @@ export const getResourceList = ({
       }
       return ''
     })
+  return resourceList
+}
+
+export const getOreList = ({
+  resourceObject = defaultResources,
+}) => {
+  if (!resourceObject) return []
+  const resourceList = Object.keys(resourceObject)
+    .filter(key => resourceObject[key] > 0)
+    .map(key =>  `${key}: ${resourceObject[key]}`)
   return resourceList
 }

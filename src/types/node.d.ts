@@ -30,11 +30,25 @@ export type TransportNodeTypeData = Omit<NodeTypeData, 'position', 'resources'> 
   dexterity: number
 }
 
-export type TransportNodeType = Omit<TransportNodeTypeData, 'parentId'> & {
+export type TransportNodeType = NodeType & TransportNodeTypeData & {
   parentNode?: ResourceNode
   homeNode: NodeType
-  targetNode: NodeType
-  position: [number, number]
+  targetNode?: NodeType
   resources: ResourceRecord
   isLoading: boolean
+  speed: number
+  strength: number
+  dexterity: number
+  emoji: string
+  // eslint-disable-next-line no-unused-vars
+  addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
+}
+
+export type PlanetType = Omit<NodeTypeData, 'position', 'resources'> & {
+  homeNode: CanvasNode
+  yield: ResourceRecord
+  mineRate: number
+  shipSpeed: number
+  cargo: number
+  ship: TransportNodeType
 }
