@@ -11,10 +11,10 @@ export function mapDbToCanvasNode(dbData: ApiResponse, ctx: CanvasRenderingConte
   delete resourceObj.entityId
 
   const resources: ResourceRecord = {
-    ...defaultResources,
-    ...Object.fromEntries(
-      Object.entries(resourceObj).map(([key, value]) => [key.toUpperCase(), value])
-    )
+    // ...defaultResources,
+    // ...Object.fromEntries(
+    //   Object.entries(resourceObj).map(([key, value]) => [key.toUpperCase(), value])
+    // )
   }
 
   return new CanvasNode({

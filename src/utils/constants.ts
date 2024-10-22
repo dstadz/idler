@@ -1,7 +1,4 @@
 import { ResourceRecord } from '@/types/node'
-import {
-  // Map as MapIcon,
-} from '@mui/icons-material'
 
 export const NAV_TABS = [
   // {
@@ -139,20 +136,22 @@ export const PLANETS = [
     basePrice: 100,
     telescopeNumber: 'Default',
     resources: {
-      Copper: 100
+      [ORES.COPPER.NAME]: 50,
+      [ORES.IRON.NAME]: 50,
     },
-    distance: 10
+    position: [200, 400],
   },
-  // {
-  //   planetName: 'Drasta',
-  //   basePrice: 200,
-  //   telescopeNumber: 'Default',
-  //   resources: {
-  //     Copper: 80,
-  //     Iron: 20
-  //   },
-  //   distance: 12
-  // },
+  {
+    planetName: 'Drasta',
+    emoji: '🌼',
+    basePrice: 200,
+    telescopeNumber: 'Default',
+    resources: {
+      [ORES.IRON.NAME]: 50,
+      [ORES.SILICA.NAME]: 20,
+    },
+    position: [700, 300],
+  },
   // {
   //   planetName: 'Anadius',
   //   basePrice: 500,

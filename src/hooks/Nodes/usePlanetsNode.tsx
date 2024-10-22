@@ -1,8 +1,8 @@
 import { CanvasNode, Planet } from '@/classes'
 import { useEffect, useState, useCallback } from 'react'
-import { ORES, PLANETS as planetsStatic, RESOURCES } from '@/utils/constants'
+import { PLANETS as planetsStatic } from '@/utils/constants'
 import { useAtom } from 'jotai'
-import { resourcesAtom } from '@/atoms'
+import { planetAtom, resourcesAtom } from '@/atoms'
 import { ResourceRecord } from '@/types/node'
 
 const PLANETS = planetsStatic.map(planet => ({
@@ -13,15 +13,6 @@ const PLANETS = planetsStatic.map(planet => ({
     cargo: 1,
   },
   id: `planet${planet.planetName}`,
-  position: [500, 100],
-  resources: {
-    ...(Object.fromEntries(Object.keys(RESOURCES)
-      .map(key => [key, 0])
-      .filter(([, amount]) => amount > 0)
-    ) as ResourceRecord),
-    [ORES.COPPER.NAME]: 2,
-    [ORES.IRON.NAME]: 6,
-  },
 }))
 
 interface UsePlanetProps {
@@ -31,7 +22,7 @@ interface UsePlanetProps {
 
 export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
   const [planets, setPlanets] = useState<Planet[]>([])
-  const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null)
+  const [selectedPlanet, setSelectedPlanet] = useAtom(planetAtom)
   const [, setMainResources] = useAtom(resourcesAtom)
   const addToMainResources = useCallback(
     (resource: keyof ResourceRecord, amount: number) => {
