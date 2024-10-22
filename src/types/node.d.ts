@@ -40,7 +40,7 @@ export type TransportNodeType = NodeType & TransportNodeTypeData & {
   strength: number
   dexterity: number
   emoji: string
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  // eslint-disable-next-line no-unused-vars
   addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
 }
 

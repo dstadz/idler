@@ -39,7 +39,6 @@ export class Planet extends CanvasNode {
     this.shipSpeed = shipSpeeds[levels.shipSpeed]
     this.cargo = cargos[levels.cargo]
 
-    // Initialize the ship (TransportNode) with valid parameters
     this.ship = new TransportNode({
       id,
       ctx,
@@ -51,7 +50,7 @@ export class Planet extends CanvasNode {
       speed: this.shipSpeed,
       strength: this.cargo,
       dexterity: 5,
-      resources: {...this.resources},
+      resources: { ...this.resources },
       addToMainResources,
     })
   }
@@ -74,7 +73,6 @@ export class Planet extends CanvasNode {
       this.position[0] - size / 2,
       this.position[1] + size / 2,
     ]
-    // this.ship.drawUnit()
     getOreList({ resourceObject: this.resources })
     .filter(note => note !== '')
     .forEach((note, i) => {

@@ -5,6 +5,7 @@
   },
   "parser": "@typescript-eslint/parser",
   "extends": [
+    "eslint:recommended",
     "plugin:react/recommended",
     "plugin:@typescript-eslint/recommended",
     "next/core-web-vitals",
@@ -44,7 +45,6 @@
     "no-shadow": [1],
     "no-undef": [1],
     "no-unused-vars": "warn",
-    "@typescript-eslint/no-unused-vars": "warn",
     "no-underscore-dangle": [0, "always"],
     "no-use-before-define": [2, { "functions": false }],
     "object-curly-newline": "off",

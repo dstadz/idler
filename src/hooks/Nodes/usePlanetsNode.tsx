@@ -12,7 +12,7 @@ const PLANETS = planetsStatic.map(planet => ({
     shipSpeed: 1,
     cargo: 1,
   },
-  id: `planet${planet.id}`,
+  id: `planet${planet.planetName}`,
   position: [500, 100],
   resources: {
     ...(Object.fromEntries(Object.keys(RESOURCES)
