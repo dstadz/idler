@@ -38,26 +38,23 @@ export default function NavStack() {
       role="navigation"
       orientation="vertical"
     >
-      {NAV_TABS.map((tab, index) => {
-        // const Icon = tab?.icon
-        return (
-          <Tab
-            key={tab.route}
-            label={tab.title}
-            value={index}
-            // {...(Icon ? { icon : <Icon /> } : {})}
-            sx={{
-              minWidth: 64,
-              minHeight: 60,
-              borderRadius: '4px',
-              transition: 'background 0.2s ease-in-out',
-              '&:hover': {
-                backgroundColor: 'rgba(0, 0, 0, 0.08)',
-              },
-            }}
-          />
-        )
-      })}
+      {NAV_TABS.map((tab, index) => (
+        <Tab
+          key={tab.route}
+          label={tab.title}
+          value={index}
+          // {...(Icon ? { icon : <Icon /> } : {})}
+          sx={{
+            minWidth: 64,
+            minHeight: 60,
+            borderRadius: '4px',
+            transition: 'background 0.2s ease-in-out',
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.08)',
+            },
+          }}
+        />
+      ))}
     </Tabs>
   )
 }

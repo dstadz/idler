@@ -1,4 +1,3 @@
-
 import { NodeType, ResourceRecord, TransportNodeType } from '@/types/node'
 import { CanvasNode, Planet, ResourceNode } from '../nodes'
 
@@ -6,12 +5,12 @@ export class TransportNode extends CanvasNode {
   homeNode: NodeType
   parentNode?: ResourceNode
   targetNode: NodeType
-  position: [number, number]
+  // position: [number, number]
   isLoading: boolean
   speed: number
   strength: number
   dexterity: number
-  resources: ResourceRecord
+  // resources: ResourceRecord
   addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
 
   constructor({

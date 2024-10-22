@@ -8,7 +8,7 @@ export class CanvasNode {
   resources: ResourceRecord
   emoji: string
   size: number
-  centerDrawPoint: (size?: number) => [number, number]
+  centerDrawPoint: () => [number, number]
 
   constructor({
     id,
@@ -24,7 +24,7 @@ export class CanvasNode {
     this.resources = resources
     this.emoji = emoji
     this.size = size
-    this.centerDrawPoint = (size = this.size) => [
+    this.centerDrawPoint = () => [
       this.position[0] - size / 2,
       this.position[1] + size / 2,
     ]

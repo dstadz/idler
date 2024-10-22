@@ -30,17 +30,17 @@ export type TransportNodeTypeData = Omit<NodeTypeData, 'position', 'resources'> 
   dexterity: number
 }
 
-export type TransportNodeType = {
+export type TransportNodeType = NodeType & TransportNodeTypeData & {
   parentNode?: ResourceNode
   homeNode: NodeType
   targetNode?: NodeType
-  position: [number, number]
   resources: ResourceRecord
   isLoading: boolean
   speed: number
   strength: number
   dexterity: number
   emoji: string
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
 }
 

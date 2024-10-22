@@ -1,5 +1,5 @@
 import { CanvasNode } from './CanvasNode'
-import { PlanetType } from '@/types/node'
+import { PlanetType, ResourceRecord } from '@/types/node'
 import { TransportNode } from './TransportNode'
 import { getOreList } from '@/utils/constants'
 
@@ -46,18 +46,19 @@ export class Planet extends CanvasNode {
       size: 10,
       emoji: '🚀',
       homeNode,
+      position: homeNode.position,
       parentNode: this,
       speed: this.shipSpeed,
       strength: this.cargo,
       dexterity: 5,
-      resources,
+      resources: {...this.resources},
       addToMainResources,
     })
   }
 
   mine() {
     const randIdx = Math.floor(Math.random() * Object.keys(this.resources).length)
-    const randResource = Object.keys(this.resources)[randIdx]
+    const randResource = Object.keys(this.resources)[randIdx] as keyof ResourceRecord // Type assertion here
     this.resources[randResource] = Math.round(
       this.resources[randResource] * 1000 + this.mineRate
     ) / 1000
