@@ -7,11 +7,6 @@ import { ResourceRecord } from '@/types/node'
 
 const PLANETS = planetsStatic.map(planet => ({
   ...planet,
-  levels: {
-    mineRate: 1,
-    shipSpeed: 1,
-    cargo: 1,
-  },
   id: `planet${planet.planetName}`,
 }))
 

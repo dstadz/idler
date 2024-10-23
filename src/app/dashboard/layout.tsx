@@ -4,7 +4,7 @@
 import React, { ReactNode, useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { Box, Button, Stack, Typography } from '@mui/material'
+import { Button, Stack } from '@mui/material'
 
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'

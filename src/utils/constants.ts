@@ -135,6 +135,11 @@ export const PLANETS = [
     emoji: '🪐',
     basePrice: 100,
     telescopeNumber: 'Default',
+    levels: {
+      mineRate: 1,
+      shipSpeed: 1,
+      cargo: 1,
+    },
     resources: {
       [ORES.COPPER.NAME]: 50,
       [ORES.IRON.NAME]: 50,
@@ -150,6 +155,11 @@ export const PLANETS = [
     emoji: '🌼',
     basePrice: 200,
     telescopeNumber: 'Default',
+    levels: {
+      mineRate: 1,
+      shipSpeed: 1,
+      cargo: 1,
+    },
     resources: {
       [ORES.IRON.NAME]: 50,
       [ORES.SILICA.NAME]: 20,

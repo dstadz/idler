@@ -1,22 +1,37 @@
 // components/PlanetModal.tsx
 'use client'
 import React from 'react'
-import { Avatar, Box, Modal, Stack, Typography } from '@mui/material'
+import { Avatar, Box, Button, Modal, Stack, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { useAtom } from 'jotai'
 import { planetAtom } from '@/atoms'
-import { useSession } from 'next-auth/react'
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 800,
-  bgcolor: 'background.paper',
-  border: '5px solid #f00',
-  boxShadow: 24,
-  p: 4,
+  width: 850,
+  bgcolor: 'rgba(15, 15, 30, 0.9)',
+  borderRadius: '20px',
+  border: '2px solid rgba(0, 255, 255, 0.5)',
+  boxShadow: '0px 0px 40px 10px rgba(0, 255, 255, 0.6)',
+  backdropFilter: 'blur(10px)',
+  color: '#FFFFFF',
+  p: 5,
+}
+
+const neonButtonStyle = {
+  border: '2px solid #0ff',
+  color: '#0ff',
+  fontWeight: 'bold',
+  background: 'rgba(0, 0, 0, 0.8)',
+  textTransform: 'uppercase',
+  transition: '0.3s',
+  '&:hover': {
+    background: 'linear-gradient(45deg, #00ffff, #0000ff)',
+    boxShadow: '0 0 15px #0ff, 0 0 30px #00f',
+  },
 }
 
 interface PlanetModalProps {
@@ -25,15 +40,15 @@ interface PlanetModalProps {
 }
 
 const PlanetModal = ({ open, handleClose }: PlanetModalProps) => {
-  const { data: session } = useSession()
   const [selectedPlanet] = useAtom(planetAtom)
+  const { planetName, levels, resources, yields } = selectedPlanet
 
-  const resourceRows = Object.keys(selectedPlanet.resources).map(name => ({
+  const resourceRows = Object.keys(resources).map(name => ({
     id: name,
     name,
-    yields: selectedPlanet.yields[name],
-    rate: selectedPlanet?.levels?.mineRate * selectedPlanet.yields[name],
-    amount: selectedPlanet.resources[name],
+    yields: yields[name],
+    rate: levels?.mineRate * yields[name],
+    amount: resources[name],
   }))
 
   const columns: GridColDef[] = [
@@ -42,7 +57,14 @@ const PlanetModal = ({ open, handleClose }: PlanetModalProps) => {
       headerName: 'Image',
       width: 100,
       renderCell: params => (
-        <Avatar src={params.value} alt={params.row.name} />
+        <Avatar
+          src={params.value}
+          alt={params.row.name}
+          sx={{
+            border: '2px solid #0ff',
+            boxShadow: '0 0 10px #0ff',
+          }}
+        />
       ),
     },
     { field: 'name', headerName: 'Name', width: 150 },
@@ -54,30 +76,66 @@ const PlanetModal = ({ open, handleClose }: PlanetModalProps) => {
   return (
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
-        <Stack>
-          <Box>{selectedPlanet.name}</Box>
-          <Avatar src={session?.user?.image} alt={session?.user?.name} />
-        </Stack>
+        <Stack alignItems="center" spacing={2}>
+        <Typography variant="h4" sx={{ fontFamily: 'Orbitron, sans-serif', color: '#0ff' }}>
+          {planetName}
+        </Typography>
 
-        <Box sx={{ height: 400, width: '100%' }}>
-          <Typography variant="h6" gutterBottom>
+        <Box sx={{ width: '100%', overflow: 'hidden', borderRadius: '12px' }}>
+          <Typography variant="h6" sx={{ mb: 1, color: '#0ff', fontWeight: 'bold' }}>
             Resource Inventory
           </Typography>
           <DataGrid
             rows={resourceRows}
             columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5, 10, 20]}
+            pageSize={Object.keys(resources).length}
             disableSelectionOnClick
+            hideFooter
+            sx={{
+              bgcolor: 'rgba(15, 15, 25, 0.8)',
+              borderRadius: '12px',
+              color: '#fff',
+              '& .MuiDataGrid-columnHeaders': {
+                background: 'linear-gradient(45deg, #0ff, #00f)',
+                color: '#000',
+                fontWeight: 'bold',
+              },
+              '& .MuiDataGrid-cell': {
+                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+              },
+            }}
           />
         </Box>
 
-        <Typography variant="h6" component="h2">
-          Text in a modal
-        </Typography>
-        <Typography sx={{ mt: 2 }}>
-          Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-        </Typography>
+        <Stack spacing={3} sx={{ mt: 2, width: '100%' }}>
+          {Object.keys(levels).map((rate, idx) => (
+            <Stack
+              key={idx}
+              direction="row"
+              alignItems="center"
+              justifyContent="space-between"
+              sx={{
+                p: 2,
+                borderRadius: '12px',
+                border: '1px solid rgba(0, 255, 255, 0.3)',
+                background: 'rgba(15, 15, 30, 0.7)',
+                boxShadow: '0 0 15px rgba(0, 255, 255, 0.3)',
+              }}
+            >
+              <Stack spacing={1}>
+                <Typography variant="h6" sx={{ fontFamily: 'Orbitron, sans-serif' }}>
+                  {rate}
+                </Typography>
+                <Typography>Lv. {levels.mineRate}</Typography>
+                <Typography>
+                  {rate}: {levels[rate]}
+                </Typography>
+              </Stack>
+              <Button sx={neonButtonStyle}>Upgrade</Button>
+              </Stack>
+            ))}
+          </Stack>
+        </Stack>
       </Box>
     </Modal>
   )
