@@ -4,7 +4,7 @@ import { TransportNode } from './TransportNode'
 
 export class Planet extends CanvasNode {
   homeNode: CanvasNode
-  levels: number[]
+  levels: Record<string, number>
 
   yields: ResourceRecord
   ship: TransportNode
@@ -32,10 +32,9 @@ export class Planet extends CanvasNode {
 
     this.homeNode = homeNode
     this.levels = levels
-
     this.yields = yields
 
-    this.ship = new TransportNode({
+    this.shipStats = {
       id,
       ctx,
       size: 10,
@@ -48,12 +47,18 @@ export class Planet extends CanvasNode {
       dexterity: 5,
       resources: { ...this.resources },
       addToMainResources,
-    })
+    }
+
+    this.ship = new TransportNode(this.shipStats)
+  }
+
+  updateShip() {
+    this.ship = new TransportNode(this.shipStats)
   }
 
   mine() {
     const randIdx = Math.floor(Math.random() * Object.keys(this.resources).length)
-    const randResource = Object.keys(this.resources)[randIdx] as keyof ResourceRecord // Type assertion here
+    const randResource = Object.keys(this.resources)[randIdx] as keyof ResourceRecord
     this.resources[randResource] = Math.round(
       this.resources[randResource] * 1000 + this.levels.mineRate
     ) / 1000
@@ -65,5 +70,13 @@ export class Planet extends CanvasNode {
 
   drawUnit(): void {
     super.drawUnit()
+  }
+
+  levelUpSkill(skill: string) {
+
+    console.log(`Upgrading ${skill} from ${this.levels[skill]}`)
+    this.levels[skill] += 1
+    console.log(`to ${this.levels[skill]}`)
+    
   }
 }

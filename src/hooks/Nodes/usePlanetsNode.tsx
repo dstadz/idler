@@ -2,8 +2,9 @@ import { CanvasNode, Planet } from '@/classes'
 import { useEffect, useState, useCallback } from 'react'
 import { PLANETS as planetsStatic } from '@/utils/constants'
 import { useAtom } from 'jotai'
-import { planetAtom, resourcesAtom } from '@/atoms'
+import { planetAtom, resourcesAtom, moneyAtom } from '@/atoms'
 import { ResourceRecord } from '@/types/node'
+import { getUpgradeCost } from '@/classes/nodes/Planet'
 
 const PLANETS = planetsStatic.map(planet => ({
   ...planet,
@@ -17,7 +18,10 @@ interface UsePlanetProps {
 
 export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
   const [planets, setPlanets] = useState<Planet[]>([])
+
   const [selectedPlanet, setSelectedPlanet] = useAtom(planetAtom)
+
+  const [money, setMoney] = useAtom(moneyAtom)
   const [, setMainResources] = useAtom(resourcesAtom)
   const addToMainResources = useCallback(
     (resource: keyof ResourceRecord, amount: number) => {
@@ -28,6 +32,19 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     },
     [setMainResources]
   )
+
+  const buyUpgrade = (planet: Planet, skill: string) => {
+    const cost = getUpgradeCost(planet.levels[skill])
+    if (money < cost) {
+      console.log('Not enough money!')
+      return
+    }
+
+    setMoney(prevMoney => prevMoney - cost)
+    planet.levelUpSkill(skill, money, money)
+    console.log(`${skill} upgraded!`)
+  }
+
 
   useEffect(() => {
     if (!ctx || Object.keys(homeNode).length === 0) return

@@ -1,10 +1,9 @@
-// components/PlanetModal.tsx
-'use client'
 import React from 'react'
 import { Avatar, Box, Button, Modal, Stack, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { useAtom } from 'jotai'
-import { planetAtom } from '@/atoms'
+import { moneyAtom, planetAtom } from '@/atoms'
+import { Planet } from '@/classes'
 
 const style = {
   position: 'absolute',
@@ -15,10 +14,11 @@ const style = {
   bgcolor: 'rgba(15, 15, 30, 0.9)',
   borderRadius: '20px',
   border: '2px solid rgba(0, 255, 255, 0.5)',
-  boxShadow: '0px 0px 40px 10px rgba(0, 255, 255, 0.6)',
+  boxShadow: '0px 0px 40px 15px rgba(0, 255, 255, 0.6)',
   backdropFilter: 'blur(10px)',
   color: '#FFFFFF',
   p: 5,
+  transition: 'background 0.5s ease',
 }
 
 const neonButtonStyle = {
@@ -27,10 +27,11 @@ const neonButtonStyle = {
   fontWeight: 'bold',
   background: 'rgba(0, 0, 0, 0.8)',
   textTransform: 'uppercase',
-  transition: '0.3s',
+  transition: 'all 0.3s ease',
   '&:hover': {
     background: 'linear-gradient(45deg, #00ffff, #0000ff)',
-    boxShadow: '0 0 15px #0ff, 0 0 30px #00f',
+    boxShadow: '0 0 20px #0ff, 0 0 40px #00f',
+    transform: 'scale(1.1)',
   },
 }
 
@@ -38,9 +39,19 @@ interface PlanetModalProps {
   open: boolean
   handleClose: () => void
 }
+export const getUpgradeCost = (currentLevel: number) => {
+  // Basic cost formula: increases with level
+  return Math.floor(100 * Math.pow(1.2, currentLevel))
+}
 
 const PlanetModal = ({ open, handleClose }: PlanetModalProps) => {
-  const [selectedPlanet] = useAtom(planetAtom)
+  const [selectedPlanet, setPlanet] = useAtom(planetAtom)
+  const [money, setMoney] = useAtom(moneyAtom)
+  const handleUpgrade = (skill: string) => {
+    selectedPlanet.levelUpSkill(skill)
+    // setPlanet(new Planet({ ...selectedPlanet }))
+  }
+
   const { planetName, levels, resources, yields } = selectedPlanet
 
   const resourceRows = Object.keys(resources).map(name => ({
@@ -77,61 +88,60 @@ const PlanetModal = ({ open, handleClose }: PlanetModalProps) => {
     <Modal open={open} onClose={handleClose}>
       <Box sx={style}>
         <Stack alignItems="center" spacing={2}>
-        <Typography variant="h4" sx={{ fontFamily: 'Orbitron, sans-serif', color: '#0ff' }}>
-          {planetName}
-        </Typography>
-
-        <Box sx={{ width: '100%', overflow: 'hidden', borderRadius: '12px' }}>
-          <Typography variant="h6" sx={{ mb: 1, color: '#0ff', fontWeight: 'bold' }}>
-            Resource Inventory
+          <Typography variant="h4" sx={{ fontFamily: 'Orbitron, sans-serif', color: '#0ff' }}>
+            {planetName}
           </Typography>
-          <DataGrid
-            rows={resourceRows}
-            columns={columns}
-            pageSize={Object.keys(resources).length}
-            disableSelectionOnClick
-            hideFooter
-            sx={{
-              bgcolor: 'rgba(15, 15, 25, 0.8)',
-              borderRadius: '12px',
-              color: '#fff',
-              '& .MuiDataGrid-columnHeaders': {
-                background: 'linear-gradient(45deg, #0ff, #00f)',
-                color: '#000',
-                fontWeight: 'bold',
-              },
-              '& .MuiDataGrid-cell': {
-                borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-              },
-            }}
-          />
-        </Box>
 
-        <Stack spacing={3} sx={{ mt: 2, width: '100%' }}>
-          {Object.keys(levels).map((rate, idx) => (
-            <Stack
-              key={idx}
-              direction="row"
-              alignItems="center"
-              justifyContent="space-between"
+          <Box sx={{ width: '100%', overflow: 'hidden', borderRadius: '12px' }}>
+            <Typography variant="h6" sx={{ mb: 1, color: '#0ff', fontWeight: 'bold' }}>
+              Resource Inventory
+            </Typography>
+            <DataGrid
+              rows={resourceRows}
+              columns={columns}
+              pageSize={Object.keys(resources).length}
+              disableSelectionOnClick
+              hideFooter
               sx={{
-                p: 2,
+                bgcolor: 'rgba(15, 15, 25, 0.8)',
                 borderRadius: '12px',
-                border: '1px solid rgba(0, 255, 255, 0.3)',
-                background: 'rgba(15, 15, 30, 0.7)',
-                boxShadow: '0 0 15px rgba(0, 255, 255, 0.3)',
+                color: '#fff',
+                '& .MuiDataGrid-columnHeaders': {
+                  background: 'linear-gradient(45deg, #0ff, #00f)',
+                  color: '#000',
+                  fontWeight: 'bold',
+                },
+                '& .MuiDataGrid-cell': {
+                  borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+                },
               }}
-            >
-              <Stack spacing={1}>
-                <Typography variant="h6" sx={{ fontFamily: 'Orbitron, sans-serif' }}>
+            />
+          </Box>
+
+          <Stack spacing={3} sx={{ mt: 2, width: '100%' }}>
+            {Object.keys(levels).map((rate, idx) => (
+              <Stack
+                key={idx}
+                direction="row"
+                alignItems="center"
+                justifyContent="space-between"
+                sx={{
+                  p: 2,
+                  borderRadius: '12px',
+                  border: '1px solid rgba(0, 255, 255, 0.3)',
+                  background: 'rgba(15, 15, 30, 0.7)',
+                  boxShadow: '0 0 15px rgba(0, 255, 255, 0.3)',
+                }}
+              >
+                <Stack spacing={1}>
+                  <Typography variant="h6" sx={{ fontFamily: 'Orbitron, sans-serif' }}>
+                    {rate}
+                  </Typography>
+                  <Typography>Lv. {levels[rate]}</Typography>
+                </Stack>
+                <Button sx={neonButtonStyle} onClick={() => handleUpgrade(rate)}>
                   {rate}
-                </Typography>
-                <Typography>Lv. {levels.mineRate}</Typography>
-                <Typography>
-                  {rate}: {levels[rate]}
-                </Typography>
-              </Stack>
-              <Button sx={neonButtonStyle}>Upgrade</Button>
+                </Button>
               </Stack>
             ))}
           </Stack>

@@ -1,2 +1,2 @@
-export { resourcesAtom } from './resources'
+export { resourcesAtom, moneyAtom } from './resources'
 export { planetAtom } from './planet'

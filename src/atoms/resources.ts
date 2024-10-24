@@ -9,3 +9,5 @@ const resourceAmounts: ResourceRecord = Object.keys(RESOURCES)
 }, {} as ResourceRecord)
 
 export const resourcesAtom = atom(resourceAmounts)
+
+export const moneyAtom = atom(1000)

@@ -1,23 +1,25 @@
 // components/DashboardLayout.tsx
 'use client'
 
-import React, { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { useAtom } from 'jotai'
 import { useRouter } from 'next/navigation'
-import { Button, Stack } from '@mui/material'
+import { Stack } from '@mui/material'
 
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
 import PlanetModal from '@/components/Modal'
+import { moneyAtom, planetAtom } from '@/atoms'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const { data: session, status } = useSession()
 
-  const [open, setOpen] = useState(false)
-  const handleOpen = () => setOpen(true)
-  const handleClose = () => setOpen(false)
+  const [money] = useAtom(moneyAtom)
+  const [planet, setPlanet] = useAtom(planetAtom)
+  const handleClose = () => setPlanet(null)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -43,8 +45,8 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         <NavStack />
         <Stack justifyContent="space-between">
           {children}
-          <Button onClick={handleOpen}>Open modal</Button>
-          <PlanetModal open={open} handleClose={handleClose} />
+          ${money}
+          {planet && <PlanetModal open={planet} handleClose={handleClose} />}
           <Canvas />
         </Stack>
       </Stack>
