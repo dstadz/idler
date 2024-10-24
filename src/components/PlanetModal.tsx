@@ -44,15 +44,22 @@ export const getUpgradeCost = (currentLevel: number) => {
   return Math.floor(100 * Math.pow(1.2, currentLevel))
 }
 
-const PlanetModal = ({ open, handleClose }: PlanetModalProps) => {
-  const [selectedPlanet, setPlanet] = useAtom(planetAtom)
+const PlanetModal = () => {
+  const [planet, setPlanet] = useAtom(planetAtom)
+  const handleClose = () => setPlanet(null)
+
   const [money, setMoney] = useAtom(moneyAtom)
   const handleUpgrade = (skill: string) => {
-    selectedPlanet.levelUpSkill(skill)
-    // setPlanet(new Planet({ ...selectedPlanet }))
+    const cost = getUpgradeCost(planet.levels[skill])
+    if (money < cost) {
+      console.log('Not enough money!')
+      return
+    }
+    planet.levelUpSkill(skill)
+    setMoney(prevMoney => prevMoney - cost)
   }
-
-  const { planetName, levels, resources, yields } = selectedPlanet
+  if (!planet) return null
+  const { planetName, levels, resources, yields } = planet
 
   const resourceRows = Object.keys(resources).map(name => ({
     id: name,
@@ -119,7 +126,7 @@ const PlanetModal = ({ open, handleClose }: PlanetModalProps) => {
           </Box>
 
           <Stack spacing={3} sx={{ mt: 2, width: '100%' }}>
-            {Object.keys(levels).map((rate, idx) => (
+            {Object.keys(levels).map((skill, idx) => (
               <Stack
                 key={idx}
                 direction="row"
@@ -135,12 +142,12 @@ const PlanetModal = ({ open, handleClose }: PlanetModalProps) => {
               >
                 <Stack spacing={1}>
                   <Typography variant="h6" sx={{ fontFamily: 'Orbitron, sans-serif' }}>
-                    {rate}
+                    {skill}
                   </Typography>
-                  <Typography>Lv. {levels[rate]}</Typography>
+                  <Typography>Lv. {levels[skill]}</Typography>
                 </Stack>
-                <Button sx={neonButtonStyle} onClick={() => handleUpgrade(rate)}>
-                  {rate}
+                <Button onClick={() => handleUpgrade(skill)} sx={neonButtonStyle}>
+                  ${getUpgradeCost(planet.levels[skill])}
                 </Button>
               </Stack>
             ))}

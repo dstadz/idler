@@ -4,7 +4,7 @@ import { PLANETS as planetsStatic } from '@/utils/constants'
 import { useAtom } from 'jotai'
 import { planetAtom, resourcesAtom, moneyAtom } from '@/atoms'
 import { ResourceRecord } from '@/types/node'
-import { getUpgradeCost } from '@/classes/nodes/Planet'
+import { getUpgradeCost } from '@/components/PlanetModal'
 
 const PLANETS = planetsStatic.map(planet => ({
   ...planet,
@@ -19,7 +19,7 @@ interface UsePlanetProps {
 export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
   const [planets, setPlanets] = useState<Planet[]>([])
 
-  const [selectedPlanet, setSelectedPlanet] = useAtom(planetAtom)
+  const [selectedPlanet, setPlanet] = useAtom(planetAtom)
 
   const [money, setMoney] = useAtom(moneyAtom)
   const [, setMainResources] = useAtom(resourcesAtom)
@@ -93,7 +93,7 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
       })
 
       if (clickedPlanet) {
-        setSelectedPlanet(clickedPlanet)
+        setPlanet(clickedPlanet)
       }
     },
     [planets]
@@ -109,7 +109,7 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     }
   }, [ctx, handleCanvasClick])
 
-  const closeModal = () => setSelectedPlanet(null)
+  const closeModal = () => setPlanet(null)
 
   return {
     planets,

@@ -22,9 +22,9 @@ export class TransportNode extends CanvasNode {
     parentNode,
     targetNode = homeNode,
     isLoading = false,
-    speed = 1,
-    strength = 1,
-    dexterity = 1,
+    speed,
+    strength,
+    dexterity,
     resources,
     addToMainResources,
   }: TransportNodeType) {

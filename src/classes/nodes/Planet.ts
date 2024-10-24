@@ -53,7 +53,12 @@ export class Planet extends CanvasNode {
   }
 
   updateShip() {
-    this.ship = new TransportNode(this.shipStats)
+    console.log(`🚀 ~ .ts:56 ~ this.shipStats:`, this.shipStats)
+    this.ship = new TransportNode({
+      ...this.shipStats,
+      speed: this.levels.shipSpeed,
+      strength: this.levels.cargo,
+    })
   }
 
   mine() {
@@ -73,10 +78,13 @@ export class Planet extends CanvasNode {
   }
 
   levelUpSkill(skill: string) {
-
-    console.log(`Upgrading ${skill} from ${this.levels[skill]}`)
     this.levels[skill] += 1
-    console.log(`to ${this.levels[skill]}`)
-    
+    if (['shipSpeed', 'cargo'].includes(skill)) {
+      this.shipStats.speed = this.levels.shipSpeed
+      this.shipStats.strength = this.levels.cargo
+      console.log(`🚀 :85 ~ updateShip ~ this.shipStats:`, this.shipStats.speed)
+
+      this.updateShip()
+    }
   }
 }

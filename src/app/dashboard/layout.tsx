@@ -10,16 +10,14 @@ import { Stack } from '@mui/material'
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
-import PlanetModal from '@/components/Modal'
-import { moneyAtom, planetAtom } from '@/atoms'
+import PlanetModal from '@/components/PlanetModal'
+import { moneyAtom } from '@/atoms'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const router = useRouter()
   const { data: session, status } = useSession()
 
   const [money] = useAtom(moneyAtom)
-  const [planet, setPlanet] = useAtom(planetAtom)
-  const handleClose = () => setPlanet(null)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -46,7 +44,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         <Stack justifyContent="space-between">
           {children}
           ${money}
-          {planet && <PlanetModal open={planet} handleClose={handleClose} />}
+          <PlanetModal />
           <Canvas />
         </Stack>
       </Stack>
