@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation'
 
 const SubNav = ({ subRoutes }: { subRoutes: string[] }) =>  {
   const pathname = usePathname()
-  console.log(`🚀 ~ file: SubNav.tsx:9 ~ SubNav ~ pathname:`, pathname)
 
   return (
     <Stack flexDirection="row">

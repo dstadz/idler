@@ -24,8 +24,8 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
   const addToMainResources = useCallback(
     (resource: keyof ResourceRecord, amount: number) => {
       setMainResources(prev => ({
-        ...prev,
-        [resource]: prev[resource] + amount,
+          ...prev,
+          [resource]: prev[resource] ? prev[resource] + amount : amount,
       }))
     },
     [setMainResources]
