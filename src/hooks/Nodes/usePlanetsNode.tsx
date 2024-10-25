@@ -17,11 +17,9 @@ interface UsePlanetProps {
 }
 
 export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
+  const [selectedPlanet, setPlanet] = useAtom(planetAtom)
   const [planets, setPlanets] = useState<Planet[]>([])
 
-  const [selectedPlanet, setPlanet] = useAtom(planetAtom)
-
-  const [money, setMoney] = useAtom(moneyAtom)
   const [, setMainResources] = useAtom(resourcesAtom)
   const addToMainResources = useCallback(
     (resource: keyof ResourceRecord, amount: number) => {
@@ -32,19 +30,6 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     },
     [setMainResources]
   )
-
-  const buyUpgrade = (planet: Planet, skill: string) => {
-    const cost = getUpgradeCost(planet.levels[skill])
-    if (money < cost) {
-      console.log('Not enough money!')
-      return
-    }
-
-    setMoney(prevMoney => prevMoney - cost)
-    planet.updateSkill(skill)
-    console.log(`${skill} upgraded!`)
-  }
-
 
   useEffect(() => {
     if (!ctx || Object.keys(homeNode).length === 0) return
@@ -97,7 +82,7 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
         setPlanet(clickedPlanet)
       }
     },
-    [planets]
+    [planets, setPlanet]
   )
 
   useEffect(() => {
