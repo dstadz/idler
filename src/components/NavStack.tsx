@@ -16,7 +16,7 @@ export default function NavStack() {
 
   useEffect(() => {
     setMounted(true)
-    const index = NAV_TABS.findIndex(tab => tab.route === pathname)
+    const index = NAV_TABS.findIndex(tab => tab.route === pathname.split('/')[2])
     setValue(index === -1 ? 0 : index)
   }, [pathname])
 

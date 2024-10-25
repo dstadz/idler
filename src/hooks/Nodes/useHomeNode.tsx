@@ -50,7 +50,7 @@ const fetchHomeNodeAPICall = async () => {
 
 export const useHomeNode = (ctx: CanvasRenderingContext2D | null) => {
   const [homeNode, setHomeNode] = useState<CanvasNode>({} as CanvasNode)
-  const [homeResources, setHomeResources] = useAtom(resourcesAtom)
+  const [homeResources, setResources] = useAtom(resourcesAtom)
 
   useEffect(() => {
     if (!ctx) return
@@ -66,8 +66,8 @@ export const useHomeNode = (ctx: CanvasRenderingContext2D | null) => {
 
   useEffect(() => {
     if (!homeNode || !homeNode.resources) return
-    setHomeResources(homeNode.resources)
-  }, [homeNode, setHomeResources])
+    setResources(homeNode.resources)
+  }, [homeNode, setResources])
 
   const drawHomeNode = useCallback(() => {
     if (homeNode instanceof CanvasNode) {

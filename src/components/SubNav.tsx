@@ -2,17 +2,22 @@
 import React from 'react'
 import { Stack } from '@mui/material'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
-const SubNav = ({ subRoutes }: { subRoutes: string[] }) =>  (
-  <Stack flexDirection="row">
-    {subRoutes.map(subRoute => (
-      <Link href={`/dashboard/resources/${subRoute}`} key={subRoute}>
-        <Stack key={subRoute} className='border-2 border-purple-500'>
-          {subRoute}
-        </Stack>
-      </Link>
-    ))}
-  </Stack>
-)
+const SubNav = ({ subRoutes }: { subRoutes: string[] }) =>  {
+  const pathname = usePathname()
+
+  return (
+    <Stack flexDirection="row">
+      {subRoutes.map(subRoute => (
+        <Link href={`${pathname}/${subRoute}`} key={subRoute}>
+          <Stack key={subRoute} className='border-2 border-purple-500'>
+            {subRoute}
+          </Stack>
+        </Link>
+      ))}
+    </Stack>
+  )
+}
 
 export default SubNav

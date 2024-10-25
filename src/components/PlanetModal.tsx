@@ -3,7 +3,6 @@ import { Avatar, Box, Button, Modal, Stack, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { useAtom } from 'jotai'
 import { moneyAtom, planetAtom } from '@/atoms'
-import { Planet } from '@/classes'
 
 const style = {
   position: 'absolute',
@@ -35,10 +34,6 @@ const neonButtonStyle = {
   },
 }
 
-interface PlanetModalProps {
-  open: boolean
-  handleClose: () => void
-}
 export const getUpgradeCost = (currentLevel: number) => {
   // Basic cost formula: increases with level
   return Math.floor(100 * Math.pow(1.2, currentLevel))
@@ -46,7 +41,7 @@ export const getUpgradeCost = (currentLevel: number) => {
 
 const PlanetModal = () => {
   const [planet, setPlanet] = useAtom(planetAtom)
-  const handleClose = () => setPlanet(null)
+  const handleClose = () => { setPlanet(null) }
 
   const [money, setMoney] = useAtom(moneyAtom)
   const handleUpgrade = (skill: string) => {
