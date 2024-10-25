@@ -87,7 +87,7 @@ export const ALLOYS = {
 
 }
 
-export const ITEMS = {
+const ITEMS = {
   WIRE: {
     NAME: 'Copper Wire',
     UNLOCK_COST: 0,
@@ -102,13 +102,6 @@ export const ITEMS = {
     TIME_TO_MAKE: 120,
     COST: [[ALLOYS.IRON, 5]],
   },
-  BATTERY: {
-    NAME: 'Battery',
-    UNLOCK_COST: 50000,
-    SELL_PRICE: 70000,
-    TIME_TO_MAKE: 240,
-    COST: [[ALLOYS.COPPER, 10]], // , [ITEMS.WIRE, 2]],
-  },
   GLASS: {
     NAME: 'Glass',
     UNLOCK_COST: 200000,
@@ -116,18 +109,26 @@ export const ITEMS = {
     TIME_TO_MAKE: 720,
     COST: [[ALLOYS.SILICON, 10]],
   },
-  CIRCIUT: {
-    NAME: 'Circuit',
-    UNLOCK_COST: 400000,
-    SELL_PRICE: 620000,
-    TIME_TO_MAKE: 960,
-    COST: [
-      [ALLOYS.SILICON, 10],
-      [ALLOYS.IRON, 10], // ALUMINUM
-      // [ITEMS.WIRE, 10]
-    ],
-  },
 }
+ITEMS.BATTERY = {
+  NAME: 'Battery',
+  UNLOCK_COST: 50000,
+  SELL_PRICE: 70000,
+  TIME_TO_MAKE: 240,
+  COST: [[ALLOYS.COPPER, 10], [ITEMS.WIRE, 2]],
+}
+ITEMS.CIRCIUT = {
+  NAME: 'Circuit',
+  UNLOCK_COST: 400000,
+  SELL_PRICE: 620000,
+  TIME_TO_MAKE: 960,
+  COST: [
+    [ALLOYS.SILICON, 10],
+    [ALLOYS.IRON, 10], // ALUMINUM
+    [ITEMS.WIRE, 10]
+  ],
+}
+export { ITEMS }
 
 export const PLANETS = [
   {
@@ -138,11 +139,11 @@ export const PLANETS = [
     levels: {
       mineRate: 1,
       speed: 1,
-      cargo: 1,
+      cargo: 3,
     },
     resources: {
-      [ORES.COPPER.NAME]: 50,
-      // [ORES.IRON.NAME]: 50,
+      [ORES.COPPER.NAME]: 5,
+      [ORES.IRON.NAME]: 5,
     },
     yields: {
       [ORES.COPPER.NAME]: 50,
@@ -158,11 +159,11 @@ export const PLANETS = [
     levels: {
       mineRate: 1,
       speed: 1,
-      cargo: 1,
+      cargo: 2,
     },
     resources: {
-      [ORES.IRON.NAME]: 50,
-      // [ORES.SILICA.NAME]: 50,
+      [ORES.IRON.NAME]: 5,
+      [ORES.SILICA.NAME]: 5,
     },
     yields: {
       [ORES.IRON.NAME]: 50,
