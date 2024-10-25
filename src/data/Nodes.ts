@@ -39,7 +39,7 @@ export const transportNodesData: TransportNodeTypeData[] = [
     speed: 0.9,
     emoji: '🐉',
     size: 16 ,
-    strength: 2,
+    cargo: 2,
     dexterity: 5,
   }, {
     id: 'transportNode2',
@@ -47,7 +47,7 @@ export const transportNodesData: TransportNodeTypeData[] = [
     speed: 1.25,
     emoji: '🦄',
     size: 16,
-    strength: 5,
+    cargo: 5,
     dexterity: 2,
   }
 ]

@@ -137,18 +137,18 @@ export const PLANETS = [
     telescopeNumber: 'Default',
     levels: {
       mineRate: 1,
-      shipSpeed: 1,
+      speed: 1,
       cargo: 1,
     },
     resources: {
       [ORES.COPPER.NAME]: 50,
-      [ORES.IRON.NAME]: 50,
+      // [ORES.IRON.NAME]: 50,
     },
     yields: {
       [ORES.COPPER.NAME]: 50,
       [ORES.IRON.NAME]: 50,
     },
-    position: [200, 400],
+    position: [100, 400],
   },
   {
     planetName: 'Drasta',
@@ -157,18 +157,18 @@ export const PLANETS = [
     telescopeNumber: 'Default',
     levels: {
       mineRate: 1,
-      shipSpeed: 1,
+      speed: 1,
       cargo: 1,
     },
     resources: {
       [ORES.IRON.NAME]: 50,
-      [ORES.SILICA.NAME]: 20,
+      // [ORES.SILICA.NAME]: 50,
     },
     yields: {
-      [ORES.IRON.NAME]: 80,
-      [ORES.SILICA.NAME]: 20,
+      [ORES.IRON.NAME]: 50,
+      [ORES.SILICA.NAME]: 50,
     },
-    position: [700, 300],
+    position: [400, 400],
   },
   // {
   //   planetName: 'Anadius',

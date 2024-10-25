@@ -55,7 +55,7 @@ const PlanetModal = () => {
       console.log('Not enough money!')
       return
     }
-    planet.levelUpSkill(skill)
+    planet.updateSkill(skill)
     setMoney(prevMoney => prevMoney - cost)
   }
   if (!planet) return null

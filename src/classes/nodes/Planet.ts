@@ -42,23 +42,13 @@ export class Planet extends CanvasNode {
       homeNode,
       position: homeNode.position,
       parentNode: this,
-      speed: this.levels.shipSpeed,
-      strength: this.levels.cargo,
+      levels,
       dexterity: 5,
       resources: { ...this.resources },
       addToMainResources,
     }
 
     this.ship = new TransportNode(this.shipStats)
-  }
-
-  updateShip() {
-    console.log(`🚀 ~ .ts:56 ~ this.shipStats:`, this.shipStats)
-    this.ship = new TransportNode({
-      ...this.shipStats,
-      speed: this.levels.shipSpeed,
-      strength: this.levels.cargo,
-    })
   }
 
   mine() {
@@ -77,13 +67,12 @@ export class Planet extends CanvasNode {
     super.drawUnit()
   }
 
-  levelUpSkill(skill: string) {
+  updateShip() {
+    this.ship.levels = this.levels
+  }
+  updateSkill(skill: string) {
     this.levels[skill] += 1
-    if (['shipSpeed', 'cargo'].includes(skill)) {
-      this.shipStats.speed = this.levels.shipSpeed
-      this.shipStats.strength = this.levels.cargo
-      console.log(`🚀 :85 ~ updateShip ~ this.shipStats:`, this.shipStats.speed)
-
+    if (['speed', 'cargo'].includes(skill)) {
       this.updateShip()
     }
   }

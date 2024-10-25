@@ -26,7 +26,7 @@ export type ResourceNodeType = NodeType & {
 export type TransportNodeTypeData = Omit<NodeTypeData, 'position', 'resources'> & {
   parentId: string
   speed: number
-  strength: number
+  cargo: number
   dexterity: number
 }
 
@@ -37,7 +37,7 @@ export type TransportNodeType = NodeType & TransportNodeTypeData & {
   resources: ResourceRecord
   isLoading: boolean
   speed: number
-  strength: number
+  cargo: number
   dexterity: number
   emoji: string
   // eslint-disable-next-line no-unused-vars

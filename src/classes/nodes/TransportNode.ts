@@ -7,8 +7,10 @@ export class TransportNode extends CanvasNode {
   targetNode: NodeType
   // position: [number, number]
   isLoading: boolean
-  speed: number
-  strength: number
+  levels: {
+    speed: number
+    cargo: number
+  }
   dexterity: number
   // resources: ResourceRecord
   addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
@@ -20,12 +22,10 @@ export class TransportNode extends CanvasNode {
     emoji = '❌',
     homeNode,
     parentNode,
-    targetNode = homeNode,
+    targetNode = parentNode,
     isLoading = false,
-    speed,
-    strength,
-    dexterity,
-    resources,
+    levels,
+    dexterity = 1,
     addToMainResources,
   }: TransportNodeType) {
     super({
@@ -33,15 +33,17 @@ export class TransportNode extends CanvasNode {
       position: homeNode.position,
       emoji,
       size,
-      resources,
+      resources: {},
       id,
     })
     this.homeNode = homeNode
     this.parentNode = parentNode
     this.targetNode = targetNode
     this.isLoading = isLoading
-    this.speed = speed
-    this.strength = strength
+    this.levels = {
+      speed: levels.speed,
+      cargo: levels.cargo
+    }
     this.dexterity = dexterity
     this.addToMainResources = addToMainResources
   }
@@ -90,7 +92,7 @@ export class TransportNode extends CanvasNode {
 
         this.isLoading = false
         const availableAmount = this.targetNode.resources[resource] || 0
-        const transferAmount = Math.min(Math.floor(availableAmount), this.strength)
+        const transferAmount = Math.min(Math.floor(availableAmount), this.levels.cargo)
 
         this.resources[resource] = (this.resources[resource] || 0) + transferAmount
         this.targetNode.resources[resource] -= transferAmount
@@ -137,13 +139,17 @@ export class TransportNode extends CanvasNode {
     const dy = targetPosition[1] - this.position[1]
     const distance = Math.sqrt(dx * dx + dy * dy)
 
-    if (distance <= this.speed) {
+    if (distance <= this.levels.speed) {
       this.handleArrival()
     } else {
       this.position = [
-        this.position[0] + (dx / distance) * this.speed,
-        this.position[1] + (dy / distance) * this.speed
+        this.position[0] + ((dx / distance)) * this.levels.speed,
+        this.position[1] + ((dy / distance)) * this.levels.speed
       ]
     }
+  }
+
+  updateSkill(skill: string) {
+    this.levels[skill] += 1
   }
 }

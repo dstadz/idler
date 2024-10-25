@@ -41,7 +41,7 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     }
 
     setMoney(prevMoney => prevMoney - cost)
-    planet.levelUpSkill(skill, money, money)
+    planet.updateSkill(skill)
     console.log(`${skill} upgraded!`)
   }
 
@@ -54,6 +54,7 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
         ctx,
         homeNode,
         id: node.id,
+        parentNode: node,
         position: node.position,
         size: node.size,
         emoji: node.emoji,
