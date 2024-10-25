@@ -1,27 +1,14 @@
 import { CanvasNode, Planet } from '@/classes'
 import { useEffect, useState, useCallback } from 'react'
-import { ORES, PLANETS as planetsStatic, RESOURCES } from '@/utils/constants'
+import { PLANETS as planetsStatic } from '@/utils/constants'
 import { useAtom } from 'jotai'
-import { resourcesAtom } from '@/atoms'
+import { planetAtom, resourcesAtom, moneyAtom } from '@/atoms'
 import { ResourceRecord } from '@/types/node'
+import { getUpgradeCost } from '@/components/PlanetModal'
 
 const PLANETS = planetsStatic.map(planet => ({
   ...planet,
-  levels: {
-    mineRate: 1,
-    shipSpeed: 1,
-    cargo: 1,
-  },
   id: `planet${planet.planetName}`,
-  position: [500, 100],
-  resources: {
-    ...(Object.fromEntries(Object.keys(RESOURCES)
-      .map(key => [key, 0])
-      .filter(([, amount]) => amount > 0)
-    ) as ResourceRecord),
-    [ORES.COPPER.NAME]: 2,
-    [ORES.IRON.NAME]: 6,
-  },
 }))
 
 interface UsePlanetProps {
@@ -31,7 +18,10 @@ interface UsePlanetProps {
 
 export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
   const [planets, setPlanets] = useState<Planet[]>([])
-  const [selectedPlanet, setSelectedPlanet] = useState<Planet | null>(null)
+
+  const [selectedPlanet, setPlanet] = useAtom(planetAtom)
+
+  const [money, setMoney] = useAtom(moneyAtom)
   const [, setMainResources] = useAtom(resourcesAtom)
   const addToMainResources = useCallback(
     (resource: keyof ResourceRecord, amount: number) => {
@@ -43,19 +33,34 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     [setMainResources]
   )
 
+  const buyUpgrade = (planet: Planet, skill: string) => {
+    const cost = getUpgradeCost(planet.levels[skill])
+    if (money < cost) {
+      console.log('Not enough money!')
+      return
+    }
+
+    setMoney(prevMoney => prevMoney - cost)
+    planet.updateSkill(skill)
+    console.log(`${skill} upgraded!`)
+  }
+
+
   useEffect(() => {
     if (!ctx || Object.keys(homeNode).length === 0) return
 
     const newPlanets = PLANETS.map(node =>
       new Planet({
         ctx,
+        homeNode,
         id: node.id,
+        parentNode: node,
         position: node.position,
         size: node.size,
         emoji: node.emoji,
         resources: node.resources,
-        homeNode,
         levels: node.levels,
+        yields: node.yields,
         addToMainResources,
       })
     )
@@ -89,7 +94,7 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
       })
 
       if (clickedPlanet) {
-        setSelectedPlanet(clickedPlanet)
+        setPlanet(clickedPlanet)
       }
     },
     [planets]
@@ -105,7 +110,7 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     }
   }, [ctx, handleCanvasClick])
 
-  const closeModal = () => setSelectedPlanet(null)
+  const closeModal = () => setPlanet(null)
 
   return {
     planets,

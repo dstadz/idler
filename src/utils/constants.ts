@@ -1,7 +1,4 @@
 import { ResourceRecord } from '@/types/node'
-import {
-  // Map as MapIcon,
-} from '@mui/icons-material'
 
 export const NAV_TABS = [
   // {
@@ -90,7 +87,7 @@ export const ALLOYS = {
 
 }
 
-export const ITEMS = {
+const ITEMS = {
   WIRE: {
     NAME: 'Copper Wire',
     UNLOCK_COST: 0,
@@ -105,13 +102,6 @@ export const ITEMS = {
     TIME_TO_MAKE: 120,
     COST: [[ALLOYS.IRON, 5]],
   },
-  BATTERY: {
-    NAME: 'Battery',
-    UNLOCK_COST: 50000,
-    SELL_PRICE: 70000,
-    TIME_TO_MAKE: 240,
-    COST: [[ALLOYS.COPPER, 10]], // , [ITEMS.WIRE, 2]],
-  },
   GLASS: {
     NAME: 'Glass',
     UNLOCK_COST: 200000,
@@ -119,18 +109,26 @@ export const ITEMS = {
     TIME_TO_MAKE: 720,
     COST: [[ALLOYS.SILICON, 10]],
   },
-  CIRCIUT: {
-    NAME: 'Circuit',
-    UNLOCK_COST: 400000,
-    SELL_PRICE: 620000,
-    TIME_TO_MAKE: 960,
-    COST: [
-      [ALLOYS.SILICON, 10],
-      [ALLOYS.IRON, 10], // ALUMINUM
-      // [ITEMS.WIRE, 10]
-    ],
-  },
 }
+ITEMS.BATTERY = {
+  NAME: 'Battery',
+  UNLOCK_COST: 50000,
+  SELL_PRICE: 70000,
+  TIME_TO_MAKE: 240,
+  COST: [[ALLOYS.COPPER, 10], [ITEMS.WIRE, 2]],
+}
+ITEMS.CIRCIUT = {
+  NAME: 'Circuit',
+  UNLOCK_COST: 400000,
+  SELL_PRICE: 620000,
+  TIME_TO_MAKE: 960,
+  COST: [
+    [ALLOYS.SILICON, 10],
+    [ALLOYS.IRON, 10], // ALUMINUM
+    [ITEMS.WIRE, 10]
+  ],
+}
+export { ITEMS }
 
 export const PLANETS = [
   {
@@ -138,30 +136,49 @@ export const PLANETS = [
     emoji: '🪐',
     basePrice: 100,
     telescopeNumber: 'Default',
-    resources: {
-      Copper: 100
+    levels: {
+      mineRate: 1,
+      speed: 1,
+      cargo: 3,
     },
-    distance: 10
+    resources: {
+      [ORES.COPPER.NAME]: 5,
+      [ORES.IRON.NAME]: 5,
+    },
+    yields: {
+      [ORES.COPPER.NAME]: 50,
+      [ORES.IRON.NAME]: 50,
+    },
+    position: [100, 400],
   },
-  // {
-  //   planetName: 'Drasta',
-  //   basePrice: 200,
-  //   telescopeNumber: 'Default',
-  //   resources: {
-  //     Copper: 80,
-  //     Iron: 20
-  //   },
-  //   distance: 12
-  // },
+  {
+    planetName: 'Drasta',
+    emoji: '🌼',
+    basePrice: 200,
+    telescopeNumber: 'Default',
+    levels: {
+      mineRate: 1,
+      speed: 1,
+      cargo: 2,
+    },
+    resources: {
+      [ORES.IRON.NAME]: 5,
+      [ORES.SILICA.NAME]: 5,
+    },
+    yields: {
+      [ORES.IRON.NAME]: 50,
+      [ORES.SILICA.NAME]: 50,
+    },
+    position: [400, 400],
+  },
   // {
   //   planetName: 'Anadius',
   //   basePrice: 500,
   //   telescopeNumber: 'Default',
   //   resources: {
-  //     Copper: 50,
   //     Iron: 50
   //   },
-  //   yield: 50,
+  //   yields: {
   //   distance: 14
   // },
   // {
@@ -179,7 +196,7 @@ export const PLANETS = [
   //   basePrice: 5000,
   //   telescopeNumber: 1,
   //   resources: {
-  //     Lead: 50,
+  //     Lead: {
   //     Iron: 30,
   //     Copper: 20
   //   },

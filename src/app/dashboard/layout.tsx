@@ -1,17 +1,23 @@
+// components/DashboardLayout.tsx
 'use client'
+
 import React, { ReactNode, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
+import { useAtom } from 'jotai'
 import { useRouter } from 'next/navigation'
-
 import { Stack } from '@mui/material'
 
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
+import PlanetModal from '@/components/PlanetModal'
+import { moneyAtom } from '@/atoms'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
-  const { data: session, status } = useSession()
   const router = useRouter()
+  const { data: session, status } = useSession()
+
+  const [money] = useAtom(moneyAtom)
 
   useEffect(() => {
     if (status === 'loading') return
@@ -27,8 +33,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   }
 
   return (
-    <Stack className="flex flex-col w-full h-screen border-2 border-red-500">
-
+    <Stack className="flex flex-col w-full h-screen border-2 border-green-500">
       <Stack>
         <h1>{session.user.name}s Dashboard</h1>
         <SignOutButton />
@@ -38,6 +43,8 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         <NavStack />
         <Stack justifyContent="space-between">
           {children}
+          ${money}
+          <PlanetModal />
           <Canvas />
         </Stack>
       </Stack>
