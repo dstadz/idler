@@ -55,12 +55,13 @@ export const useHomeNode = (ctx: CanvasRenderingContext2D | null) => {
   useEffect(() => {
     if (!ctx) return
     (async () => {
-      const fetchedData = await fetchHomeNodeAPICall()
+      // const fetchedData = await fetchHomeNodeAPICall()
+      // console.log(`🚀 ~ file: useHomeNode.tsx:59 ~ fetchedData:`, fetchedData)
 
-      if (fetchedData) {
-        const newHomeNode = mapDbToCanvasNode(fetchedData, ctx)
-        setHomeNode(newHomeNode)
-      }
+      // if (fetchedData) {
+      //   const newHomeNode = mapDbToCanvasNode(fetchedData, ctx)
+      //   setHomeNode(newHomeNode)
+      // }
     })()
     }, [ctx])
 

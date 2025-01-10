@@ -2,26 +2,24 @@
 'use client'
 
 import React, { ReactNode, useEffect } from 'react'
-// import { useSession } from 'next-auth/react'
 import { useAtom } from 'jotai'
-import { useRouter } from 'next/navigation'
 import { Stack } from '@mui/material'
 
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
 import PlanetModal from '@/components/PlanetModal'
-import { moneyAtom, userAtom } from '@/atoms'
+import { moneyAtom, userAtom, userIdAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   // const router = useRouter()
   const [money] = useAtom(moneyAtom)
-  const [userId, setUserId] = useAtom(userAtom);
+  const [user, setUser] = useAtom(userAtom);
+  const [userId, setUserId] = useAtom(userIdAtom);
 
   useEffect(() => {
     const { data, error } = supabase.auth.onAuthStateChange((event, session) => {
-      console.log(`🚀 ~ file: layout.tsx:24 ~ const{data,error}=supabase.auth.onAuthStateChange ~ session:`, session)
       setUserId(session?.user?.id)
     })
 
@@ -30,6 +28,24 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [setUserId])
 
+  useEffect(() => {
+    if (!userId) return
+    const fetchData = async () => {
+      // First, get the current user from Supabase auth
+      const { data: users, error: dbError } = await supabase
+      .from('users')
+      .select('*')
+      .eq('id', userId)
+
+      if (dbError) {
+        console.error("Database error:", dbError)
+      } else {
+        setUser(users[0])
+      }
+    }
+    fetchData()
+  }, [userId, supabase])
+
   if (!userId) {
     return <div>User not logged in</div>
 }
@@ -37,7 +53,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <Stack className="flex flex-col w-full h-screen border-2 border-green-500">
       <Stack>
-        {/* <h1>{session.user.name}s Dashboard</h1> */}
+        {user && <h1>{user.name}s Dashboard</h1>}
         <SignOutButton />
       </Stack>
 

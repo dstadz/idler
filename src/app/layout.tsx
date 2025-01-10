@@ -20,8 +20,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   return (
     <Providers>
-      <html lang='en'>
-        <body>
+      <html lang='en' suppressHydrationWarning={true}>
+        <body suppressHydrationWarning={true}>
           <main className='flex min-h-screen min-w-screen flex-col items-center justify-between'>
             {children}
           </main>
