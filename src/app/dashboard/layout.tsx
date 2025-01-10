@@ -2,7 +2,7 @@
 'use client'
 
 import React, { ReactNode, useEffect } from 'react'
-import { useSession } from 'next-auth/react'
+// import { useSession } from 'next-auth/react'
 import { useAtom } from 'jotai'
 import { useRouter } from 'next/navigation'
 import { Stack } from '@mui/material'
@@ -11,31 +11,33 @@ import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
 import PlanetModal from '@/components/PlanetModal'
-import { moneyAtom } from '@/atoms'
+import { moneyAtom, userAtom } from '@/atoms'
+import { supabase } from '@/lib/supabase'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
-  const router = useRouter()
-  const { data: session, status } = useSession()
-
+  // const router = useRouter()
   const [money] = useAtom(moneyAtom)
+  const [userId, setUserId] = useAtom(userAtom);
 
   useEffect(() => {
-    if (status === 'loading') return
-    if (!session) router.push('/signin')
-  }, [session, status, router])
+    const { data, error } = supabase.auth.onAuthStateChange((event, session) => {
+      console.log(`🚀 ~ file: layout.tsx:24 ~ const{data,error}=supabase.auth.onAuthStateChange ~ session:`, session)
+      setUserId(session?.user?.id)
+    })
 
-  if (status === 'loading' || !session) {
-    return <p>Loading...</p>
-  }
+    return () => {
+      supabase.auth.onAuthStateChange(null)
+    }
+  }, [setUserId])
 
-  if (!session || !session.user) {
+  if (!userId) {
     return <div>User not logged in</div>
-  }
+}
 
   return (
     <Stack className="flex flex-col w-full h-screen border-2 border-green-500">
       <Stack>
-        <h1>{session.user.name}s Dashboard</h1>
+        {/* <h1>{session.user.name}s Dashboard</h1> */}
         <SignOutButton />
       </Stack>
 
