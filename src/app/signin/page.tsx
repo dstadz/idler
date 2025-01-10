@@ -1,8 +1,8 @@
 'use client'
 
-import { signIn } from 'next-auth/react'
 import Link from 'next/link'
 import React, { useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 export default function SignIn() {
   const [email, setEmail] = useState('')
@@ -15,26 +15,24 @@ export default function SignIn() {
     setError(null)
     // setLoading(true)
 
-    const result = await signIn('credentials', {
-      redirect: false,
+    const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
       email,
       password,
-      callbackUrl: '/dashboard',
     })
 
-    // setLoading(false)
-
-    if (result?.error) {
-      setError('Invalid email or password')
-    } else if (result?.url) {
-      window.location.href = result.url
+    if (supabaseError) {
+      setError(supabaseError.message)
+    } else if (data) {
+      // User is signed in, you can redirect them to the dashboard
+      window.location.href = '/dashboard'
     } else {
-      console.error('Error: Redirect URL is missing')
+      console.error('Error: Unknown error occurred')
     }
   }
 
   return (
     <div>
+      <h1>Sign In</h1>
       <form onSubmit={handleSubmit} className="flex flex-col border-2">
         <input
           type="email"
