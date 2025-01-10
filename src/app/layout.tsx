@@ -1,15 +1,14 @@
 'use client'
 import React from 'react'
 import { Provider as JotaiProvider } from 'jotai'
-import { SessionProvider } from 'next-auth/react'
 import './globals.css'
 
 const ProviderStack = [
-  SessionProvider,
   JotaiProvider,
 ]
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+
   const Providers = ProviderStack.reduce((AccProvider, CurrentProvider) => {
     const WrappedProviders = ({ children: providerChildren }: { children: React.ReactNode }) => (
       <AccProvider>
