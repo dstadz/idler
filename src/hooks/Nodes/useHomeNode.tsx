@@ -4,48 +4,53 @@ import { useAtom } from 'jotai'
 import { CanvasNode } from '@/classes'
 import { resourcesAtom } from '@/atoms'
 import { mapDbToCanvasNode } from '@/utils/mappers'
+import { createNode, getNodes } from '@/app/api/nodes/route'
+import { get } from 'http'
 
 const createHomeNodeAPICall = async () => {
-  try {
-    const response = await fetch('/api/village/building', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ type: 'HomeNode' }),
-    })
+  createNode({ body: { name: 'Home Node', type: 'HomeNode' } })
+  // try {
+  //   const response = await fetch('/api/village/building', {
+  //     method: 'POST',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify({ type: 'HomeNode' }),
+  //   })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || 'Failed to create home node')
-    }
+  //   if (!response.ok) {
+  //     const errorData = await response.json()
+  //     throw new Error(errorData.message || 'Failed to create home node')
+  //   }
 
-    const data = await response.json()
+  //   const data = await response.json()
 
-    return data
-  } catch (error) {
-    console.error('Error creating home node:', error)
-    throw error
-  }
+  //   return data
+  // } catch (error) {
+  //   console.error('Error creating home node:', error)
+  //   throw error
+  // }
 }
 
 const fetchHomeNodeAPICall = async () => {
-  try {
-    const response = await fetch('/api/village/building', {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' },
-    })
+    const nodes = await getNodes()
+  // try {
+  //   const response = await fetch('/api/village/building', {
+  //     method: 'GET',
+  //     headers: { 'Content-Type': 'application/json' },
+  //   })
 
-    if (!response.ok) {
-      const errorData = await response.json()
-      throw new Error(errorData.message || 'Failed to fetch home node')
-    }
+  //   if (!response.ok) {
+  //     const errorData = await response.json()
+  //     throw new Error(errorData.message || 'Failed to fetch home node')
+  //   }
 
-    const data = await response.json()
-    return data
+  //   const data = await response.json()
+  //   return data
 
-  } catch (error) {
-    console.error('Error fetching home node:', error)
-    throw error
-  }
+  // } catch (error) {
+  //   console.error('Error fetching home node:', error)
+  //   throw error
+  // }
+  return nodes
 }
 
 export const useHomeNode = (ctx: CanvasRenderingContext2D | null) => {
@@ -55,13 +60,13 @@ export const useHomeNode = (ctx: CanvasRenderingContext2D | null) => {
   useEffect(() => {
     if (!ctx) return
     (async () => {
-      // const fetchedData = await fetchHomeNodeAPICall()
-      // console.log(`🚀 ~ file: useHomeNode.tsx:59 ~ fetchedData:`, fetchedData)
+      const fetchedData = await fetchHomeNodeAPICall()
+      console.log(`🚀 ~ file: useHomeNode.tsx:59 ~ fetchedData:`, fetchedData)
 
-      // if (fetchedData) {
-      //   const newHomeNode = mapDbToCanvasNode(fetchedData, ctx)
-      //   setHomeNode(newHomeNode)
-      // }
+      if (fetchedData) {
+        const newHomeNode = mapDbToCanvasNode(fetchedData, ctx)
+        setHomeNode(newHomeNode)
+      }
     })()
     }, [ctx])
 

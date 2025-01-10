@@ -1,11 +1,7 @@
 'use client'
 import React, { useEffect } from 'react'
 import { supabase } from '@/lib/supabase'
-import { useAtom } from 'jotai';
-import { userAtom } from '@/atoms';
-
 const PlayerPage = () => {
-    const [userId, setUserId] = useAtom(userAtom);
 
     useEffect(() => {
       const fetchData = async () => {
