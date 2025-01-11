@@ -42,16 +42,37 @@ const Canvas = () => {
   }, [ctx, homeNode, planets, gameLoop])
 
   return (
-    <div style={{ border: '3px solid #0ff'}}>
-      <HexGrid/>
-    <canvas
-      ref={canvasRef}
-      width={800}
-      height={600}
-      className="border-2 border-purple-500 rounded"
-      onClick={handleClick}
-    />
-
+    <div style={{
+      position: 'relative',
+      border: '3px solid #0ff',
+      width: '800px',
+      height: '100vh',
+      }}>
+      <div
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 0,
+          width: '100%',
+          height: '100%',
+          }}
+        >
+        <HexGrid />
+      </div>
+      <canvas
+        ref={canvasRef}
+        width={800}
+        height={500}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1,
+          border: '3px solid silver',
+          pointerEvents: 'none'
+        }}
+      />
     </div>
   )
 }

@@ -1,37 +1,35 @@
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 
-const HexGrid = ({ rows = 5, cols = 5 }) => {
+const HexGrid = () => {
   const [activeCells, setActiveCells] = useState(new Set())
 
   const toggleCell = (id) => {
     setActiveCells((prev) => {
       const newSet = new Set(prev)
-      newSet.has(id) ? newSet.delete(id) : newSet.add(id)
+      if (newSet.has(id)) newSet.delete(id)
+      else newSet.add(id)
       return newSet
     })
   }
-  const hexCells = [
-    [{ },{ },{ }],
-    [  { },{ },{ }],
-    [{ },{ },{ }],
-  ]
-  const hexWidth = 80
-  const hexHeight = 80 // Math.sqrt(3) / 2 * hexWidth
 
+  const hexCells = Array.from({ length: 10 }, (_, rowIndex) =>
+    Array.from({ length: 10 }, (_, colIndex) => `${rowIndex}-${colIndex}`),
+  )
+
+  const hexWidth = 80
+  const hexHeight = 80
 
   return (
     <Box
       sx={{
-        // position: 'relative',
         border: '3px solid red',
         display: 'flex',
+        position: 'absolute',
+        top: 0,
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        // width: cols * 60 * 0.75 + 30,
-        // height: rows * (Math.sqrt(3) / 2 * 60) + (60 / 2),
-        margin: '0 auto'
+        alignItems: 'flex-start',
+        marginTop: `${hexHeight / 2}px`,
       }}
     >
       {hexCells.map((row, rowIndex) => {
@@ -41,38 +39,39 @@ const HexGrid = ({ rows = 5, cols = 5 }) => {
             key={rowIndex}
             sx={{
               display: 'flex',
-              border: '3px solid green',
-              justifyContent: 'center',
-              marginLeft: isShifted ? `${hexWidth}px` : 0,
+              justifyContent: 'flex-start',
+              marginLeft: isShifted ? `${hexWidth / 2}px` : 0,
               marginTop: `-${hexHeight / 2}px`,
-            }}>
+            }}
+          >
             {row.map((_, colIndex) => {
               const id = `${rowIndex}-${colIndex}`
               const isActive = activeCells.has(id)
               return (
                 <Box
-
-                key={`${rowIndex}-${colIndex}`}
-                onClick={() => toggleCell(id)}
-                sx={{
+                  key={id}
+                  onClick={() => toggleCell(id)}
+                  sx={{
                     width: hexWidth,
                     height: hexHeight,
-                    border: '3px solid orange',
                     backgroundColor: isActive ? '#4caf50' : '#ccc',
                     clipPath: `polygon(
-                    50% 0%,
-                    100% 25%,
-                    100% 75%,
-                    50% 100%,
-                    0% 75%,
-                    0% 25%)`,
+                      50% 0%,
+                      100% 25%,
+                      100% 75%,
+                      50% 100%,
+                      0% 75%,
+                      0% 25%
+                    )`,
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    transition: 'background-color 0.3s ease'
-                  }}>
-                  {rowIndex}, {colIndex}
+                    transition: 'background-color 0.3s ease',
+                    boxShadow: '0 0 0 2px black',
+                  }}
+                >
+                  {id}
                 </Box>
               )
             })}
@@ -82,5 +81,4 @@ const HexGrid = ({ rows = 5, cols = 5 }) => {
     </Box>
   )
 }
-
 export default HexGrid
