@@ -1,7 +1,10 @@
 'use client'
 
-import React, { useCallback, useEffect, useRef } from 'react'
+import React, { useState, useCallback, useEffect, useRef } from 'react'
 import { useCanvas, useHomeNode, usePlanetNodes } from '@/hooks'
+import Box from '@mui/material/Box'
+import HexGrid from './Hexgrid'
+
 
 const Canvas = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
@@ -39,6 +42,8 @@ const Canvas = () => {
   }, [ctx, homeNode, planets, gameLoop])
 
   return (
+    <div style={{ border: '3px solid #0ff'}}>
+      <HexGrid/>
     <canvas
       ref={canvasRef}
       width={800}
@@ -46,6 +51,8 @@ const Canvas = () => {
       className="border-2 border-purple-500 rounded"
       onClick={handleClick}
     />
+
+    </div>
   )
 }
 
