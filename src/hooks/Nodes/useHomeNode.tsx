@@ -5,7 +5,6 @@ import { CanvasNode } from '@/classes'
 import { resourcesAtom } from '@/atoms'
 import { mapDbToCanvasNode } from '@/utils/mappers'
 import { createNode, getNodes } from '@/app/api/nodes/route'
-import { get } from 'http'
 
 const createHomeNodeAPICall = async () => {
   createNode({ body: { name: 'Home Node', type: 'HomeNode' } })
