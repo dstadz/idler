@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useEffect, useRef } from 'react'
+import React, { useState, useCallback, useEffect, useRef, use } from 'react'
 import { useCanvas, useHomeNode, usePlanetNodes } from '@/hooks'
 import Box from '@mui/material/Box'
 import HexGrid from './Hexgrid'
@@ -9,8 +9,12 @@ import HexGrid from './Hexgrid'
 const Canvas = () => {
   const { ctx, canvasRef, drawFPS, clearWholeRect, handleClick } = useCanvas()
   const { homeNode, drawHomeNode } = useHomeNode(ctx)
-  const { planets, drawPlanets } = usePlanetNodes({ ctx, homeNode })
+  const { planets, drawPlanets, setPlanetsPosition } = usePlanetNodes({ ctx, homeNode })
   const rafIdRef = useRef<number | null>(null)
+
+  useEffect(() => {
+    setPlanetsPosition(planets)
+  }, [planets])
 
   const gameLoop = useCallback(
     (timestamp: number) => {

@@ -19,7 +19,7 @@ const HexGrid = () => {
   }
 
   const hexCells = Array.from({ length: 10 }, (_, rowIndex) =>
-    Array.from({ length: 10 }, (_, colIndex) => ({ id: getCoods(rowIndex, colIndex) })),
+    Array.from({ length: 9 }, (_, colIndex) => ({ id: getCoods(rowIndex, colIndex) })),
   )
 
   return (
@@ -31,7 +31,7 @@ const HexGrid = () => {
         top: 0,
         flexDirection: 'column',
         alignItems: 'flex-start',
-        marginTop: `${hexHeight / 2}px`,
+        marginTop: `${hexHeight / 4}px`,
       }}
     >
       {hexCells.map((row, rowIndex) => {
