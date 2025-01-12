@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
-import { Typography } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 
-const hexWidth = 80
+const hexWidth = 60
 const hexHeight = hexWidth * (Math.sqrt(3)/2)
 const getCoods = (row, col) => `${row}-${col}`
 
@@ -99,36 +99,49 @@ const HexCell = ({
   const { id } = cell
   const isActive = activeCells.has(id)
   return (
-    <Box
-    key={cell.id}
-    onClick={() => toggleCell(id)}
-    sx={{
-      width: hexWidth,
-      height: hexHeight,
-      backgroundColor: isActive ? '#4caf50' : '#ccc',
-      clipPath: `polygon(
-        50% 0%,
-        100% 25%,
-        100% 75%,
-        50% 100%,
-        0% 75%,
-        0% 25%
-      )`,
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      transition: 'background-color 0.3s ease',
-      boxShadow: '0 0 0 2px black',
-    }}
-  >
-    <Typography
-      sx={{
-        // background: 'red',
-      }}
-    >
-      {id}
-    </Typography>
-  </Box>
+    <Stack sx={{ position: 'relative' }}>
+      <Box
+        key={cell.id}
+        onClick={() => toggleCell(id)}
+        sx={{
+          width: hexWidth,
+          height: hexHeight,
+          position: 'relative',
+          backgroundColor: isActive ? '#4caf50' : '#ccc',
+          clipPath: `polygon(
+            50% 0%,
+            100% 25%,
+            100% 75%,
+            50% 100%,
+            0% 75%,
+            0% 25%
+          )`,
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'background-color 0.3s ease',
+          boxShadow: '0 0 0 2px black',
+        }}
+      >
+        <Typography
+          sx={{
+            // background: 'red',
+          }}
+        >
+          {id}
+        </Typography>
+      </Box>
+      {isActive && (
+        <Stack sx={{
+          border: '3px solid red',
+          background: 'white',
+          position: 'absolute',
+          top: -hexWidth/2,
+        }}>
+          Hello
+        </Stack>
+      )}
+    </Stack>
   )
 }
