@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useEffect, useRef, use } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { useCanvas, useHomeNode, usePlanetNodes } from '@/hooks'
 import Box from '@mui/material/Box'
 import HexGrid from './Hexgrid'
@@ -46,38 +46,27 @@ const Canvas = () => {
   }, [ctx, homeNode, planets, gameLoop])
 
   return (
-    <div style={{
+    <Box sx={{
       position: 'relative',
       border: '3px solid #0ff',
-      width: '800px',
-      height: '100vh',
+      // width: '800px',
+      // height: 'unset',
       }}>
-      <div
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 0,
-          width: '100%',
-          height: '100%',
-          }}
-        >
         <HexGrid />
-      </div>
       <canvas
         ref={canvasRef}
         width={800}
-        height={500}
+        height={600}
         style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
+          // position: 'absolute',
+          // top: 0,
+          // left: 0,
           zIndex: 1,
-          border: '3px solid silver',
+          border: '3px solid red',
           pointerEvents: 'none'
         }}
       />
-    </div>
+    </Box>
   )
 }
 

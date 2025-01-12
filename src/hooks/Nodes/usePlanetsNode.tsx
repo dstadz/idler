@@ -31,30 +31,30 @@ export const usePlanetNodes = ({ ctx, homeNode }: UsePlanetProps) => {
     [setMainResources]
   )
 
-  useEffect(() => {
-    if (!ctx || Object.keys(homeNode).length === 0) return
+  // useEffect(() => {
+  //   if (!ctx || Object.keys(homeNode).length === 0) return
 
 
-    const h = 10
-    const w = 10
-    const node = planetsStatic[0]
-    const gridPlants = new Array(h)
-    .fill('').map((_, r) => new Array(w)
-      .fill('').map((_, c) => new Planet({
-      ctx,
-      homeNode,
-      id: `planet${node.planetName}${r}${c}`,
-      parentNode: node,
-      position: [r,c],
-      size: node.size,
-      emoji: node.emoji,
-      resources: node.resources,
-      levels: node.levels,
-      yields: node.yields,
-      addToMainResources,
-    }))).flatMap(arr => arr)
-    setPlanets(gridPlants)
-  }, [ctx, homeNode, addToMainResources])
+  //   const h = 9
+  //   const w = 9
+  //   const node = planetsStatic[0]
+  //   const gridPlants = new Array(h)
+  //   .fill('').map((_, r) => new Array(h)
+  //     .fill('').map((_, c) => new Planet({
+  //     ctx,
+  //     homeNode,
+  //     id: `planet${node.planetName}${r}${c}`,
+  //     parentNode: node,
+  //     position: [r,c],
+  //     size: node.size,
+  //     emoji: node.emoji,
+  //     resources: node.resources,
+  //     levels: node.levels,
+  //     yields: node.yields,
+  //     addToMainResources,
+  //   }))).flatMap(arr => arr)
+  //   setPlanets(gridPlants)
+  // }, [ctx, homeNode, addToMainResources])
 
   const drawPlanets = () => {
     planets.forEach(planet => {

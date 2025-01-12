@@ -8,7 +8,6 @@ import { Stack } from '@mui/material'
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
-import PlanetModal from '@/components/PlanetModal'
 import { moneyAtom, userAtom, userIdAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
 
@@ -52,23 +51,23 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 }
 
   return (
-    <Stack className="flex flex-col w-full h-screen border-2 border-green-500">
-      <Stack>
-        {user && <h1>{user.name}s Dashboard</h1>}
-        <SignOutButton />
-      </Stack>
-
-      <Stack flexDirection="row">
-        <NavStack />
-        <Stack justifyContent="space-between">
-          {children}
-          ${money}
-          {/* <PlanetModal /> */}
-          <Canvas />
-        </Stack>
+    <Stack style={{ width: '100%', height: '100%' }} flexDirection='row'>
+      <NavStack />
+      <Stack flexDirection="column" sx={{ border: '3px solid green' }}>
+        <Header money={money} user={user} />
+        {children}
+        <Canvas />
       </Stack>
     </Stack>
   )
 }
 
 export default DashboardLayout
+
+const Header = ({ money, user }: { money: number; user: any}) => (
+  <Stack flexDirection="row" sx={{ border: '3px solid blue' }}>
+    {user && <h1>{user.name}s Dashboard</h1>}
+  ${money}
+    <SignOutButton />
+  </Stack>
+)

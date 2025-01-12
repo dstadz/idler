@@ -25,13 +25,13 @@ const HexGrid = () => {
   return (
     <Box
       sx={{
-        border: '3px solid red',
+        border: '3px solid yellow',
         display: 'flex',
         position: 'absolute',
         top: 0,
         flexDirection: 'column',
         alignItems: 'flex-start',
-        marginTop: `${hexHeight / 4}px`,
+        paddingTop: `${hexHeight / 4}px`,
       }}
     >
       {hexCells.map((row, rowIndex) => {
@@ -57,6 +57,12 @@ const HexRow = ({
   isShifted,
   activeCells,
   toggleCell,
+}: {
+  row: HexCell[]
+  rowIndex: number
+  isShifted: boolean
+  activeCells: Set<string>
+  toggleCell: (id: string) => void
 }) => (
   <Box
     sx={{
@@ -66,25 +72,29 @@ const HexRow = ({
       marginTop: `-${hexHeight / 4}px`,
     }}
   >
-    {row.map((cell, colIndex) => {
-      return <HexCell
+    {row.map((cell, colIndex) => <HexCell
       key={colIndex}
       cell={cell}
       toggleCell={toggleCell}
       activeCells={activeCells}
       rowIndex={rowIndex}
       colIndex={colIndex}
-      />
-    })}
+    />)}
   </Box>
 )
 
 const HexCell = ({
   cell,
-  rowIndex,
-  colIndex,
+  // rowIndex,
+  // colIndex,
   activeCells,
   toggleCell,
+}: {
+  cell: object
+  rowIndex: number
+  colIndex: number
+  activeCells: Set<string>
+  toggleCell: (id: string) => void
 }) => {
   const { id } = cell
   const isActive = activeCells.has(id)
