@@ -136,6 +136,7 @@ export const PLANETS = [
     emoji: '🪐',
     basePrice: 100,
     telescopeNumber: 'Default',
+    position: [0, 1], // [x, y]
     levels: {
       mineRate: 1,
       speed: 1,
@@ -149,7 +150,6 @@ export const PLANETS = [
       [ORES.COPPER.NAME]: 50,
       [ORES.IRON.NAME]: 50,
     },
-    position: [100, 400],
   },
   {
     planetName: 'Drasta',
@@ -171,57 +171,6 @@ export const PLANETS = [
     },
     position: [400, 400],
   },
-  // {
-  //   planetName: 'Anadius',
-  //   basePrice: 500,
-  //   telescopeNumber: 'Default',
-  //   resources: {
-  //     Iron: 50
-  //   },
-  //   yields: {
-  //   distance: 14
-  // },
-  // {
-  //   planetName: 'Dholen',
-  //   basePrice: 1250,
-  //   telescopeNumber: 'Default',
-  //   resources: {
-  //     Iron: 80,
-  //     Lead: 20
-  //   },
-  //   distance: 15
-  // },
-  // {
-  //   planetName: 'Verr',
-  //   basePrice: 5000,
-  //   telescopeNumber: 1,
-  //   resources: {
-  //     Lead: {
-  //     Iron: 30,
-  //     Copper: 20
-  //   },
-  //   distance: 16
-  // },
-  // {
-  //   planetName: 'Newton',
-  //   basePrice: 9000,
-  //   telescopeNumber: 1,
-  //   resources: {
-  //     Lead: 100
-  //   },
-  //   distance: 18
-  // },
-  // {
-  //   planetName: 'Widow',
-  //   basePrice: 15000,
-  //   telescopeNumber: 1,
-  //   resources: {
-  //     Iron: 40,
-  //     Copper: 40,
-  //     Silica: 20
-  //   },
-  //   distance: 20
-  // }
 ]
 
 export const RESOURCES = {

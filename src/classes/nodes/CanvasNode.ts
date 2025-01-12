@@ -60,6 +60,6 @@ export class CanvasNode {
     this.ctx.font = '16px serif'
 
     // this.showResources()
-    this.showOres()
+    // this.showOres()
   }
 }

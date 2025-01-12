@@ -2,6 +2,11 @@ import { CanvasNode } from './CanvasNode'
 import { PlanetType, ResourceRecord } from '@/types/node'
 import { TransportNode } from './TransportNode'
 
+
+const hexWidth = 80
+const hexHeight = hexWidth * (Math.sqrt(3)/2)
+const getCoods = (row, col) => `${row}-${col}`
+
 export class Planet extends CanvasNode {
   homeNode: CanvasNode
   levels: Record<string, number>
@@ -75,5 +80,12 @@ export class Planet extends CanvasNode {
     if (['speed', 'cargo'].includes(skill)) {
       this.updateShip()
     }
+  }
+
+  setHexCoordinates() {
+    this.position = [
+      hexWidth / 2 + this.position[0] * hexWidth + (this.position[1] % 2 ? hexWidth / 2 : 0),
+      hexHeight / 2 + this.position[1] * hexHeight * .75
+    ]
   }
 }

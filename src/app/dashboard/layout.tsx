@@ -19,7 +19,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [userId, setUserId] = useAtom(userIdAtom);
 
   useEffect(() => {
-    const { data, error } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data, error } = supabase
+      .auth
+      .onAuthStateChange((event, session) => {
       setUserId(session?.user?.id)
     })
 
@@ -31,7 +33,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!userId) return
     const fetchData = async () => {
-      // First, get the current user from Supabase auth
       const { data: users, error: dbError } = await supabase
       .from('users')
       .select('*')
@@ -62,7 +63,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         <Stack justifyContent="space-between">
           {children}
           ${money}
-          <PlanetModal />
+          {/* <PlanetModal /> */}
           <Canvas />
         </Stack>
       </Stack>
