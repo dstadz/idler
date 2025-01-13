@@ -5,10 +5,12 @@ import { ApiResponse } from '@/interfaces'
 
 // Mapper to convert DB data to CanvasNode
 export function mapDbToCanvasNode(dbData: ApiResponse, ctx: CanvasRenderingContext2D): CanvasNode {
-  const { id, xPos, yPos, entity } = dbData.homeNode
-  const resourceObj = entity.resourceInventory
-  delete resourceObj.id
-  delete resourceObj.entityId
+  console.log(`🚀 ~ file: mappers.ts:8 ~ mapDbToCanvasNode ~ dbData:`, dbData)
+  // const { id, xPos, yPos, entity } = dbData.homeNode
+  const { id } = dbData[0]
+  // const resourceObj = entity.resourceInventory
+  // delete resourceObj.id
+  // delete resourceObj.entityId
 
   const resources: ResourceRecord = {
     // ...defaultResources,
@@ -17,10 +19,12 @@ export function mapDbToCanvasNode(dbData: ApiResponse, ctx: CanvasRenderingConte
     // )
   }
 
+  const [xPos, yPos] = [50, 150]
+
   return new CanvasNode({
     id,
     ctx,
-    position: [xPos, yPos],
+    position: [xPos, yPos ],
     resources,
     emoji: '🏠',
     size: 40,

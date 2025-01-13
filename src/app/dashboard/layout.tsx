@@ -8,9 +8,10 @@ import { Stack } from '@mui/material'
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
-import PlanetModal from '@/components/PlanetModal'
 import { moneyAtom, userAtom, userIdAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
+import Button from '@/components/UI/Button'
+import { BUILDINGS, RESOURCES } from '@/utils/constants'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   // const router = useRouter()
@@ -18,8 +19,26 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useAtom(userAtom);
   const [userId, setUserId] = useAtom(userIdAtom);
 
+  const buildingNodes = [
+    {
+      id: 1,
+      type: BUILDINGS.VILLAGE,
+      position: [4, 7],
+      status: 'active',
+      level: 1,
+      emoji: '🏠',
+      resources: {
+        [RESOURCES.WOOD.NAME]: 10,
+        [RESOURCES.FOOD.NAME]: 10,
+        [RESOURCES.STONE.NAME]: 10,
+      },
+    },
+  ]
+
   useEffect(() => {
-    const { data, error } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data, error } = supabase
+      .auth
+      .onAuthStateChange((event, session) => {
       setUserId(session?.user?.id)
     })
 
@@ -31,7 +50,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!userId) return
     const fetchData = async () => {
-      // First, get the current user from Supabase auth
       const { data: users, error: dbError } = await supabase
       .from('users')
       .select('*')
@@ -51,23 +69,23 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 }
 
   return (
-    <Stack className="flex flex-col w-full h-screen border-2 border-green-500">
-      <Stack>
-        {user && <h1>{user.name}s Dashboard</h1>}
-        <SignOutButton />
-      </Stack>
-
-      <Stack flexDirection="row">
-        <NavStack />
-        <Stack justifyContent="space-between">
-          {children}
-          ${money}
-          <PlanetModal />
-          <Canvas />
-        </Stack>
+    <Stack style={{ width: '100%', height: '100%' }} flexDirection='row'>
+      <NavStack />
+      <Stack flexDirection="column" sx={{ border: '5px solid green' }}>
+        <Header money={money} user={user} />
+        {children}
+        <Canvas />
       </Stack>
     </Stack>
   )
 }
 
 export default DashboardLayout
+
+const Header = ({ money, user }: { money: number; user: any}) => (
+  <Stack flexDirection="row" sx={{ border: '3px solid blue' }}>
+    {user && <h1>{user.name}s Dashboard</h1>}
+  ${money}
+    <SignOutButton />
+  </Stack>
+)
