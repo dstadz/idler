@@ -1,28 +1,40 @@
 // components/DashboardLayout.tsx
 'use client'
 
-import React, { ReactNode, useEffect } from 'react'
+import React, { ReactNode, use, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { Stack } from '@mui/material'
 
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
-import { moneyAtom, userAtom, userIdAtom } from '@/atoms'
+import { mapTileMatrixAtom, moneyAtom, userAtom, userIdAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
 import Button from '@/components/UI/Button'
-import { BUILDINGS, RESOURCES } from '@/utils/constants'
+import { BUILDING_KEYS, BUILDING_OBJECTS, RESOURCES, TILE_OBJECTS_KEYS } from '@/utils/constants'
+import { blankHexCells } from '@/components/canvas/hexgridHelpers'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   // const router = useRouter()
   const [money] = useAtom(moneyAtom)
   const [user, setUser] = useAtom(userAtom);
   const [userId, setUserId] = useAtom(userIdAtom);
+  const [hexGrid, setHexGrid] = useAtom(mapTileMatrixAtom)
+  useEffect(() => {
+    setHexGrid(
+      blankHexCells(12, 12)
+      .map(row => row.map(cell => ({
+        ...cell,
+        type: TILE_OBJECTS_KEYS[Math.floor(Math.random() * TILE_OBJECTS_KEYS.length)]
+      })))
+    )
+
+  }, [])
 
   const buildingNodes = [
     {
       id: 1,
-      type: BUILDINGS.VILLAGE,
+      type: 'VILLAGE',
       position: [4, 7],
       status: 'active',
       level: 1,
@@ -34,6 +46,16 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       },
     },
   ]
+
+  useEffect(() => {
+    if (hexGrid.length  < 2) return
+    buildingNodes.forEach(node => {
+      hexGrid[node.position[0]][node.position[1]].buildingEmoji = BUILDING_OBJECTS[node.type].EMOJI
+    })
+  },[hexGrid])
+
+
+
 
   useEffect(() => {
     const { data, error } = supabase
@@ -74,6 +96,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       <Stack flexDirection="column" sx={{ border: '5px solid green' }}>
         <Header money={money} user={user} />
         {children}
+
         <Canvas />
       </Stack>
     </Stack>

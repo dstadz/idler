@@ -2,24 +2,14 @@ import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import { Stack, Typography } from '@mui/material'
 import Button from '../UI/Button'
-import { TILE_OBJECTS } from '@/utils/constants'
+import { hexHeight, hexWidth, TILE_OBJECTS, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
 import { mapTileMatrixAtom } from '@/atoms'
 
-const hexWidth = 60
-const hexHeight = hexWidth * (Math.sqrt(3)/2)
 
+const hexagonPath = `polygon( 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)`
 const HexGrid = () => {
-  const [activeCells, setActiveCells] = useState(new Set())
   const [hexCells, setHexCells] = useAtom(mapTileMatrixAtom)
-  const toggleCell = (id) => {
-    setActiveCells((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(id)) newSet.delete(id)
-      else newSet.add(id)
-      return newSet
-    })
-  }
 
   return (
     <Box
@@ -31,6 +21,7 @@ const HexGrid = () => {
         flexDirection: 'column',
         alignItems: 'flex-start',
         paddingTop: `${hexHeight / 4}px`,
+        background: tileBackgrounds.SEA
       }}
     >
       {hexCells.map((row, rowIndex) => {
@@ -40,8 +31,6 @@ const HexGrid = () => {
             key={rowIndex}
             row={row}
             isShifted={isShifted}
-            activeCells={activeCells}
-            toggleCell={toggleCell}
           />
         )
       })}
@@ -54,14 +43,10 @@ const HexRow = ({
   row,
   rowIndex,
   isShifted,
-  activeCells,
-  toggleCell,
 }: {
   row: HexCell[]
   rowIndex: number
   isShifted: boolean
-  activeCells: Set<string>
-  toggleCell: (id: string) => void
 }) => (
   <Box
     sx={{
@@ -74,8 +59,6 @@ const HexRow = ({
     {row.map((cell, colIndex) => <HexCell
       key={colIndex}
       cell={cell}
-      toggleCell={toggleCell}
-      activeCells={activeCells}
       rowIndex={rowIndex}
       colIndex={colIndex}
     />)}
@@ -84,26 +67,34 @@ const HexRow = ({
 
 const HexCell = ({
   cell,
-  // rowIndex,
-  // colIndex,
-  activeCells,
-  toggleCell,
 }: {
   cell: object
-  rowIndex: number
-  colIndex: number
-  activeCells: Set<string>
-  toggleCell: (id: string) => void
 }) => {
   const {
     id,
     type,
     level,
+    isActive,
     buildingEmoji,
     status,
   } = cell
   console.log(`🚀 ~ file: Hexgrid.tsx:104 ~ cell:`, cell)
-  const isActive = activeCells.has(id)
+
+
+  const [hexCells, setHexCells] = useAtom(mapTileMatrixAtom)
+
+
+  const toggleCell = (id: number) => {
+    const [rowIndex, colIndex] = id.split('-').map(Number)
+    setHexCells(prev =>
+      prev.map((row, rIdx) =>
+        rIdx !== rowIndex ? row : row.map((cell, cIdx) =>
+          cIdx !== colIndex ? cell : { ...cell, isActive: !cell.isActive }
+        )
+      )
+    )
+  }
+
   return (
     <Stack sx={{ position: 'relative' }}>
       <Box
@@ -113,16 +104,8 @@ const HexCell = ({
           width: hexWidth,
           height: hexHeight,
           position: 'relative',
-          // backgroundColor: isActive ? '#4caf50' : '#ccc',
-          backgroundColor: TILE_OBJECTS[type]?.backgroundColor,
-          clipPath: `polygon(
-            50% 0%,
-            100% 25%,
-            100% 75%,
-            50% 100%,
-            0% 75%,
-            0% 25%
-          )`,
+          background: tileBackgrounds[type],
+          clipPath: hexagonPath,
           cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
@@ -132,16 +115,11 @@ const HexCell = ({
         }}
       >
         <Typography
-          sx={{
-            // background: 'red',
-          }}
-        >
+          sx={{ fontSize: '2rem' }} >
           {buildingEmoji}
         </Typography>
       </Box>
-      {isActive && (
-        <HexCellModal cell={cell} modalType={'Admin'}/>
-      )}
+      {isActive && <HexCellModal cell={cell} modalType={'Admin'} />}
     </Stack>
   )
 }

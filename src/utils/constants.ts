@@ -218,54 +218,30 @@ export const getOreList = ({
   return resourceList
 }
 
-export const TILE_TYPES = {
-  GRASS: 'GRASS',
-  FOREST: 'FOREST',
-  JUNGLE: 'JUNGLE',
-  DIRT: 'DIRT',
-  STONE: 'STONE',
-  WATER: 'WATER',
-  SAND: 'SAND',
-  VOID: 'VOID',
-  LAVA: 'LAVA',
-  ICE: 'ICE',
-}
-
 export const TILE_OBJECTS = {
   GRASS: {
     NAME: 'Grass',
     EMOJI: '🌿',
-    backgroundColor: 'green',
-  },
-  VOID: {
-    NAME: 'Void',
-    EMOJI: '',
-    backgroundColor: 'transparent',
   },
   SEA: {
     NAME: 'Sea',
     EMOJI: '🌊',
-    backgroundColor: 'blue',
   },
   FOREST: {
     NAME: 'Forest',
     EMOJI: '🌲',
-    backgroundColor: 'green',
   },
   JUNGLE: {
     NAME: 'Jungle',
     EMOJI: '🌲',
-    backgroundColor: 'green',
   },
   DIRT: {
     NAME: 'Dirt',
     EMOJI: '🌱',
-    backgroundColor: 'brown',
   },
   STONE: {
     NAME: 'Stone',
     EMOJI: '🪨',
-    backgroundColor: '#CCC',
   },
 }
 
@@ -323,3 +299,34 @@ const NODES ={
 
 }
 */
+
+
+export const hexWidth = 60
+export const hexHeight = hexWidth * (Math.sqrt(3)/2)
+
+export const radiateFromXYAtoB = (a, b, x = 50, y = 50 ) => `
+  radial-gradient(circle at ${x}% ${y}%, ${a}, ${b})`
+
+export const tileBackgrounds = {
+  GRASS : radiateFromXYAtoB(
+    'hsl( 96, 50%, 50%)',
+    'hsl( 96, 35%, 40%)'),
+  JUNGLE: radiateFromXYAtoB(
+    'hsl(140, 50%, 45%)',
+    'hsl(140, 60%, 25%)'),
+  FOREST: radiateFromXYAtoB(
+    'hsl(135, 30%, 30%)',
+    'hsl(135, 45%, 15%)'),
+  DIRT  : radiateFromXYAtoB(
+    'hsl( 30, 60%, 40%)',
+    'hsl( 30, 35%, 25%)'),
+  SAND  : radiateFromXYAtoB(
+    'hsl( 45, 70%, 75%)',
+    'hsl( 35, 45%, 65%)'),
+  STONE : radiateFromXYAtoB(
+    'hsl(205, 20%, 40%)',
+    'hsl(235, 35%, 25%)'),
+  SEA   : radiateFromXYAtoB(
+    'hsl(200, 50%, 20%)',
+    'hsl(200, 55%, 30%)'),
+}
