@@ -10,12 +10,30 @@ import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
 import { moneyAtom, userAtom, userIdAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
+import Button from '@/components/UI/Button'
+import { BUILDINGS, RESOURCES } from '@/utils/constants'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   // const router = useRouter()
   const [money] = useAtom(moneyAtom)
   const [user, setUser] = useAtom(userAtom);
   const [userId, setUserId] = useAtom(userIdAtom);
+
+  const buildingNodes = [
+    {
+      id: 1,
+      type: BUILDINGS.VILLAGE,
+      position: [4, 7],
+      status: 'active',
+      level: 1,
+      emoji: '🏠',
+      resources: {
+        [RESOURCES.WOOD.NAME]: 10,
+        [RESOURCES.FOOD.NAME]: 10,
+        [RESOURCES.STONE.NAME]: 10,
+      },
+    },
+  ]
 
   useEffect(() => {
     const { data, error } = supabase
@@ -53,7 +71,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <Stack style={{ width: '100%', height: '100%' }} flexDirection='row'>
       <NavStack />
-      <Stack flexDirection="column" sx={{ border: '3px solid green' }}>
+      <Stack flexDirection="column" sx={{ border: '5px solid green' }}>
         <Header money={money} user={user} />
         {children}
         <Canvas />

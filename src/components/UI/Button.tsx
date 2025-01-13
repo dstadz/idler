@@ -1,4 +1,4 @@
-import { Button as MUIButton } from '@mui/material'
+import { Box, Button as MUIButton } from '@mui/material'
 import React from 'react'
 
 const Button = ({ children, size, onClick }:
@@ -7,14 +7,16 @@ const Button = ({ children, size, onClick }:
     size?: 'small' | 'medium' | 'large';
     onClick: () => void
   }) => (
-  <MUIButton
-    onClick={onClick}
-    variant="contained"
-    size={size}
-    sx={{ m: 'auto', ml: 0 }}
-  >
-    {children}
-  </MUIButton>
+    <Box>
+      <MUIButton
+        onClick={onClick}
+        variant="contained"
+        size={size}
+        sx={{ m: 'auto', ml: 0 }}
+        >
+        {children}
+      </MUIButton>
+    </Box>
 )
 
 export default Button

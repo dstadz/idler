@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { useHomeNode, usePlanetNodes } from '@/hooks'
 import Box from '@mui/material/Box'
 import HexGrid from './Hexgrid'
-
+import { blankHexCells } from './hexgridHelpers'
 
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -35,7 +35,6 @@ const Canvas = () => {
   let lastFrameTime = performance.now()
   let frameCount = 0
   let fpsTime = 0
-
   const drawFPS = useCallback((timestamp: number) => {
     if (!ctx) return
     const deltaTime = timestamp - lastFrameTime
@@ -75,7 +74,7 @@ const Canvas = () => {
   )
 
   useEffect(() => {
-    const canStart = ctx && homeNode && planets.length > 0
+    const canStart = ctx
 
     if (!canStart || rafIdRef.current) return
     rafIdRef.current = requestAnimationFrame(gameLoop)
@@ -89,27 +88,34 @@ const Canvas = () => {
     }
   }, [ctx, homeNode, planets, gameLoop])
 
+  const hexGrid = blankHexCells(12, 12)
+  for (let r = 0; r < 144; r++) {
+    hexGrid
+      [Math.floor(Math.random() * hexGrid.length)]
+      [Math.floor(Math.random() * hexGrid[0].length)]
+    .type = 'GRASS'
+  }
   return (
-    <Box sx={{
-      position: 'relative',
-      border: '3px solid #0ff',
-      // width: '800px',
-      // height: 'unset',
-      }}>
-        <HexGrid />
+    <Box
+      sx={{
+        position: 'relative',
+        border: '3px solid #0ff',
+      }}
+    >
       <canvas
         ref={canvasRef}
         width={800}
-        height={600}
+        height={500}
         style={{
-          // position: 'absolute',
-          // top: 0,
-          // left: 0,
-          zIndex: 1,
           border: '3px solid red',
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          zIndex: 1,
           pointerEvents: 'none'
         }}
       />
+      <HexGrid hexCells={hexGrid} />
     </Box>
   )
 }

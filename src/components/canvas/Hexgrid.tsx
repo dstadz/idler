@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import { Stack, Typography } from '@mui/material'
+import Button from '../UI/Button'
+import { TILE_OBJECTS } from '@/utils/constants'
 
 const hexWidth = 60
 const hexHeight = hexWidth * (Math.sqrt(3)/2)
-const getCoods = (row, col) => `${row}-${col}`
 
-const HexGrid = () => {
+const HexGrid = ({ hexCells }: { hexCells: HexCell[][] }) => {
   const [activeCells, setActiveCells] = useState(new Set())
 
   const toggleCell = (id) => {
@@ -17,10 +18,6 @@ const HexGrid = () => {
       return newSet
     })
   }
-
-  const hexCells = Array.from({ length: 10 }, (_, rowIndex) =>
-    Array.from({ length: 9 }, (_, colIndex) => ({ id: getCoods(rowIndex, colIndex) })),
-  )
 
   return (
     <Box
@@ -96,7 +93,12 @@ const HexCell = ({
   activeCells: Set<string>
   toggleCell: (id: string) => void
 }) => {
-  const { id } = cell
+  const {
+    id,
+    type,
+    level,
+    status,
+  } = cell
   const isActive = activeCells.has(id)
   return (
     <Stack sx={{ position: 'relative' }}>
@@ -107,7 +109,8 @@ const HexCell = ({
           width: hexWidth,
           height: hexHeight,
           position: 'relative',
-          backgroundColor: isActive ? '#4caf50' : '#ccc',
+          // backgroundColor: isActive ? '#4caf50' : '#ccc',
+          backgroundColor: TILE_OBJECTS[type]?.backgroundColor,
           clipPath: `polygon(
             50% 0%,
             100% 25%,
@@ -137,9 +140,14 @@ const HexCell = ({
           border: '3px solid red',
           background: 'white',
           position: 'absolute',
-          top: -hexWidth/2,
+          top: -100,
         }}>
-          Hello
+          <Stack>{type} {level} {status}</Stack>
+          <Stack></Stack>
+          <Stack flexDirection={'row'}>
+            <Button onClick={() => console.log('Build')}>Build</Button>
+            <Button onClick={() => console.log('AD')}>AD for x2</Button>
+          </Stack>
         </Stack>
       )}
     </Stack>

@@ -217,3 +217,83 @@ export const getOreList = ({
     .map(key =>  `${key}: ${resourceObject[key]}`)
   return resourceList
 }
+
+export const BUILDINGS = {
+  MINE: 'MINE',
+  FARM: 'FARM',
+  FACTORY: 'FACTORY',
+  BARRACKS: 'BARRACKS',
+  STORAGE: 'STORAGE',
+  WORKSHOP: 'WORKSHOP',
+  REFINERY: 'REFINERY',
+  POWERPLANT: 'POWERPLANT',
+  AIRPLANT: 'AIRPLANT',
+  VILLAGE: 'VILLAGE',
+  PORT: 'PORT',
+}
+
+export const TILE_TYPES = {
+  GRASS: 'GRASS',
+  FOREST: 'FOREST',
+  JUNGLE: 'JUNGLE',
+  DIRT: 'DIRT',
+  STONE: 'STONE',
+  WATER: 'WATER',
+  SAND: 'SAND',
+  VOID: 'VOID',
+  LAVA: 'LAVA',
+  ICE: 'ICE',
+
+}
+
+export const TILE_OBJECTS = {
+  GRASS: {
+    NAME: 'Grass',
+    EMOJI: '🌿',
+    backgroundColor: 'green',
+  },
+  VOID: {
+    NAME: 'Void',
+    EMOJI: '',
+    backgroundColor: 'transparent',
+  },
+  SEA: {
+    NAME: 'Sea',
+    EMOJI: '🌊',
+    backgroundColor: 'blue',
+  },
+  FOREST: {
+    NAME: 'Forest',
+    EMOJI: '🌲',
+    backgroundColor: 'green',
+  },
+  JUNGLE: {
+    NAME: 'Jungle',
+    EMOJI: '🌲',
+    backgroundColor: 'green',
+  },
+  DIRT: {
+    NAME: 'Dirt',
+    EMOJI: '🌱',
+    backgroundColor: 'brown',
+  },
+  STONE: {
+    NAME: 'Stone',
+    EMOJI: '🪨',
+    backgroundColor: 'gray',
+  },
+}
+/**
+const NODES ={
+  RAW > REFINED > INGRIDIENT
+  iron ore > ingot > steel
+  fish > meat > sushi
+  sand > glass > glasswear/mirror
+  oil > rubber > tire
+  wood > logs > lumber
+  sugarcane > sugar > syrup
+  wool > yarn > fabric
+  milk > cheese > butter
+
+}
+*/

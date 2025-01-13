@@ -5,7 +5,6 @@ import { TransportNode } from './TransportNode'
 
 const hexWidth = 80
 const hexHeight = hexWidth * (Math.sqrt(3)/2)
-const getCoods = (row, col) => `${row}-${col}`
 
 export class Planet extends CanvasNode {
   homeNode: CanvasNode
