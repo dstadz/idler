@@ -218,20 +218,6 @@ export const getOreList = ({
   return resourceList
 }
 
-export const BUILDINGS = {
-  MINE: 'MINE',
-  FARM: 'FARM',
-  FACTORY: 'FACTORY',
-  BARRACKS: 'BARRACKS',
-  STORAGE: 'STORAGE',
-  WORKSHOP: 'WORKSHOP',
-  REFINERY: 'REFINERY',
-  POWERPLANT: 'POWERPLANT',
-  AIRPLANT: 'AIRPLANT',
-  VILLAGE: 'VILLAGE',
-  PORT: 'PORT',
-}
-
 export const TILE_TYPES = {
   GRASS: 'GRASS',
   FOREST: 'FOREST',
@@ -243,7 +229,6 @@ export const TILE_TYPES = {
   VOID: 'VOID',
   LAVA: 'LAVA',
   ICE: 'ICE',
-
 }
 
 export const TILE_OBJECTS = {
@@ -280,9 +265,50 @@ export const TILE_OBJECTS = {
   STONE: {
     NAME: 'Stone',
     EMOJI: '🪨',
-    backgroundColor: 'gray',
+    backgroundColor: '#CCC',
   },
 }
+
+export const BUILDING_OBJECTS = {
+  MINE: {
+    NAME: 'Mine',
+    EMOJI: '⛏️',
+  },
+  FARM: {
+    NAME: 'Farm',
+    EMOJI: '🌾',
+  },
+  FACTORY: {
+    NAME: 'Factory',
+    EMOJI: '🏭',
+  },
+  STORAGE: {
+    NAME: 'Storage',
+    EMOJI: '📦',
+  },
+  VILLAGE: {
+    NAME: 'Village',
+    EMOJI: '🏰',
+  },
+  // BARRACKS: {
+  //   NAME: 'Barracks',
+  //   EMOJI: '🏢',
+  // },
+  // WORKSHOP: {
+  //   NAME: 'Workshop',
+  //   EMOJI: '🏭',
+  // },
+  // PORT: {
+  //   NAME: 'Port',
+  //   EMOJI: '🚤',
+  // },
+  // REFINERY: 'REFINERY',
+  // POWERPLANT: 'POWERPLANT',
+  // AIRPLANT: 'AIRPLANT',
+}
+export const TILE_OBJECTS_KEYS = Object.keys(TILE_OBJECTS)
+export const BUILDING_KEYS = Object.keys(BUILDING_OBJECTS)
+
 /**
 const NODES ={
   RAW > REFINED > INGRIDIENT

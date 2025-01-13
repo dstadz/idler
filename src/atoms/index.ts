@@ -5,4 +5,7 @@ export { planetAtom } from './planet'
 export { userAtom, userIdAtom } from './user'
 
 
-export const buildingsAtom = atom([])
+
+export const mapTileMatrixAtom = atom([[]])
+export const unitNodesAtom = atom([])
+export const buildingNodesAtom = atom([])

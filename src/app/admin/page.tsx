@@ -1,7 +1,7 @@
 import React from 'react'
 import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
-import { Stack } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 
 export default async function Page() {
   const cookieStore = await cookies()
@@ -11,7 +11,7 @@ export default async function Page() {
 
   return (
     <Stack sx={{ border: '3px solid purple' }}>
-      <h1>Admin Page</h1>
+      <Typography sx={{ fontSize: '2rem' }}>Admin Page</Typography>
     </Stack>
   )
 }

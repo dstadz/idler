@@ -3,13 +3,15 @@ import Box from '@mui/material/Box'
 import { Stack, Typography } from '@mui/material'
 import Button from '../UI/Button'
 import { TILE_OBJECTS } from '@/utils/constants'
+import { useAtom } from 'jotai'
+import { mapTileMatrixAtom } from '@/atoms'
 
 const hexWidth = 60
 const hexHeight = hexWidth * (Math.sqrt(3)/2)
 
-const HexGrid = ({ hexCells }: { hexCells: HexCell[][] }) => {
+const HexGrid = () => {
   const [activeCells, setActiveCells] = useState(new Set())
-
+  const [hexCells, setHexCells] = useAtom(mapTileMatrixAtom)
   const toggleCell = (id) => {
     setActiveCells((prev) => {
       const newSet = new Set(prev)
@@ -97,8 +99,10 @@ const HexCell = ({
     id,
     type,
     level,
+    buildingEmoji,
     status,
   } = cell
+  console.log(`🚀 ~ file: Hexgrid.tsx:104 ~ cell:`, cell)
   const isActive = activeCells.has(id)
   return (
     <Stack sx={{ position: 'relative' }}>
@@ -132,24 +136,40 @@ const HexCell = ({
             // background: 'red',
           }}
         >
-          {id}
+          {buildingEmoji}
         </Typography>
       </Box>
       {isActive && (
-        <Stack sx={{
-          border: '3px solid red',
-          background: 'white',
-          position: 'absolute',
-          top: -100,
-        }}>
-          <Stack>{type} {level} {status}</Stack>
-          <Stack></Stack>
-          <Stack flexDirection={'row'}>
-            <Button onClick={() => console.log('Build')}>Build</Button>
-            <Button onClick={() => console.log('AD')}>AD for x2</Button>
-          </Stack>
-        </Stack>
+        <HexCellModal cell={cell} modalType={'Admin'}/>
       )}
+    </Stack>
+  )
+}
+
+const HexCellModal = ({ cell, modalType }: { cell: HexCell, modalType: string }) => {
+  const {
+    type,
+    level,
+    status,
+  } = cell
+
+  return (
+    <Stack sx={{
+      border: '3px solid red',
+      background: 'white',
+      position: 'absolute',
+      top: -100,
+    }}>
+      <Stack>{modalType}</Stack>
+      <Stack>{type} {level} {status}</Stack>
+
+      {modalType === 'Admin' && <Stack flexDirection={'row'}>
+        <Button onClick={() => console.log('Build')}>Build</Button>
+      </Stack>}
+      {modalType === 'user' && <Stack flexDirection={'row'}>
+        <Button onClick={() => console.log('Build')}>Build</Button>
+        <Button onClick={() => console.log('AD')}>AD for x2</Button>
+      </Stack>}
     </Stack>
   )
 }

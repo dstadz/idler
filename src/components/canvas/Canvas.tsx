@@ -1,10 +1,8 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useHomeNode, usePlanetNodes } from '@/hooks'
 import Box from '@mui/material/Box'
 import HexGrid from './Hexgrid'
-import { blankHexCells } from './hexgridHelpers'
 
 const Canvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -51,13 +49,8 @@ const Canvas = () => {
     ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
   }, [ctx])
 
-  const { homeNode, drawHomeNode } = useHomeNode(ctx)
-  const { planets, drawPlanets, setPlanetsPosition } = usePlanetNodes({ ctx, homeNode })
   const rafIdRef = useRef<number | null>(null)
 
-  useEffect(() => {
-    setPlanetsPosition(planets)
-  }, [planets])
 
   const gameLoop = useCallback(
     (timestamp: number) => {
@@ -65,12 +58,10 @@ const Canvas = () => {
 
       clearWholeRect(canvasRef.current)
       drawFPS(timestamp)
-      drawHomeNode()
-      drawPlanets()
 
       rafIdRef.current = requestAnimationFrame(gameLoop)
     },
-    [ctx, canvasRef, clearWholeRect, drawFPS, drawHomeNode, drawPlanets]
+    [ctx, canvasRef, clearWholeRect, drawFPS]
   )
 
   useEffect(() => {
@@ -86,15 +77,9 @@ const Canvas = () => {
       }
       // rafIdRef.current = null
     }
-  }, [ctx, homeNode, planets, gameLoop])
+  }, [ctx, gameLoop])
 
-  const hexGrid = blankHexCells(12, 12)
-  for (let r = 0; r < 144; r++) {
-    hexGrid
-      [Math.floor(Math.random() * hexGrid.length)]
-      [Math.floor(Math.random() * hexGrid[0].length)]
-    .type = 'GRASS'
-  }
+
   return (
     <Box
       sx={{
@@ -115,7 +100,7 @@ const Canvas = () => {
           pointerEvents: 'none'
         }}
       />
-      <HexGrid hexCells={hexGrid} />
+      <HexGrid />
     </Box>
   )
 }

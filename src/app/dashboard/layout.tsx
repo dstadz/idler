@@ -11,29 +11,12 @@ import Canvas from '@/components/canvas/Canvas'
 import { moneyAtom, userAtom, userIdAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
 import Button from '@/components/UI/Button'
-import { BUILDINGS, RESOURCES } from '@/utils/constants'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   // const router = useRouter()
   const [money] = useAtom(moneyAtom)
   const [user, setUser] = useAtom(userAtom);
   const [userId, setUserId] = useAtom(userIdAtom);
-
-  const buildingNodes = [
-    {
-      id: 1,
-      type: BUILDINGS.VILLAGE,
-      position: [4, 7],
-      status: 'active',
-      level: 1,
-      emoji: '🏠',
-      resources: {
-        [RESOURCES.WOOD.NAME]: 10,
-        [RESOURCES.FOOD.NAME]: 10,
-        [RESOURCES.STONE.NAME]: 10,
-      },
-    },
-  ]
 
   useEffect(() => {
     const { data, error } = supabase
