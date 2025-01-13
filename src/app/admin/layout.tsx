@@ -1,24 +1,25 @@
-// components/DashboardLayout.tsx
 'use client'
 
-import React, { ReactNode, use, useEffect } from 'react'
+import React, { ReactNode, useEffect } from 'react'
 import { useAtom } from 'jotai'
 import { Stack } from '@mui/material'
 
+import { mapTileMatrixAtom, moneyAtom, userAtom, userIdAtom } from '@/atoms'
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
-import { mapTileMatrixAtom, moneyAtom, userAtom, userIdAtom } from '@/atoms'
-import { supabase } from '@/lib/supabase'
 import Button from '@/components/UI/Button'
-import { BUILDING_KEYS, BUILDING_OBJECTS, RESOURCES, TILE_OBJECTS_KEYS } from '@/utils/constants'
 import { blankHexCells } from '@/components/canvas/hexgridHelpers'
 
+import { BUILDING_KEYS, BUILDING_OBJECTS, RESOURCES, TILE_OBJECTS_KEYS } from '@/utils/constants'
+import { supabase } from '@/lib/supabase'
+
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
-  // const router = useRouter()
   const [money] = useAtom(moneyAtom)
   const [user, setUser] = useAtom(userAtom);
   const [userId, setUserId] = useAtom(userIdAtom);
+  console.log(`🚀 ~ file: layout.tsx:21 ~ DashboardLayout ~ userId:`, userId)
+
   const [hexGrid, setHexGrid] = useAtom(mapTileMatrixAtom)
   useEffect(() => {
     setHexGrid(
@@ -96,6 +97,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       <Stack flexDirection="column" sx={{ border: '5px solid green' }}>
         <Header money={money} user={user} />
         {children}
+        <Button onClick={() => console.log('Build')}>Save Map</Button>
 
         <Canvas />
       </Stack>

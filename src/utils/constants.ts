@@ -324,9 +324,9 @@ export const tileBackgrounds = {
     'hsl( 45, 70%, 75%)',
     'hsl( 35, 45%, 65%)'),
   STONE : radiateFromXYAtoB(
-    'hsl(205, 20%, 40%)',
+    'hsl(185, 10%, 40%)',
     'hsl(235, 35%, 25%)'),
   SEA   : radiateFromXYAtoB(
-    'hsl(200, 50%, 20%)',
-    'hsl(200, 55%, 30%)'),
+    'hsla(200, 50%, 20%, 0.5)',
+    'hsla(200, 55%, 30%, 0.9)'),
 }

@@ -1,13 +1,26 @@
 'use client'
-import React from 'react'
-import { Provider as JotaiProvider } from 'jotai'
+import React, { useEffect } from 'react'
+import { Provider as JotaiProvider, useAtom } from 'jotai'
 import './globals.css'
+import { supabase } from '@/lib/supabase'
+import { userIdAtom } from '@/atoms'
 
 const ProviderStack = [
   JotaiProvider,
 ]
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const [_, setUserId] = useAtom(userIdAtom)
+
+  useEffect(() => {
+    const { data, error } = supabase
+      .auth
+      .onAuthStateChange((event, session) => {
+      setUserId(session?.user?.id)
+    })
+
+    return () => { supabase.auth.onAuthStateChange(null) }
+  }, [setUserId])
 
   const Providers = ProviderStack.reduce((AccProvider, CurrentProvider) => {
     const WrappedProviders = ({ children: providerChildren }: { children: React.ReactNode }) => (

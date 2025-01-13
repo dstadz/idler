@@ -78,11 +78,7 @@ const HexCell = ({
     buildingEmoji,
     status,
   } = cell
-  console.log(`🚀 ~ file: Hexgrid.tsx:104 ~ cell:`, cell)
-
-
   const [hexCells, setHexCells] = useAtom(mapTileMatrixAtom)
-
 
   const toggleCell = (id: number) => {
     const [rowIndex, colIndex] = id.split('-').map(Number)
@@ -114,8 +110,7 @@ const HexCell = ({
           boxShadow: '0 0 0 2px black',
         }}
       >
-        <Typography
-          sx={{ fontSize: '2rem' }} >
+        <Typography sx={{ fontSize: '2rem' }} >
           {buildingEmoji}
         </Typography>
       </Box>
