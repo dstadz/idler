@@ -10,6 +10,7 @@ import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
 import Header from '@/components/Header'
 import Button from '@/components/UI/Button'
+import HexGrid from '@/components/hexgrid/HexGrid'
 
 import { BUILDING_KEYS, BUILDING_OBJECTS, RESOURCES, TILE_OBJECTS_KEYS } from '@/utils/constants'
 import { supabase } from '@/lib/supabase'
@@ -167,7 +168,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       )
     )
   }
-  
+
   return (
     <Stack style={{ width: '100%', height: '100%' }} flexDirection='row'>
       <NavStack />
@@ -176,7 +177,11 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         {children}
         <Button onClick={() => saveMap()}>Save Map</Button>
 
-        <Canvas canvasHeight={500} canvasWidth={750} />
+        <Stack sx={{ border: '3px solid blue', position: 'relative' }}>
+          <Canvas canvasHeight={500} canvasWidth={750} />
+          <HexGrid />
+        </Stack>
+
       </Stack>
     </Stack>
   )

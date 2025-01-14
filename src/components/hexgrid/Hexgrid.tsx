@@ -16,8 +16,7 @@ const HexGrid = () => {
       sx={{
         border: '3px solid yellow',
         display: 'flex',
-        position: 'absolute',
-        top: 0,
+        
         flexDirection: 'column',
         alignItems: 'flex-start',
         paddingTop: `${hexHeight / 4}px`,

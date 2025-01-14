@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
-import HexGrid from '../hexgrid/Hexgrid'
+import HexGrid from '../hexgrid/HexGrid'
 
 const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -40,8 +40,9 @@ const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeig
   return (
     <Box
       sx={{
-        position: 'relative',
         border: '3px solid #0ff',
+        position: 'absolute',
+        top: 0,
       }}
     >
       <canvas
@@ -50,7 +51,6 @@ const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeig
         height={canvasHeight}
         style={styles.canvas}
       />
-      <HexGrid />
     </Box>
   )
 }
