@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import Box from '@mui/material/Box'
-import HexGrid from './Hexgrid'
+import HexGrid from '../hexgrid/Hexgrid'
 
 const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
