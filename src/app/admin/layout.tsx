@@ -40,18 +40,27 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   ////////////// MAPS
   const [mapData, setMapData] = useAtom(mapDataAtom)
   const [hexCells, setHexCells] = useAtom(hexCellsAtom)
-  const updateHexCell = (newCell) => {
-    console.log(`🚀 ~ file: layout.tsx:44 ~ updateHexCell ~ newCell:`, newCell)
-    const [rowIndex, colIndex] = newCell.position
+
+  const updateHexCell = (rowIndex, colIndex, updatedCell) => {
     setHexCells(prev =>
-        prev.map((row, rIdx) =>
-          rIdx !== rowIndex ? row : row.map((cell, cIdx) =>
-            cIdx !== colIndex ? cell : { ...cell, ...newCell }
-          )
+      prev.map((row, rIdx) =>
+        rIdx !== rowIndex ? row : row.map((cell, cIdx) =>
+          cIdx !== colIndex ? cell : { ...cell, ...updatedCell }
         )
       )
+    )
   }
   const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
+  const clickCell = (cell) => {
+    console.log(`🚀 ~ file: layout.tsx:56 ~ clickCell ~ cell:`, cell)
+    const { id } = cell
+    console.log(cell)
+    // setActiveCell(rowIndex, colIndex)
+    setSelectedTile(cell)
+    // addBuilding()
+    // const
+    //
+  }
   const [buildings, setBuildings] = useAtom(buildingNodesAtom)
 
   useEffect(() => {
@@ -62,7 +71,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         .from('building_nodes')
         .select('*')
         .eq('map_id', mapData.id)
-      console.log(`🚀  ~ buildingsData:`, buildingsData)
       setBuildings(buildingsData)
     }
     getBuildings()
@@ -73,15 +81,14 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     const getTiles = async () => {
       if (!mapData || !mapData.id || !buildings) return
 
-      const newCells = new Array(mapData.height).fill(null).map(() => new Array(mapData.width).fill(null))
+      const newCells = new Array(mapData.height).fill(null)
+        .map(() => new Array(mapData.width).fill(null))
 
-      console.log(`🚀 ~ file: layout.tsx:97 ~ getTiles ~ mapData:`, mapData)
       await supabase
         .from('map_tiles')
         .select('*')
         .eq('map_id', mapData.id)
         .then(({ data: tilesData }) => {
-          console.log(tilesData)
           tilesData.forEach((tile: any) => {
             newCells[tile.position_y][tile.position_x] = {
               id: tile.id,
@@ -93,7 +100,21 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
           })
         })
         .catch(err => console.log(err))
-      setHexCells(newCells)
+
+        console.log({ buildings, newCells })
+        setHexCells(newCells)
+
+        buildings.forEach((building: any) => {
+          console.log(`🚀 ~  building:`, building)
+          const { position_x, position_y, created_at, map_id, user_id, ...restBuilding } = building // {...}
+          const oldCell = newCells[position_y][position_x]
+          console.log(`🚀 ~ file: layout.tsx:118 ~ buildings.forEach ~ oldCell:`, oldCell)
+          const newCell = newCells[position_y][position_x] = {
+            ...newCells[position_y][position_x],
+            building:{...restBuilding },}
+          console.log(`🚀 ~ file: layout.tsx:114 ~ buildings.forEach ~ newCell:`, newCell)
+          updateHexCell(newCell)
+        })
     }
     getTiles()
 
@@ -129,7 +150,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const addBuilding = async () => {
     console.log(mapData.id)
     console.log(`🚀 ~ file: layout.tsx:130 ~ addBuilding ~ newBuilding:`, newBuilding)
-    setBuildings(prev => [...prev, newBuilding])
+    setBuildings(prev => [...prev, {...restBuilding, position: [position_x, position_y] }])
     updateHexCell({
       ...selectedTile,
       newBuilding,
@@ -159,16 +180,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
   if (!userId) return <div>User not logged in</div>
 
-  const clickCell = (cell) => {
-    const { id } = cell
-    console.log(cell)
-    const [rowIndex, colIndex] = id.split('-').map(Number)
-    // setActiveCell(rowIndex, colIndex)
-    setSelectedTile(cell)
-    addBuilding()
-    // const
-    //
-  }
+
 
   return (
     <Stack style={{ width: '100%', height: '100%' }} flexDirection='row'>

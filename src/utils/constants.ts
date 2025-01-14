@@ -264,7 +264,7 @@ export const BUILDING_OBJECTS = {
   },
   VILLAGE: {
     NAME: 'Village',
-    EMOJI: '🏰',
+    level: [{ icon: '🏕️'}, { icon: '🏡' }, { icon: '🏰' }],
   },
   // BARRACKS: {
   //   NAME: 'Barracks',
