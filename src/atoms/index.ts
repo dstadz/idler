@@ -9,6 +9,7 @@ export { userAtom, userIdAtom } from './user'
 export const selectedTileAtom = atom({})
 export const selectedTilesAtom = atom([])
 export const hexCellsAtom = atom([[]])
+export const mapDataAtom = atom({})
 
 export const unitNodesAtom = atom([])
 export const buildingNodesAtom = atom([])

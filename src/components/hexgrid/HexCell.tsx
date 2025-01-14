@@ -3,7 +3,11 @@ import Box from '@mui/material/Box'
 import { Stack } from '@mui/material'
 import { hexHeight, hexWidth, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
-import { hexCellsAtom, selectedTileAtom, selectedTilesAtom } from '@/atoms'
+import {
+  hexCellsAtom,
+  selectedTileAtom,
+  // selectedTilesAtom,
+} from '@/atoms'
 import BuildingNode from './BuildingNode'
 import HexCellModal from './HexModal'
 
@@ -25,12 +29,12 @@ const HexCell = ({
     type,
     level,
     isActive,
-    buildingId,
+    building,
     status,
   } = cell
   const [_, setHexCells] = useAtom(hexCellsAtom)
   const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
-  const [selectedsTile, setSelectedsTile] = useAtom(selectedTilesAtom)
+  // const [selectedsTile, setSelectedsTile] = useAtom(selectedTilesAtom)
 
 
   return (
@@ -58,7 +62,7 @@ const HexCell = ({
           boxShadow: '0 0 0 2px black',
         }}
       >
-        {buildingId && <BuildingNode buildingId={buildingId} />}
+        {building && <BuildingNode building={building} />}
 
       </Box>
       {isActive && <HexCellModal cell={cell} modalType={'Admin'} />}

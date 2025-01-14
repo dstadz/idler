@@ -1,10 +1,9 @@
 'use client'
-
 import React, { ReactNode, useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { Stack } from '@mui/material'
 
-import { moneyAtom, userAtom, userIdAtom, hexCellsAtom, selectedTileAtom } from '@/atoms'
+import { moneyAtom, userAtom, userIdAtom, hexCellsAtom, selectedTileAtom, mapDataAtom, buildingNodesAtom } from '@/atoms'
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
@@ -17,24 +16,8 @@ import { supabase } from '@/lib/supabase'
 import { saveBuildingSupabase } from '../api/nodes/route'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
-  const [money] = useAtom(moneyAtom)
-  const [user, setUser] = useAtom(userAtom);
-  const [userId, setUserId] = useAtom(userIdAtom);
-  const [mapData, setMapData] = useState(null)
-  const [buildings, setBuildings] = useState([])
+  const [userId, setUserId] = useAtom(userIdAtom)
 
-  const [hexCells, setHexCells] = useAtom(hexCellsAtom)
-  const updateHexCell = (newCell) => {
-    const [rowIndex, colIndex] = newCell.position
-    setHexCells(prev =>
-        prev.map((row, rIdx) =>
-          rIdx !== rowIndex ? row : row.map((cell, cIdx) =>
-            cIdx !== colIndex ? cell : { ...cell, ...newCell }
-          )
-        )
-      )
-  }
-  const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
 
   useEffect(() => {
     if (!userId) return
@@ -50,6 +33,27 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     setMap()
   }, [userId])
 
+
+
+
+
+  ////////////// MAPS
+  const [mapData, setMapData] = useAtom(mapDataAtom)
+  const [hexCells, setHexCells] = useAtom(hexCellsAtom)
+  const updateHexCell = (newCell) => {
+    console.log(`🚀 ~ file: layout.tsx:44 ~ updateHexCell ~ newCell:`, newCell)
+    const [rowIndex, colIndex] = newCell.position
+    setHexCells(prev =>
+        prev.map((row, rIdx) =>
+          rIdx !== rowIndex ? row : row.map((cell, cIdx) =>
+            cIdx !== colIndex ? cell : { ...cell, ...newCell }
+          )
+        )
+      )
+  }
+  const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
+  const [buildings, setBuildings] = useAtom(buildingNodesAtom)
+
   useEffect(() => {
     if (!mapData) return
 
@@ -57,8 +61,8 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       const { data: buildingsData, error: buildingsError } = await supabase
         .from('building_nodes')
         .select('*')
-        .eq('user_id', userId)
-      // console.log(`🚀  ~ buildingsData:`, buildingsData[0].tile_.id)
+        .eq('map_id', mapData.id)
+      console.log(`🚀  ~ buildingsData:`, buildingsData)
       setBuildings(buildingsData)
     }
     getBuildings()
@@ -67,24 +71,28 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
 
     const getTiles = async () => {
-      if (!mapData || !buildings) return
+      if (!mapData || !mapData.id || !buildings) return
 
       const newCells = new Array(mapData.height).fill(null).map(() => new Array(mapData.width).fill(null))
 
-      const { data: tilesData, error: tilesError } = await supabase
+      console.log(`🚀 ~ file: layout.tsx:97 ~ getTiles ~ mapData:`, mapData)
+      await supabase
         .from('map_tiles')
         .select('*')
         .eq('map_id', mapData.id)
-      console.log(tilesData)
-      tilesData.forEach((tile: any) => {
-        newCells[tile.position_y][tile.position_x] = {
-          id: tile.id,
-          type: tile.type,
-          level: tile.level,
-          status: tile.status,
-          // resoures: tile.resources,
-        }
-      })
+        .then(({ data: tilesData }) => {
+          console.log(tilesData)
+          tilesData.forEach((tile: any) => {
+            newCells[tile.position_y][tile.position_x] = {
+              id: tile.id,
+              type: tile.type,
+              level: tile.level,
+              status: tile.status,
+              // resoures: tile.resources,
+            }
+          })
+        })
+        .catch(err => console.log(err))
       setHexCells(newCells)
     }
     getTiles()
@@ -107,27 +115,24 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   //   })
   // },[hexCells])
 
-
+  const newBuilding = {
+    type: 'VILLAGE',
+    status: 'active',
+    level: 1,
+    map_id: mapData.id,
+    // ...buildingNode,
+    position: [
+      selectedTile?.position?.[0],
+      selectedTile?.position?.[1],
+    ],
+  }
   const addBuilding = async () => {
-    console.log('addBuilding')
-    console.log(`🚀 ~ fil ~ newBuilding.selectedTile:`, selectedTile)
-    const newBuilding = {
-      type: 'VILLAGE',
-      status: 'active',
-      level: 1,
-
-      // ...buildingNode,
-      position: [
-        selectedTile.position[0],
-        selectedTile.position[1],
-      ],
-    }
-
-    console.log(`🚀 ~ file: layout.tsx:130 ~ addBuilding ~ newBuildings:`, newBuilding)
+    console.log(mapData.id)
+    console.log(`🚀 ~ file: layout.tsx:130 ~ addBuilding ~ newBuilding:`, newBuilding)
     setBuildings(prev => [...prev, newBuilding])
     updateHexCell({
       ...selectedTile,
-      // buildingId: BUILDING_OBJECTS[buildingNode.type].emoji
+      newBuilding,
     })
 
     const {
@@ -137,10 +142,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     console.log({ buildingsData, buildingsError })
   }
 
+
+  // sign in
   useEffect(() => {
     const { data, error } = supabase
-      .auth
-      .onAuthStateChange((event, session) => {
+    .auth
+    .onAuthStateChange((event, session) => {
       setUserId(session?.user?.id)
     })
 
@@ -149,22 +156,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [setUserId])
 
-  useEffect(() => {
-    if (!userId) return
-    const fetchData = async () => {
-      const { data: users, error: dbError } = await supabase
-      .from('users')
-      .select('*')
-      .eq('id', userId)
-
-      if (dbError) {
-        console.error("Database error:", dbError)
-      } else {
-        setUser(users[0])
-      }
-    }
-    fetchData()
-  }, [userId, supabase])
 
   if (!userId) return <div>User not logged in</div>
 
@@ -174,7 +165,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     const [rowIndex, colIndex] = id.split('-').map(Number)
     // setActiveCell(rowIndex, colIndex)
     setSelectedTile(cell)
-    // addBuilding()
+    addBuilding()
     // const
     //
   }
@@ -183,7 +174,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     <Stack style={{ width: '100%', height: '100%' }} flexDirection='row'>
       <NavStack />
       <Stack flexDirection="column" sx={{ border: '5px solid green' }}>
-        <Header money={money} user={user} />
+        <Header />
         {children}
         <Button onClick={() => saveMap()}>Save Map</Button>
         <Button onClick={() => addBuilding()}>Add Building</Button>

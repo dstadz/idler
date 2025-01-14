@@ -103,6 +103,7 @@ export const saveBuildingSupabase = async (building) => {
   const { data: buildingsData, error: buildingsError } = await supabase
   .from('building_nodes')
   .insert([buildingBody])
+  .select('*')
 
   return { buildingsData, buildingsError }
 }
