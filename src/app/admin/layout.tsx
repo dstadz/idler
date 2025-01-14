@@ -4,7 +4,7 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { Stack } from '@mui/material'
 
-import { moneyAtom, userAtom, userIdAtom, hexCellsAtom } from '@/atoms'
+import { moneyAtom, userAtom, userIdAtom, hexCellsAtom, selectedTileAtom } from '@/atoms'
 import NavStack from '@/components/NavStack'
 import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
@@ -14,14 +14,28 @@ import HexGrid from '@/components/hexgrid/HexGrid'
 
 import { BUILDING_KEYS, BUILDING_OBJECTS, RESOURCES, TILE_OBJECTS_KEYS } from '@/utils/constants'
 import { supabase } from '@/lib/supabase'
+import { saveBuildingSupabase } from '../api/nodes/route'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [money] = useAtom(moneyAtom)
   const [user, setUser] = useAtom(userAtom);
   const [userId, setUserId] = useAtom(userIdAtom);
   const [mapData, setMapData] = useState(null)
-  const [hexCells, setHexCells] = useAtom(hexCellsAtom)
   const [buildings, setBuildings] = useState([])
+
+  const [hexCells, setHexCells] = useAtom(hexCellsAtom)
+  const updateHexCell = (newCell) => {
+    const [rowIndex, colIndex] = newCell.position
+    setHexCells(prev =>
+        prev.map((row, rIdx) =>
+          rIdx !== rowIndex ? row : row.map((cell, cIdx) =>
+            cIdx !== colIndex ? cell : { ...cell, ...newCell }
+          )
+        )
+      )
+  }
+  const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
+
   useEffect(() => {
     if (!userId) return
     const setMap = async () => {
@@ -39,52 +53,51 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (!mapData) return
 
+    const getBuildings = async () => {
+      const { data: buildingsData, error: buildingsError } = await supabase
+        .from('building_nodes')
+        .select('*')
+        .eq('user_id', userId)
+      // console.log(`🚀  ~ buildingsData:`, buildingsData[0].tile_.id)
+      setBuildings(buildingsData)
+    }
+    getBuildings()
+  }, [mapData])
+
+  useEffect(() => {
+
     const getTiles = async () => {
+      if (!mapData || !buildings) return
+
       const newCells = new Array(mapData.height).fill(null).map(() => new Array(mapData.width).fill(null))
+
       const { data: tilesData, error: tilesError } = await supabase
         .from('map_tiles')
         .select('*')
         .eq('map_id', mapData.id)
       console.log(tilesData)
-      const newBuildings = []
       tilesData.forEach((tile: any) => {
-        if (tile.building_id) {
-          newBuildings.push(tile.building_id)
-        }
         newCells[tile.position_y][tile.position_x] = {
           id: tile.id,
-          isLocked: tile.is_locked,
-          isRevealed: tile.is_revealed,
-
-          position: [tile.position_x, tile.position_y],
           type: tile.type,
           level: tile.level,
           status: tile.status,
-          buildingId: tile.building_id,
+          // resoures: tile.resources,
         }
       })
-      console.log(`🚀 ~ file: layout.tsx:56 ~ getTiles ~ newCells:`, newCells)
       setHexCells(newCells)
     }
     getTiles()
+
+
+  }, [mapData, buildings])
+
+  useEffect(() => {
+    if (!mapData) return
   }, [mapData])
 
 
-  const buildingNodes = [
-    {
-      // id: 1,
-      type: 'VILLAGE',
-      position: [4, 7],
-      status: 'active',
-      level: 1,
-      emoji: '🏠',
-      resources: {
-        [RESOURCES.WOOD.NAME]: 10,
-        [RESOURCES.FOOD.NAME]: 10,
-        [RESOURCES.STONE.NAME]: 10,
-      },
-    },
-  ]
+
 
   // useEffect(() => {
   //   if (hexCells.length  < 2) return
@@ -95,37 +108,34 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   // },[hexCells])
 
 
-  const saveMap = async () => {
-    console.log('Saving map...')
-    const { data: mapsData , error: mapsError } = await supabase
-      .from('maps')
-      .insert([{
-        user_id: userId,
-        // name
-        height: hexCells.length,
-        width: hexCells[0].length
-      }])
-      .select('*')
-      console.log({ mapsData, mapsError })
+  const addBuilding = async () => {
+    console.log('addBuilding')
+    console.log(`🚀 ~ fil ~ newBuilding.selectedTile:`, selectedTile)
+    const newBuilding = {
+      type: 'VILLAGE',
+      status: 'active',
+      level: 1,
 
-      const newTiles = []
-      hexCells.forEach((row, rowIndex) => {
-        row.forEach( async(cell, cellIndex) => {
-          const cellDBbody = {
-            ...cell,
-            map_id: mapsData[0].id,
-            position_x: cellIndex,
-            position_y: rowIndex,
-          }
-          newTiles.push(cellDBbody)
-        })
-      })
-      const { data: tilesData, error: tilesError } = await supabase
-      .from('map_tiles').insert(newTiles)
-      console.log(`🚀 :`, tilesData, tilesError)
+      // ...buildingNode,
+      position: [
+        selectedTile.position[0],
+        selectedTile.position[1],
+      ],
+    }
+
+    console.log(`🚀 ~ file: layout.tsx:130 ~ addBuilding ~ newBuildings:`, newBuilding)
+    setBuildings(prev => [...prev, newBuilding])
+    updateHexCell({
+      ...selectedTile,
+      // buildingId: BUILDING_OBJECTS[buildingNode.type].emoji
+    })
+
+    const {
+      buildingsData,
+      buildingsError
+    } = await saveBuildingSupabase(newBuilding)
+    console.log({ buildingsData, buildingsError })
   }
-
-
 
   useEffect(() => {
     const { data, error } = supabase
@@ -158,15 +168,15 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
   if (!userId) return <div>User not logged in</div>
 
-  const toggleCell = (id: number) => {
+  const clickCell = (cell) => {
+    const { id } = cell
+    console.log(cell)
     const [rowIndex, colIndex] = id.split('-').map(Number)
-    setHexCells(prev =>
-      prev.map((row, rIdx) =>
-        rIdx !== rowIndex ? row : row.map((cell, cIdx) =>
-          cIdx !== colIndex ? cell : { ...cell, isActive: !cell.isActive }
-        )
-      )
-    )
+    // setActiveCell(rowIndex, colIndex)
+    setSelectedTile(cell)
+    // addBuilding()
+    // const
+    //
   }
 
   return (
@@ -176,10 +186,11 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         <Header money={money} user={user} />
         {children}
         <Button onClick={() => saveMap()}>Save Map</Button>
+        <Button onClick={() => addBuilding()}>Add Building</Button>
 
         <Stack sx={{ border: '3px solid blue', position: 'relative' }}>
           <Canvas canvasHeight={500} canvasWidth={750} />
-          <HexGrid />
+          <HexGrid clickCell={clickCell} />
         </Stack>
 
       </Stack>

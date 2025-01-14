@@ -9,10 +9,12 @@ const HexRow = ({
   row,
   rowIndex,
   isShifted,
+  clickCell,
 }: {
   row: HexCell[]
   rowIndex: number
   isShifted: boolean
+  clickCell(): void
 }) => (
   <Box
     sx={{
@@ -27,6 +29,7 @@ const HexRow = ({
       cell={cell}
       rowIndex={rowIndex}
       colIndex={colIndex}
+      clickCell={clickCell}
     />)}
   </Box>
 )

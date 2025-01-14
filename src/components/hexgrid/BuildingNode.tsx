@@ -2,17 +2,17 @@ import React from 'react'
 import Box from '@mui/material/Box'
 import { hexHeight, hexWidth, tileBackgrounds } from '@/utils/constants'
 import { Typography } from '@mui/material'
+import { useAtom } from 'jotai'
+import { buildingNodesAtom } from '@/atoms'
 
 const hexagonPath = `polygon( 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)`
 
 const BuildingNode = async ({ buildingId }: { buildingId: number }) => {
+  const [buildings, setBuildings] = useAtom(buildingNodesAtom)
 
-  const buildingData = await supabase
-    .from('buildings')
-    .select('*')
-    .eq('id', buildingId)
-
-  // const buildingEmoji = buildingData[0].emoji
+  
+  const buildingEmoji = buildingData[0].emoji
+  console.log(`🚀 ~buildingEmoji:`, buildingEmoji)
   return (
     <Box
       sx={{

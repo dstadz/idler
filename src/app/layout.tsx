@@ -4,13 +4,23 @@ import { Provider as JotaiProvider, useAtom } from 'jotai'
 import './globals.css'
 import { supabase } from '@/lib/supabase'
 import { userIdAtom } from '@/atoms'
+import { useParams } from 'next/navigation'
 
 const ProviderStack = [
   JotaiProvider,
 ]
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [_, setUserId] = useAtom(userIdAtom)
+  const [userId, setUserId] = useAtom(userIdAtom)
+  const params = useParams<{ tag: string; item: string }>()
+  // console.log(`🚀 ~ file: layout.tsx:15 ~ RootLayout ~ params:`, params)
+
+//   if (!userId) {
+//   // User is signed in, you can redirect them to the dashboard
+//   window.location.href = '/signin'
+// } else {
+//   console.error('Error: Unknown error occurred')
+// }
 
   useEffect(() => {
     const { data, error } = supabase
