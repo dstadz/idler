@@ -9,7 +9,7 @@ import { useAtom } from 'jotai';
 export default function Page() {
   const [userId] = useAtom(userIdAtom);
   if (userId) {
-    window.location.href = '/admin'
+    window.location.href = '/admin' //temp
     return
   }
 

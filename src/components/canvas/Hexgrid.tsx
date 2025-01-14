@@ -1,15 +1,17 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Box from '@mui/material/Box'
 import { Stack, Typography } from '@mui/material'
 import Button from '../UI/Button'
-import { hexHeight, hexWidth, TILE_OBJECTS, tileBackgrounds } from '@/utils/constants'
+import { hexHeight, hexWidth, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
-import { mapTileMatrixAtom } from '@/atoms'
+import { hexCellsAtom } from '@/atoms'
 
 
 const hexagonPath = `polygon( 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)`
 const HexGrid = () => {
-  const [hexCells, setHexCells] = useAtom(mapTileMatrixAtom)
+  const [hexCells] = useAtom(hexCellsAtom)
+
+  if (!hexCells || hexCells.length < 2) return null
 
   return (
     <Box
@@ -75,10 +77,11 @@ const HexCell = ({
     type,
     level,
     isActive,
-    buildingEmoji,
+    buildingId,
     status,
   } = cell
-  const [hexCells, setHexCells] = useAtom(mapTileMatrixAtom)
+  if (buildingId)console.log(`🚀 ~ file: Hexgrid.tsx:83 ~ cell:`, cell)
+  const [_, setHexCells] = useAtom(hexCellsAtom)
 
   const toggleCell = (id: number) => {
     const [rowIndex, colIndex] = id.split('-').map(Number)
@@ -110,15 +113,44 @@ const HexCell = ({
           boxShadow: '0 0 0 2px black',
         }}
       >
-        <Typography sx={{ fontSize: '2rem' }} >
-          {buildingEmoji}
-        </Typography>
+        {buildingId && <BuildingNode buildingId={buildingId} />}
+
       </Box>
       {isActive && <HexCellModal cell={cell} modalType={'Admin'} />}
     </Stack>
   )
 }
 
+const BuildingNode = async ({ buildingId }: { buildingId: number }) => {
+
+  const buildingData = await supabase
+    .from('buildings')
+    .select('*')
+    .eq('id', buildingId)
+
+  // const buildingEmoji = buildingData[0].emoji
+  return (
+    <Box
+      sx={{
+        width: hexWidth,
+        height: hexHeight,
+        position: 'absolute',
+        background: tileBackgrounds.SEA,
+        clipPath: hexagonPath,
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        transition: 'background-color 0.3s ease',
+        boxShadow: '0 0 0 2px black',
+      }}
+    >
+      <Typography sx={{ fontSize: '2rem' }} >
+        {buildingEmoji || 'home'}
+      </Typography>
+    </Box>
+  )
+}
 const HexCellModal = ({ cell, modalType }: { cell: HexCell, modalType: string }) => {
   const {
     type,

@@ -6,7 +6,7 @@ export { userAtom, userIdAtom } from './user'
 
 
 
-export const mapTileMatrixAtom = atom([[]])
+export const hexCellsAtom = atom([[]])
 export const selectedTilesAtom = atom([])
 export const selectedTileAtom = atom({})
 
