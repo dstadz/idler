@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Box from '@mui/material/Box'
 import { Stack } from '@mui/material'
 import { hexHeight, hexWidth, tileBackgrounds } from '@/utils/constants'
@@ -17,31 +17,36 @@ const HexCell = ({
   cell,
   rowIndex,
   colIndex,
-  clickCell,
 }: {
   cell: object
   rowIndex: number
   colIndex: number
-  clickCell(): void
+  (): void
 }) => {
   const {
     id,
     type,
     level,
-    isActive,
     building,
     status,
   } = cell
   const [_, setHexCells] = useAtom(hexCellsAtom)
   const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
-  // const [selectedsTile, setSelectedsTile] = useAtom(selectedTilesAtom)
+  const [isActive, setIsActive] = useState(false)
 
+  const handleClick = (cell) => {
+    setSelectedTile(cell)
+    setIsActive(true)
+    // const newHexCells = [...hexCells]
+    // newHexCells[rowIndex][colIndex] = cell
+    // setHexCells(newHexCells)
+  }
 
   return (
     <Stack sx={{ position: 'relative' }}>
       <Box
         key={cell.id}
-        onClick={() => clickCell({
+        onClick={() => handleClick({
           ...cell,
           position: [rowIndex, colIndex],
         })}
@@ -65,7 +70,7 @@ const HexCell = ({
         {building && <BuildingNode building={building} />}
 
       </Box>
-      {isActive && <HexCellModal cell={cell} modalType={'Admin'} />}
+      {selectedTile.id === id && <HexCellModal cell={cell} modalType={'Admin'} />}
     </Stack>
   )
 }
