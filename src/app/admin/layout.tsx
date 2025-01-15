@@ -52,14 +52,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   }
   const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
   const clickCell = (cell) => {
-    console.log(`🚀 ~ file: layout.tsx:56 ~ clickCell ~ cell:`, cell)
-    const { id } = cell
-    console.log(cell)
-    // setActiveCell(rowIndex, colIndex)
     setSelectedTile(cell)
-    // addBuilding()
-    // const
-    //
   }
   const [buildings, setBuildings] = useAtom(buildingNodesAtom)
 
@@ -71,13 +64,20 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         .from('building_nodes')
         .select('*')
         .eq('map_id', mapData.id)
-      setBuildings(buildingsData)
+      setBuildings(buildingsData?.map(building => ({
+        // ...building,
+        position: [building.position_x, building.position_y],
+        id: building.id,
+        type: building.type,
+        level: building.level,
+        status: building.status,
+        // resources: JSON.parse(building.resources),
+      })))
     }
     getBuildings()
   }, [mapData])
 
   useEffect(() => {
-
     const getTiles = async () => {
       if (!mapData || !mapData.id || !buildings) return
 
@@ -101,18 +101,14 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         })
         .catch(err => console.log(err))
 
-        console.log({ buildings, newCells })
         setHexCells(newCells)
 
         buildings.forEach((building: any) => {
-          console.log(`🚀 ~  building:`, building)
-          const { position_x, position_y, created_at, map_id, user_id, ...restBuilding } = building // {...}
-          const oldCell = newCells[position_y][position_x]
-          console.log(`🚀 ~ file: layout.tsx:118 ~ buildings.forEach ~ oldCell:`, oldCell)
-          const newCell = newCells[position_y][position_x] = {
-            ...newCells[position_y][position_x],
+          const { position, ...restBuilding } = building
+          const [y, x] = position
+          const newCell = newCells[y][x] = {
+            ...newCells[y][x],
             building:{...restBuilding },}
-          console.log(`🚀 ~ file: layout.tsx:114 ~ buildings.forEach ~ newCell:`, newCell)
           updateHexCell(newCell)
         })
     }
@@ -120,21 +116,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
 
   }, [mapData, buildings])
-
-  useEffect(() => {
-    if (!mapData) return
-  }, [mapData])
-
-
-
-
-  // useEffect(() => {
-  //   if (hexCells.length  < 2) return
-  //   console.log(`🚀 ~ file: layout.tsx:73 ~ useEffect ~ hexCells:`, hexCells)
-  //   buildingNodes.forEach(node => {
-  //     hexCells[node.position[0]][node.position[1]].buildingId = BUILDING_OBJECTS[node.type].EMOJI
-  //   })
-  // },[hexCells])
 
   const newBuilding = {
     type: 'VILLAGE',
@@ -148,9 +129,10 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     ],
   }
   const addBuilding = async () => {
-    console.log(mapData.id)
-    console.log(`🚀 ~ file: layout.tsx:130 ~ addBuilding ~ newBuilding:`, newBuilding)
-    setBuildings(prev => [...prev, {...restBuilding, position: [position_x, position_y] }])
+    setBuildings(prev => [
+      ...prev,
+      {...newBuilding },
+    ])
     updateHexCell({
       ...selectedTile,
       newBuilding,
