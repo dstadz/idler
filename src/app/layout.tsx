@@ -1,13 +1,36 @@
 'use client'
-import React from 'react'
-import { Provider as JotaiProvider } from 'jotai'
+import React, { useEffect } from 'react'
+import { Provider as JotaiProvider, useAtom } from 'jotai'
 import './globals.css'
+import { supabase } from '@/lib/supabase'
+import { userIdAtom } from '@/atoms'
+import { useParams } from 'next/navigation'
 
 const ProviderStack = [
   JotaiProvider,
 ]
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  const [userId, setUserId] = useAtom(userIdAtom)
+  const params = useParams<{ tag: string; item: string }>()
+  // console.log(`🚀 ~ file: layout.tsx:15 ~ RootLayout ~ params:`, params)
+
+//   if (!userId) {
+//   // User is signed in, you can redirect them to the dashboard
+//   window.location.href = '/signin'
+// } else {
+//   console.error('Error: Unknown error occurred')
+// }
+
+  useEffect(() => {
+    const { data, error } = supabase
+    .auth
+    .onAuthStateChange((event, session) => {
+      setUserId(session?.user?.id)
+    })
+
+    return () => { supabase.auth.onAuthStateChange(null) }
+  }, [setUserId])
 
   const Providers = ProviderStack.reduce((AccProvider, CurrentProvider) => {
     const WrappedProviders = ({ children: providerChildren }: { children: React.ReactNode }) => (

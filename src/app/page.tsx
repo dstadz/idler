@@ -3,8 +3,16 @@
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { userIdAtom } from '@/atoms';
+import { useAtom } from 'jotai';
 
-export default function HomePage() {
+export default function Page() {
+  const [userId] = useAtom(userIdAtom);
+  if (userId) {
+    window.location.href = '/admin' //temp
+    return
+  }
+
   return (
     <div>
       <nav className='flex min-w-full items-center justify-between p-24'>

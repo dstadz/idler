@@ -1,24 +1,75 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { useHomeNode, usePlanetNodes } from '@/hooks'
 import Box from '@mui/material/Box'
-import HexGrid from './Hexgrid'
-import { blankHexCells } from './hexgridHelpers'
+import HexGrid from '../hexgrid/HexGrid'
 
-const Canvas = () => {
+const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { ctx, clearWholeRect, drawFPS } = useCanvas({ canvasRef })
+
+  const rafIdRef = useRef<number | null>(null)
+  const gameLoop = useCallback(
+    (timestamp: number) => {
+      if (!ctx || !canvasRef.current) return
+
+      clearWholeRect(canvasRef.current)
+      drawFPS(timestamp)
+
+      rafIdRef.current = requestAnimationFrame(gameLoop)
+    },
+    [ctx, canvasRef, clearWholeRect, drawFPS]
+  )
+
+  useEffect(() => {
+    const canStart = ctx
+
+    if (!canStart || rafIdRef.current) return
+    rafIdRef.current = requestAnimationFrame(gameLoop)
+
+    return () => {
+      if (rafIdRef.current) {
+        // cancelAnimationFrame(rafIdRef.current)
+        console.log('Game loop stopped')
+      }
+      // rafIdRef.current = null
+    }
+  }, [ctx, gameLoop])
+
+
+  return (
+    <Box
+      sx={{
+        border: '3px solid #0ff',
+        position: 'absolute',
+        top: 0,
+      }}
+    >
+      <canvas
+        ref={canvasRef}
+        width={canvasWidth}
+        height={canvasHeight}
+        style={styles.canvas}
+      />
+    </Box>
+  )
+}
+
+export default Canvas
+
+const styles = {
+  canvas: {
+  border: '3px solid red',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  zIndex: 1,
+  pointerEvents: 'none'
+}}
+
+const useCanvas = ({ canvasRef }:{ canvasRef: React.RefObject<HTMLCanvasElement> }) => {
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
   const [coords, setCoords] = useState<[number, number]>([0, 0])
-  const fpsRef = useRef(0)
-
-  const handleClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!ctx || !canvasRef.current) return
-    const rect = canvasRef.current.getBoundingClientRect()
-    const x = event.clientX - rect.left
-    const y = event.clientY - rect.top
-    setCoords([x, y])
-  }, [ctx])
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -28,9 +79,19 @@ const Canvas = () => {
     return () => setCtx(null)
   }, [])
 
+
+  const handleClick = useCallback((event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (!ctx || !canvasRef.current) return
+    const rect = canvasRef.current.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    setCoords([x, y])
+  }, [ctx])
+
   const clearWholeRect = useCallback((canvas: HTMLCanvasElement) => {
     if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height)
   }, [ctx])
+  const fpsRef = useRef(0)
 
   let lastFrameTime = performance.now()
   let frameCount = 0
@@ -51,73 +112,10 @@ const Canvas = () => {
     ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
   }, [ctx])
 
-  const { homeNode, drawHomeNode } = useHomeNode(ctx)
-  const { planets, drawPlanets, setPlanetsPosition } = usePlanetNodes({ ctx, homeNode })
-  const rafIdRef = useRef<number | null>(null)
-
-  useEffect(() => {
-    setPlanetsPosition(planets)
-  }, [planets])
-
-  const gameLoop = useCallback(
-    (timestamp: number) => {
-      if (!ctx || !canvasRef.current) return
-
-      clearWholeRect(canvasRef.current)
-      drawFPS(timestamp)
-      drawHomeNode()
-      drawPlanets()
-
-      rafIdRef.current = requestAnimationFrame(gameLoop)
-    },
-    [ctx, canvasRef, clearWholeRect, drawFPS, drawHomeNode, drawPlanets]
-  )
-
-  useEffect(() => {
-    const canStart = ctx
-
-    if (!canStart || rafIdRef.current) return
-    rafIdRef.current = requestAnimationFrame(gameLoop)
-
-    return () => {
-      if (rafIdRef.current) {
-        // cancelAnimationFrame(rafIdRef.current)
-        console.log('Game loop stopped')
-      }
-      // rafIdRef.current = null
-    }
-  }, [ctx, homeNode, planets, gameLoop])
-
-  const hexGrid = blankHexCells(12, 12)
-  for (let r = 0; r < 144; r++) {
-    hexGrid
-      [Math.floor(Math.random() * hexGrid.length)]
-      [Math.floor(Math.random() * hexGrid[0].length)]
-    .type = 'GRASS'
+  return {
+    coords,
+    clearWholeRect,
+    drawFPS,
+    handleClick
   }
-  return (
-    <Box
-      sx={{
-        position: 'relative',
-        border: '3px solid #0ff',
-      }}
-    >
-      <canvas
-        ref={canvasRef}
-        width={800}
-        height={500}
-        style={{
-          border: '3px solid red',
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          zIndex: 1,
-          pointerEvents: 'none'
-        }}
-      />
-      <HexGrid hexCells={hexGrid} />
-    </Box>
-  )
 }
-
-export default Canvas
