@@ -6,7 +6,7 @@ import { hexCellsAtom } from '@/atoms'
 import HexRow from './HexRow'
 
 
-const HexGrid = ({ clickCell }: { clickCell(): void }) => {
+const HexGrid = ({  }: { (): void }) => {
   const [hexCells] = useAtom(hexCellsAtom)
 
   if (!hexCells || hexCells.length < 2) return null
@@ -31,7 +31,7 @@ const HexGrid = ({ clickCell }: { clickCell(): void }) => {
             row={row}
             isShifted={isShifted}
             rowIndex={rowIndex}
-            clickCell={clickCell}
+
           />
         )
       })}
