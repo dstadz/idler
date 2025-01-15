@@ -1,20 +1,24 @@
 'use client'
-import React, { ReactNode, useEffect } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { useAtom } from 'jotai'
 import { Stack } from '@mui/material'
 
-import { userIdAtom, hexCellsAtom, selectedTileAtom, mapDataAtom, buildingNodesAtom } from '@/atoms'
+import { moneyAtom, userAtom, userIdAtom, hexCellsAtom, selectedTileAtom, mapDataAtom, buildingNodesAtom } from '@/atoms'
 import NavStack from '@/components/NavStack'
+import SignOutButton from '@/components/SignOutbutton'
 import Canvas from '@/components/canvas/Canvas'
 import Header from '@/components/Header'
 import Button from '@/components/UI/Button'
 import HexGrid from '@/components/hexgrid/HexGrid'
 
+import { BUILDING_KEYS, BUILDING_OBJECTS, RESOURCES, TILE_OBJECTS_KEYS } from '@/utils/constants'
 import { supabase } from '@/lib/supabase'
 import { saveBuildingSupabase } from '../api/nodes/route'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [userId, setUserId] = useAtom(userIdAtom)
+
+
   useEffect(() => {
     if (!userId) return
     const setMap = async () => {
@@ -47,7 +51,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     )
   }
   const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
-
+  const clickCell = (cell) => {
+    setSelectedTile(cell)
+  }
   const [buildings, setBuildings] = useAtom(buildingNodesAtom)
 
   useEffect(() => {
@@ -97,7 +103,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
         setHexCells(newCells)
 
-        buildings.forEach((building) => {
+        buildings.forEach((building: any) => {
           const { position, ...restBuilding } = building
           const [y, x] = position
           const newCell = newCells[y][x] = {
@@ -169,7 +175,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
         <Stack sx={{ border: '3px solid blue', position: 'relative' }}>
           <Canvas canvasHeight={500} canvasWidth={750} />
-          <HexGrid />
+          <HexGrid clickCell={clickCell} />
         </Stack>
 
       </Stack>
