@@ -19,7 +19,7 @@ const HexCellModal = ({ cell, modalType }: { cell: HexCell, modalType: string })
       background: 'hsla(247, 73%, 90%, 1)',
       justifyContent: 'space-between',
       position: 'absolute',
-      top: -160,
+      bottom: 100,
       minHeight: 160,
       minWidth: 120
     }}>
@@ -43,10 +43,11 @@ const HexCellModal = ({ cell, modalType }: { cell: HexCell, modalType: string })
       {modalType === 'Admin' && <Stack flexDirection={'column'}>
         Build Options
         {Object.keys(BUILDING_OBJECTS).map(key => (
-          <Button key={key} onClick={() => setNewType(key)}>{key}</Button>
+          <Button key={key} sx={{ p: .5 }} onClick={() => setNewType(key)}>{key}</Button>
         ))}
-        <Button onClick={() => console.log('Build')}>Build</Button>
       </Stack>}
+
+
       {modalType === 'user' && (
         <Stack
           flexDirection={'row'}

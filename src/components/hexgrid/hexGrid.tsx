@@ -8,6 +8,7 @@ import HexRow from './HexRow'
 
 const HexGrid = ({  }: { (): void }) => {
   const [hexCells] = useAtom(hexCellsAtom)
+  console.log(`🚀 ~ hexCells:`, hexCells)
 
   if (!hexCells || hexCells.length < 2) return null
 
