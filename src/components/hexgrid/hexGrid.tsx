@@ -1,3 +1,4 @@
+'use client'
 import React from 'react'
 import Box from '@mui/material/Box'
 import { hexHeight, tileBackgrounds } from '@/utils/constants'
@@ -6,16 +7,15 @@ import { hexCellsAtom } from '@/atoms'
 import HexRow from './HexRow'
 
 
-const HexGrid = ({  }: { (): void }) => {
+const HexGrid = () => {
   const [hexCells] = useAtom(hexCellsAtom)
-  console.log(`🚀 ~ hexCells:`, hexCells)
 
   if (!hexCells || hexCells.length < 2) return null
 
   return (
-    <Box
+      <Box
       sx={{
-        border: '3px solid yellow',
+        border: '3px solid blue',
         display: 'flex',
 
         flexDirection: 'column',

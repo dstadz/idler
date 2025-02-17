@@ -4,9 +4,6 @@ import { useAtom } from 'jotai'
 import { Stack, Typography } from '@mui/material'
 
 import { userIdAtom, hexCellsAtom, mapDataAtom, buildingNodesAtom } from '@/atoms'
-import Canvas from '@/components/canvas/Canvas'
-import HexGrid from '@/components/hexGrid/HexGrid'
-
 import { supabase } from '@/lib/supabase'
 import { tileBackgrounds } from '@/utils/constants'
 
@@ -29,12 +26,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   }, [userId])
 
 
-
-
-
   ////////////// MAPS
   const [mapData, setMapData] = useAtom(mapDataAtom)
-  const [hexCells, setHexCells] = useAtom(hexCellsAtom)
+  const [, setHexCells] = useAtom(hexCellsAtom)
 
   const updateHexCell = (rowIndex, colIndex, updatedCell) => {
     setHexCells(prev =>
@@ -147,26 +141,21 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     .onAuthStateChange((event, session) => {
       setUserId(session?.user?.id)
     })
+    console.log('onAuthStateChange', { data, event })
 
     return () => {
       supabase.auth.onAuthStateChange(null)
     }
   }, [setUserId])
 
-  console.log(`🚀 ~ DashboardLayout ~ userId:`, userId)
-
   if (!userId) return <div>User not logged in</div>
-
-
 
   return (
     <Stack
       className='DashboardLayout'
       sx={styles.wrapper}
-      flexDirection='row'
       position={'relative'}
     >
-      <Stack sx={styles.wrapper} width={'100%'} height={'100%'}>
       <Stack sx={styles.row}>
         <Stack sx={styles.resources}>
         <Typography>stuff: 10</Typography>
@@ -182,6 +171,8 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         </Stack>
       </Stack>
 
+      {children}
+
       <Stack sx={styles.row}>
         <Stack sx={styles.botLeft}>
           <Typography>buttons</Typography>
@@ -192,7 +183,6 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         </Stack>
       {/* <Typography>ADS give me money plz give me money</Typography> */}
       </Stack>
-    </Stack>
     </Stack>
   )
 }
@@ -261,19 +251,19 @@ const styles = {
   left: 0,
   width: '100%',
   height: '100%',
-  zIndex: -1, // to put it behind the other views
+  zIndex: -1,
   },
   topRow: {
   top: 0,
   left: 0,
   width: '100%',
-  height: 50, // adjust this value to your needs
+  height: 50,
   },
   bottomRow: {
   position: 'absolute',
   bottom: 0,
   left: 0,
   width: '100%',
-  height: 50, // adjust this value to your needs
+  height: 50,
   },
 }
