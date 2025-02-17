@@ -35,7 +35,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const Providers = ProviderStack.reduce((AccProvider, CurrentProvider) => {
     const WrappedProviders = ({ children: providerChildren }: { children: React.ReactNode }) => (
       <AccProvider>
-        <CurrentProvider>{providerChildren}</CurrentProvider>
+        <CurrentProvider>
+          {providerChildren}
+        </CurrentProvider>
       </AccProvider>
     )
     return WrappedProviders
@@ -45,7 +47,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <Providers>
       <html lang='en' suppressHydrationWarning={true}>
         <body suppressHydrationWarning={true}>
-          <main className='flex min-h-screen min-w-screen flex-col items-center justify-between'>
+        <main className='flex min-h-screen min-w-screen flex-col items-center justify-between'>
             {children}
           </main>
         </body>
