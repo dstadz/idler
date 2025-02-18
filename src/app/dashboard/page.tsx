@@ -3,7 +3,7 @@ import { createClient } from '@/utils/supabase/server'
 import { cookies } from 'next/headers'
 import { Stack } from '@mui/material'
 import Canvas from '@/components/canvas/Canvas'
-import HexGrid from '@/components/hexGrid/HexGrid'
+import HexGrid from '@/components/hexgrid/HexGrid'
 
 export default async function Page() {
   const cookieStore = await cookies()
