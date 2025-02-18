@@ -1,19 +1,18 @@
 'use client'
 import React, { ReactNode, useEffect } from 'react'
-import { useAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { Stack, Typography } from '@mui/material'
-
-import { userIdAtom, hexCellsAtom, mapDataAtom, buildingNodesAtom } from '@/atoms'
+import { userIdAtom, mapDataAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
 import { tileBackgrounds } from '@/utils/constants'
 import Link from 'next/link'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [userId, setUserId] = useAtom(userIdAtom)
+  const setMapData = useSetAtom(mapDataAtom)
   useEffect(() => {
     if (!userId) return
     const setMap = async () => {
-      if (!userId) return
       const { data: mapsData, error: mapsError } = await supabase
         .from('maps')
         .select('*')
@@ -22,120 +21,8 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       if (!mapsData || mapsData.length === 0) return
       setMapData(mapsData[0])
     }
-
     setMap()
   }, [userId])
-
-
-  ////////////// MAPS
-  const [mapData, setMapData] = useAtom(mapDataAtom)
-  const [, setHexCells] = useAtom(hexCellsAtom)
-
-  const updateHexCell = (rowIndex, colIndex, updatedCell) => {
-    setHexCells(prev =>
-      prev.map((row, rIdx) =>
-        rIdx !== rowIndex ? row : row.map((cell, cIdx) =>
-          cIdx !== colIndex ? cell : { ...cell, ...updatedCell }
-        )
-      )
-    )
-  }
-
-  const [buildings, setBuildings] = useAtom(buildingNodesAtom)
-
-  useEffect(() => {
-    if (!mapData) return
-
-    const getBuildings = async () => {
-      const { data: buildingsData, error: buildingsError } = await supabase
-        .from('building_nodes')
-        .select('*')
-        .eq('map_id', mapData.id)
-      if (buildingsError) console.log(buildingsError)
-      if (!buildingsData) return
-      setBuildings(buildingsData?.map(building => ({
-        // ...building,
-        position: [building.position_x, building.position_y],
-        id: building.id,
-        type: building.type,
-        level: building.level,
-        status: building.status,
-        // resources: JSON.parse(building.resources),
-      })))
-    }
-    getBuildings()
-  }, [mapData])
-
-  useEffect(() => {
-    const getTiles = async () => {
-      if (!mapData || !mapData.id || !buildings) return
-
-      const newCells = new Array(mapData.height).fill(null)
-        .map(() => new Array(mapData.width).fill(null))
-
-      await supabase
-        .from('map_tiles')
-        .select('*')
-        .eq('map_id', mapData.id)
-        .then(({ data: tilesData }) => {
-          tilesData.forEach((tile: any) => {
-            newCells[tile.position_y][tile.position_x] = {
-              id: tile.id,
-              type: tile.type,
-              level: tile.level,
-              status: tile.status,
-              // resoures: tile.resources,
-            }
-          })
-        })
-        .catch(err => console.log(err))
-
-        setHexCells(newCells)
-
-        buildings.forEach((building) => {
-          const { position, ...restBuilding } = building
-          const [y, x] = position
-          const newCell = newCells[y][x] = {
-            ...newCells[y][x],
-            building:{...restBuilding },}
-          updateHexCell(newCell)
-        })
-    }
-    getTiles()
-
-
-  }, [mapData, buildings])
-
-  // const newBuilding = {
-  //   type: 'VILLAGE',
-  //   status: 'active',
-  //   level: 1,
-  //   map_id: mapData.id,
-  //   // ...buildingNode,
-  //   position: [
-  //     selectedTile?.position?.[0],
-  //     selectedTile?.position?.[1],
-  //   ],
-  // }
-  // const addBuilding = async () => {
-  //   setBuildings(prev => [
-  //     ...prev,
-  //     {...newBuilding },
-  //   ])
-  //   updateHexCell({
-  //     ...selectedTile,
-  //     newBuilding,
-  //   })
-
-  //   const {
-  //     buildingsData,
-  //     buildingsError
-  //   } = await saveBuildingSupabase(newBuilding)
-  //   console.log({ buildingsData, buildingsError })
-  // }
-
-
-  // sign in
   useEffect(() => {
     const { data, error } = supabase
     .auth
@@ -149,10 +36,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [setUserId])
 
-  if (!userId) return <div>
-    <Link href='/signin'> Sign In</Link>
-    <Typography>User not logged in</Typography>
-  </div>
+  if (!userId) return (
+    <div>
+      <Link href='/signin'> Sign In</Link>
+      <Typography>User not logged in</Typography>
+    </div>
+  )
 
   return (
     <Stack
@@ -175,7 +64,9 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
         </Stack>
       </Stack>
 
-      {children}
+      <Stack className='page-wrapper' sx={styles.pageWrapper}>
+        {children}
+      </Stack>
 
       <Stack className='bot-row' sx={styles.row}>
         <Stack sx={styles.botLeft}>
@@ -213,6 +104,7 @@ const styles = {
   alignItems: 'center',
   borderColor: 'green',
   borderWidth: 5,
+  zIndex: 2,
   },
   resources: {
   flex: 1,
@@ -270,5 +162,13 @@ const styles = {
   left: 0,
   width: '100%',
   height: 50,
+  },
+
+  pageWrapper: {
+    border: '3px solid yellow',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    // zIndex: -1,
   },
 }

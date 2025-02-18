@@ -1,8 +1,6 @@
 'use client'
 
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import Box from '@mui/material/Box'
-import HexGrid from '../hexgrid/HexGrid'
 
 const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -38,20 +36,12 @@ const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeig
 
 
   return (
-    <Box
-      sx={{
-        border: '3px solid #0ff',
-        position: 'absolute',
-        top: 0,
-      }}
-    >
-      <canvas
-        ref={canvasRef}
-        width={canvasWidth}
-        height={canvasHeight}
-        style={styles.canvas}
-      />
-    </Box>
+    <canvas
+      ref={canvasRef}
+      width={canvasWidth}
+      height={canvasHeight}
+      style={styles.canvas}
+    />
   )
 }
 
@@ -59,13 +49,14 @@ export default Canvas
 
 const styles = {
   canvas: {
-  border: '3px solid red',
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  zIndex: 1,
-  pointerEvents: 'none'
-}}
+    border: '3px solid yellow',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    zIndex: 1,
+    pointerEvents: 'none'
+  }
+}
 
 const useCanvas = ({ canvasRef }:{ canvasRef: React.RefObject<HTMLCanvasElement> }) => {
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)

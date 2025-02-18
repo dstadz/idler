@@ -1,18 +1,16 @@
 'use client'
 import React, { useEffect } from 'react'
-import { Provider as JotaiProvider, useAtom } from 'jotai'
+import { Provider as JotaiProvider, useSetAtom } from 'jotai'
 import './globals.css'
 import { supabase } from '@/lib/supabase'
 import { userIdAtom } from '@/atoms'
-import { useParams } from 'next/navigation'
 
 const ProviderStack = [
   JotaiProvider,
 ]
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [userId, setUserId] = useAtom(userIdAtom)
-  const params = useParams<{ tag: string; item: string }>()
+  const setUserId = useSetAtom(userIdAtom)
   // console.log(`🚀 ~ file: layout.tsx:15 ~ RootLayout ~ params:`, params)
 
 //   if (!userId) {
@@ -26,8 +24,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     const { data, error } = supabase
     .auth
     .onAuthStateChange((event, session) => {
-      setUserId(session?.user?.id)
+      console.log(`🚀 ~ .onAuthStateChange`, event, session)
+      setUserId(() => {
+        console.log('boop');
+        return session?.user?.id
+      })
     })
+    console.log(`🚀 ~ useEffect ~ data, error:`, data, error)
 
     return () => { supabase.auth.onAuthStateChange(null) }
   }, [setUserId])

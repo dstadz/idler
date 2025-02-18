@@ -1,11 +1,10 @@
 'use client'
-import React, { useState } from 'react'
+import React from 'react'
 import Box from '@mui/material/Box'
 import { Stack } from '@mui/material'
 import { hexHeight, hexWidth, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
 import {
-  hexCellsAtom,
   selectedTileAtom,
   // selectedTilesAtom,
 } from '@/atoms'
@@ -16,41 +15,34 @@ const hexagonPath = `polygon( 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 2
 
 const HexCell = ({
   cell,
-  rowIndex,
-  colIndex,
+  // rowIndex,
+  // colIndex,
 }: {
   cell: object
-  rowIndex: number
-  colIndex: number
+  // rowIndex: number
+  // colIndex: number
   (): void
 }) => {
   const {
     id,
     type,
-    level,
+    // level,
     building,
-    status,
+    // status,
   } = cell
-  const [_, setHexCells] = useAtom(hexCellsAtom)
   const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
-  const [isActive, setIsActive] = useState(false)
+  // const [isActive, setIsActive] = useState(false)
 
-  const handleClick = (cell) => {
-    setSelectedTile(cell)
-    setIsActive(true)
-    // const newHexCells = [...hexCells]
-    // newHexCells[rowIndex][colIndex] = cell
-    // setHexCells(newHexCells)
+  const handleClick = () => {
+    setSelectedTile(prev => prev.id === id ? {} : cell)
+    console.log(`🚀 ~ handleClick ~ cell:`, cell)
   }
 
   return (
     <Stack sx={{ position: 'relative' }}>
       <Box
         key={cell.id}
-        onClick={() => handleClick({
-          ...cell,
-          position: [rowIndex, colIndex],
-        })}
+        onClick={handleClick}
         sx={{
           width: hexWidth,
           height: hexHeight,
