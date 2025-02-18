@@ -13,10 +13,10 @@ export default async function Page() {
   console.log(`🚀 ~ Page ~ data:`, data)
 
   return (
-    <Stack sx={styles.wrapper}>
-          <Canvas canvasHeight={475} canvasWidth={750} />
-          <HexGrid />
-        </Stack>
+    <Stack className="map-wrapper" sx={styles.wrapper}>
+      <Canvas canvasHeight={475} canvasWidth={750} />
+      <HexGrid />
+    </Stack>
   )
 }
 

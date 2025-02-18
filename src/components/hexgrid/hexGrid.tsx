@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import Box from '@mui/material/Box'
+import { Stack } from '@mui/material'
 import { hexHeight, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
 import { hexCellsAtom } from '@/atoms'
@@ -13,7 +13,10 @@ const HexGrid = () => {
   if (!hexCells || hexCells.length < 2) return null
 
   return (
-      <Box
+    <Stack
+      className='hex-grid'
+      component={'section'}
+      direction={'column'}
       sx={{
         border: '3px solid blue',
         display: 'flex',
@@ -36,7 +39,7 @@ const HexGrid = () => {
           />
         )
       })}
-    </Box>
+    </Stack>
   )
 }
 export default HexGrid

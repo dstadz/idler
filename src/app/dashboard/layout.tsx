@@ -6,6 +6,7 @@ import { Stack, Typography } from '@mui/material'
 import { userIdAtom, hexCellsAtom, mapDataAtom, buildingNodesAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
 import { tileBackgrounds } from '@/utils/constants'
+import Link from 'next/link'
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const [userId, setUserId] = useAtom(userIdAtom)
@@ -148,7 +149,10 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     }
   }, [setUserId])
 
-  if (!userId) return <div>User not logged in</div>
+  if (!userId) return <div>
+    <Link href='/signin'> Sign In</Link>
+    <Typography>User not logged in</Typography>
+  </div>
 
   return (
     <Stack
@@ -156,12 +160,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
       sx={styles.wrapper}
       position={'relative'}
     >
-      <Stack sx={styles.row}>
-        <Stack sx={styles.resources}>
+      <Stack className='top-row' sx={styles.row}>
+        <Stack className='resources' sx={styles.resources}>
         <Typography>stuff: 10</Typography>
         <Typography>things: 15</Typography>
         </Stack>
-        <Stack sx={styles.statBlock}>
+        <Stack className='settings' sx={styles.statBlock}>
           <Stack sx={styles.dataButton}>
             <Typography>stats</Typography>
           </Stack>
@@ -173,7 +177,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
 
       {children}
 
-      <Stack sx={styles.row}>
+      <Stack className='bot-row' sx={styles.row}>
         <Stack sx={styles.botLeft}>
           <Typography>buttons</Typography>
         </Stack>
@@ -212,6 +216,7 @@ const styles = {
   },
   resources: {
   flex: 1,
+  flexDirection: 'row',
   borderColor: 'blue',
   borderWidth: 5,
   },
