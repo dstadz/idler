@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { Stack } from '@mui/material'
 import { hexHeight, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
-import { hexCellsAtom, mapDataAtom, unitNodesAtom } from '@/atoms'
+import { hexCellsAtom, mapDataAtom } from '@/atoms'
 import HexRow from './HexRow'
 import { supabase } from '@/lib/supabase'
 import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes'
@@ -14,7 +14,6 @@ const HexGrid = () => {
   const [hexCells, setHexCells] = useAtom(hexCellsAtom)
   const { homeNode, getHomeNode } = useHomeNode()
   const { buildingNodes, getBuildingNodes } = useBuildingNodes()
-  // const [unitNodes, setUnitNodes] = useAtom(unitNodesAtom)
 
   const updateHexCell = (rowIndex, colIndex, updatedCell) => {
     setHexCells(prev =>

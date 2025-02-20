@@ -1,10 +1,11 @@
-'use client'
+ 'use client'
 
+import { useUnitsNode } from '@/hooks/nodes/useUnitsNode'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const { ctx, clearWholeRect, drawFPS } = useCanvas({ canvasRef })
+  const { ctx, canvasRef, clearWholeRect, drawFPS } = useCanvas()
+  const { unitNodes, getUnitNodes } = useUnitsNode(ctx)
 
   const rafIdRef = useRef<number | null>(null)
   const gameLoop = useCallback(
@@ -58,7 +59,8 @@ const styles = {
   }
 }
 
-const useCanvas = ({ canvasRef }:{ canvasRef: React.RefObject<HTMLCanvasElement> }) => {
+const useCanvas = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
   const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null)
   const [coords, setCoords] = useState<[number, number]>([0, 0])
 
@@ -104,6 +106,7 @@ const useCanvas = ({ canvasRef }:{ canvasRef: React.RefObject<HTMLCanvasElement>
   }, [ctx])
 
   return {
+    canvasRef,
     ctx,
     coords,
     clearWholeRect,
