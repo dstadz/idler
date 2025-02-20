@@ -3,14 +3,15 @@ import React, { useEffect } from 'react'
 import { Stack } from '@mui/material'
 import { hexHeight, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
-import { buildingNodesAtom, hexCellsAtom, mapDataAtom } from '@/atoms'
+import { buildingNodesAtom, hexCellsAtom, mapDataAtom, unitNodesAtom } from '@/atoms'
 import HexRow from './HexRow'
 import { supabase } from '@/lib/supabase'
 
 const HexGrid = () => {
   const [mapData] = useAtom(mapDataAtom)
   const [hexCells, setHexCells] = useAtom(hexCellsAtom)
-  const [buildings, setBuildings] = useAtom(buildingNodesAtom)
+  const [buildingNodes, setbuildingNodes] = useAtom(buildingNodesAtom)
+  const [unitNodes, setUnitNodes] = useAtom(unitNodesAtom)
   const updateHexCell = (rowIndex, colIndex, updatedCell) => {
     setHexCells(prev =>
       prev.map((row, rIdx) =>
@@ -29,35 +30,19 @@ const HexGrid = () => {
     // ...buildingNode,
     position: [10,2],
   }
-  // const addBuilding = async () => {
-  //   setBuildings(prev => [
-  //     ...prev,
-  //     {...newBuilding },
-  //   ])
-  //   updateHexCell({
-  //     ...selectedTile,
-  //     newBuilding,
-  //   })
-
-  //   const {
-  //     buildingsData,
-  //     buildingsError
-  //   } = await saveBuildingSupabase(newBuilding)
-  //   console.log({ buildingsData, buildingsError })
-  // }
   useEffect(() => {
     if (!mapData.id) return
 
-    const getBuildings = async () => {
-      const { data: buildingsData, error: buildingsError } = await supabase
+    const getbuildingNodes = async () => {
+      const { data: buildingNodesData, error: buildingNodesError } = await supabase
         .from('building_nodes')
         .select('*')
         .eq('map_id', mapData.id)
-      if (buildingsError) console.log(buildingsError)
-      if (!buildingsData) return
-      setBuildings([
+      if (buildingNodesError) console.log(buildingNodesError)
+      if (!buildingNodesData) return
+      setbuildingNodes([
         homeNode,
-        ...buildingsData.map(building => ({
+        ...buildingNodesData.map(building => ({
           position: [building.position_x, building.position_y],
           id: building.id,
           type: building.type,
@@ -68,14 +53,15 @@ const HexGrid = () => {
         }))
       ])
     }
-    getBuildings()
+    getbuildingNodes()
   }, [mapData])
 
   useEffect(() => {
     const getTiles = async () => {
-      if (!mapData || !mapData.id || !buildings) return
+      if (!mapData || !mapData.id || !buildingNodes) return
 
-      const newCells = new Array(mapData.height).fill(null)
+      const newCells = new Array(mapData.height)
+        .fill(null)
         .map(() => new Array(mapData.width).fill(null))
 
       await supabase
@@ -83,7 +69,7 @@ const HexGrid = () => {
         .select('*')
         .eq('map_id', mapData.id)
         .then(({ data: tilesData }) => {
-          tilesData.forEach((tile: any) => {
+          tilesData.forEach((tile: object) => {
             newCells[tile.position_y][tile.position_x] = {
               id: tile.id,
               type: tile.type,
@@ -97,17 +83,17 @@ const HexGrid = () => {
 
         setHexCells(newCells)
 
-        buildings.forEach((building) => {
+        buildingNodes.forEach((building) => {
           const { position, ...restBuilding } = building
           const [y, x] = position
           const newCell = newCells[y][x] = {
             ...newCells[y][x],
             building:{...restBuilding },}
-          updateHexCell(newCell)
-        })
-    }
-    getTiles()
-  }, [mapData, buildings])
+            updateHexCell(newCell)
+          })
+      }
+      getTiles()
+    }, [mapData, buildingNodes])
 
   if (!hexCells || hexCells.length < 2) return null
 
@@ -119,7 +105,6 @@ const HexGrid = () => {
       sx={{
         border: '3px solid blue',
         display: 'flex',
-        flexDirection: 'column',
         alignItems: 'flex-start',
         paddingTop: `${hexHeight / 4}px`,
         background: tileBackgrounds.SEA
