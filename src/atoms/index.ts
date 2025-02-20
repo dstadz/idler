@@ -12,4 +12,5 @@ export const hexCellsAtom = atom([[]])
 export const mapDataAtom = atom({})
 
 export const unitNodesAtom = atom([])
+export const homeNodeAtom = atom({})
 export const buildingNodesAtom = atom([])

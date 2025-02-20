@@ -3,15 +3,19 @@ import React, { useEffect } from 'react'
 import { Stack } from '@mui/material'
 import { hexHeight, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
-import { buildingNodesAtom, hexCellsAtom, mapDataAtom, unitNodesAtom } from '@/atoms'
+import { hexCellsAtom, mapDataAtom, unitNodesAtom } from '@/atoms'
 import HexRow from './HexRow'
 import { supabase } from '@/lib/supabase'
+import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes'
+import { useHomeNode } from '@/hooks/nodes/useHomeNode'
 
 const HexGrid = () => {
   const [mapData] = useAtom(mapDataAtom)
   const [hexCells, setHexCells] = useAtom(hexCellsAtom)
-  const [buildingNodes, setbuildingNodes] = useAtom(buildingNodesAtom)
-  const [unitNodes, setUnitNodes] = useAtom(unitNodesAtom)
+  const { homeNode, getHomeNode } = useHomeNode()
+  const { buildingNodes, getBuildingNodes } = useBuildingNodes()
+  // const [unitNodes, setUnitNodes] = useAtom(unitNodesAtom)
+
   const updateHexCell = (rowIndex, colIndex, updatedCell) => {
     setHexCells(prev =>
       prev.map((row, rIdx) =>
@@ -22,44 +26,15 @@ const HexGrid = () => {
     )
   }
 
-  const homeNode = {
-    type: 'HOME',
-    status: 'active',
-    level: 1,
-    map_id: mapData.id,
-    // ...buildingNode,
-    position: [10,2],
-  }
   useEffect(() => {
     if (!mapData.id) return
-
-    const getbuildingNodes = async () => {
-      const { data: buildingNodesData, error: buildingNodesError } = await supabase
-        .from('building_nodes')
-        .select('*')
-        .eq('map_id', mapData.id)
-      if (buildingNodesError) console.log(buildingNodesError)
-      if (!buildingNodesData) return
-      setbuildingNodes([
-        homeNode,
-        ...buildingNodesData.map(building => ({
-          position: [building.position_x, building.position_y],
-          id: building.id,
-          type: building.type,
-          level: building.level,
-          status: building.status,
-          home: homeNode,
-          // resources: JSON.parse(building.resources),
-        }))
-      ])
-    }
-    getbuildingNodes()
+    getHomeNode(mapData.id)
+    getBuildingNodes(mapData.id)
   }, [mapData])
 
   useEffect(() => {
-    const getTiles = async () => {
-      if (!mapData || !mapData.id || !buildingNodes) return
-
+    const getHexCells = async () => {
+      if (!mapData || !mapData.id || !buildingNodes.length) return
       const newCells = new Array(mapData.height)
         .fill(null)
         .map(() => new Array(mapData.width).fill(null))
@@ -80,26 +55,33 @@ const HexGrid = () => {
           })
         })
         .catch(err => console.log(err))
+      setHexCells(newCells)
 
-        setHexCells(newCells)
-
-        buildingNodes.forEach((building) => {
-          const { position, ...restBuilding } = building
-          const [y, x] = position
-          const newCell = newCells[y][x] = {
-            ...newCells[y][x],
-            building:{...restBuilding },}
-            updateHexCell(newCell)
-          })
+      const [y, x] = homeNode.position
+      const homeCell = newCells[y][x] = {
+        ...newCells[y][x],
+        building: { ...homeNode },
       }
-      getTiles()
-    }, [mapData, buildingNodes])
+
+      updateHexCell(homeCell)
+      buildingNodes.forEach((building) => {
+        const { position, ...restBuilding } = building
+        const [y, x] = position
+        const newCell = newCells[y][x] = {
+          ...newCells[y][x],
+          building: { ...restBuilding },
+        }
+        updateHexCell(newCell)
+      })
+    }
+    getHexCells()
+  }, [mapData, buildingNodes])
 
   if (!hexCells || hexCells.length < 2) return null
 
   return (
     <Stack
-      className='hex-grid'
+      className="hex-grid"
       component={'section'}
       direction={'column'}
       sx={{
@@ -107,7 +89,7 @@ const HexGrid = () => {
         display: 'flex',
         alignItems: 'flex-start',
         paddingTop: `${hexHeight / 4}px`,
-        background: tileBackgrounds.SEA
+        background: tileBackgrounds.SEA,
       }}
     >
       {hexCells.map((row, rowIndex) => (
@@ -116,4 +98,5 @@ const HexGrid = () => {
     </Stack>
   )
 }
+
 export default HexGrid
