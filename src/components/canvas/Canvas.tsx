@@ -100,10 +100,11 @@ const useCanvas = ({ canvasRef }:{ canvasRef: React.RefObject<HTMLCanvasElement>
       fpsTime = 0
     }
 
-    ctx.fillText(`FPS: ${fpsRef.current}`, 10, 20)
+    ctx.fillText(`FPS: ${fpsRef.current}`, 100, 100)
   }, [ctx])
 
   return {
+    ctx,
     coords,
     clearWholeRect,
     drawFPS,

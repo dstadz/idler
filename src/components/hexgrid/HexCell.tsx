@@ -1,7 +1,7 @@
 'use client'
 import React from 'react'
 import Box from '@mui/material/Box'
-import { Stack } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import { hexHeight, hexWidth, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
 import {
@@ -15,12 +15,12 @@ const hexagonPath = `polygon( 50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 2
 
 const HexCell = ({
   cell,
-  // rowIndex,
-  // colIndex,
+  rowIndex,
+  colIndex,
 }: {
   cell: object
-  // rowIndex: number
-  // colIndex: number
+  rowIndex: number
+  colIndex: number
   (): void
 }) => {
   const {
@@ -60,7 +60,10 @@ const HexCell = ({
           boxShadow: '0 0 0 2px black',
         }}
       >
-        {building && <BuildingNode building={building} />}
+        {building
+          ? <BuildingNode building={building} />
+          : <Typography> {`${rowIndex}, ${colIndex}`}</Typography>
+        }
 
       </Box>
       {selectedTile.id === id && <HexCellModal cell={cell} modalType={'Admin'} />}

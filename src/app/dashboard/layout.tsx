@@ -24,12 +24,12 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     setMap()
   }, [userId])
   useEffect(() => {
-    const { data, error } = supabase
+    // const { data, error } =
+    supabase
     .auth
     .onAuthStateChange((event, session) => {
       setUserId(session?.user?.id)
     })
-    console.log('onAuthStateChange', { data, event })
 
     return () => {
       supabase.auth.onAuthStateChange(null)
@@ -165,7 +165,7 @@ const styles = {
   },
 
   pageWrapper: {
-    border: '3px solid yellow',
+    border: '3px solid purple',
     position: 'absolute',
     top: 0,
     left: 0,

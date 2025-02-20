@@ -21,16 +21,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 // }
 
   useEffect(() => {
-    const { data, error } = supabase
+    // const { data, error } =
+    supabase
     .auth
     .onAuthStateChange((event, session) => {
-      console.log(`🚀 ~ .onAuthStateChange`, event, session)
-      setUserId(() => {
-        console.log('boop');
-        return session?.user?.id
-      })
+      setUserId(session?.user?.id)
     })
-    console.log(`🚀 ~ useEffect ~ data, error:`, data, error)
 
     return () => { supabase.auth.onAuthStateChange(null) }
   }, [setUserId])

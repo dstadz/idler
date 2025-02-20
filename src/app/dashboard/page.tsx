@@ -1,16 +1,16 @@
 import React from 'react'
-import { createClient } from '@/utils/supabase/server'
-import { cookies } from 'next/headers'
+// import { createClient } from '@/utils/supabase/server'
+// import { cookies } from 'next/headers'
 import { Stack } from '@mui/material'
 import Canvas from '@/components/canvas/Canvas'
 import HexGrid from '@/components/hexgrid/HexGrid'
 
 export default async function Page() {
-  const cookieStore = await cookies()
-  const supabase = createClient(cookieStore)
+  // const cookieStore = await cookies()
+  // const supabase = createClient(cookieStore)
 
-  const data = await supabase.from('users').select('*')
-  console.log(`🚀 ~ Page ~ data:`, data)
+  // const data = await supabase.from('users').select('*')
+  // console.log(`🚀 ~ Page ~ data:`, data)
 
   return (
     <Stack className="map-wrapper" sx={styles.wrapper}>

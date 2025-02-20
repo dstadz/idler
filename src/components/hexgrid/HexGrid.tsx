@@ -7,7 +7,6 @@ import { buildingNodesAtom, hexCellsAtom, mapDataAtom } from '@/atoms'
 import HexRow from './HexRow'
 import { supabase } from '@/lib/supabase'
 
-
 const HexGrid = () => {
   const [mapData] = useAtom(mapDataAtom)
   const [hexCells, setHexCells] = useAtom(hexCellsAtom)
@@ -22,17 +21,14 @@ const HexGrid = () => {
     )
   }
 
-  // const newBuilding = {
-  //   type: 'VILLAGE',
-  //   status: 'active',
-  //   level: 1,
-  //   map_id: mapData.id,
-  //   // ...buildingNode,
-  //   position: [
-  //     selectedTile?.position?.[0],
-  //     selectedTile?.position?.[1],
-  //   ],
-  // }
+  const homeNode = {
+    type: 'HOME',
+    status: 'active',
+    level: 1,
+    map_id: mapData.id,
+    // ...buildingNode,
+    position: [10,2],
+  }
   // const addBuilding = async () => {
   //   setBuildings(prev => [
   //     ...prev,
@@ -50,7 +46,7 @@ const HexGrid = () => {
   //   console.log({ buildingsData, buildingsError })
   // }
   useEffect(() => {
-    if (!mapData) return
+    if (!mapData.id) return
 
     const getBuildings = async () => {
       const { data: buildingsData, error: buildingsError } = await supabase
@@ -59,15 +55,18 @@ const HexGrid = () => {
         .eq('map_id', mapData.id)
       if (buildingsError) console.log(buildingsError)
       if (!buildingsData) return
-      setBuildings(buildingsData?.map(building => ({
-        // ...building,
-        position: [building.position_x, building.position_y],
-        id: building.id,
-        type: building.type,
-        level: building.level,
-        status: building.status,
-        // resources: JSON.parse(building.resources),
-      })))
+      setBuildings([
+        homeNode,
+        ...buildingsData.map(building => ({
+          position: [building.position_x, building.position_y],
+          id: building.id,
+          type: building.type,
+          level: building.level,
+          status: building.status,
+          home: homeNode,
+          // resources: JSON.parse(building.resources),
+        }))
+      ])
     }
     getBuildings()
   }, [mapData])
