@@ -8,25 +8,45 @@ export default function SignIn() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  // const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError(null)
-    // setLoading(true)
 
-    const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
+    const storedEmail = localStorage.getItem('email')
+    const storedPassword = localStorage.getItem('password')
 
-    if (supabaseError) {
-      setError(supabaseError.message)
-    } else if (data) {
-      // User is signed in, you can redirect them to the dashboard
-      window.location.href = '/dashboard'
+    if (storedEmail && storedPassword) {
+      const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
+        email: storedEmail,
+        password: storedPassword,
+      })
+
+      if (supabaseError) {
+        setError(supabaseError.message)
+      } else if (data) {
+        window.location.href = '/dashboard'
+      } else {
+        console.error('Error: Unknown error occurred')
+      }
     } else {
-      console.error('Error: Unknown error occurred')
+      const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (supabaseError) {
+        setError(supabaseError.message)
+      } else if (data) {
+        // Store email and password locally
+        localStorage.setItem('email', email)
+        localStorage.setItem('password', password)
+
+        // User is signed in, you can redirect them to the dashboard
+        window.location.href = '/dashboard'
+      } else {
+        console.error('Error: Unknown error occurred')
+      }
     }
   }
 
