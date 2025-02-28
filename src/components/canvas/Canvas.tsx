@@ -1,47 +1,35 @@
 'use client'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
-export class Unit {
-  position: [number, number]
-  size: number
-  emoji: string
-
-  constructor({
-    position = [0, 0],
-    size = 10,
-    emoji = '❌'
-  }: UnitData) {
-    this.position = position
-    this.size = size
-    this.emoji = emoji
-  }
-
-  drawUnit(ctx: CanvasRenderingContext2D) {
-    ctx.font = `${this.size}px serif`
-    ctx.fillText(this.emoji, ...this.position)
-  }
-}
-
-const units = [
-  {
-    position: [200, 100],
-    size: 15,
-    emoji: "🐦‍"
-  },
-  {
-    position: [100, 200],
-    size: 20,
-    emoji: "🦁"
-  },
-].map(unit => new Unit(unit))
-const drawUnits = (ctx) => {
-  if (!ctx) return
-
-  units.forEach(unit => unit.drawUnit(ctx))
-}
-
 const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {
   const { ctx, canvasRef, clearWholeRect, drawFPS } = useCanvas()
+
+  const addToMainResources = (resource: keyof ResourceRecord, amount: number) =>
+    setMainResources(prev => ({
+      ...prev,
+      [resource]: (prev[resource] || 0) + amount,
+    }))
+  const units = [
+    {
+      id: 'unit1',
+      ctx,
+      size: 60,
+      emoji: "🦁",
+      position: [100, 100],
+      homeNode: { position: [500, 500] },
+      parentNode: { position: [300, 500] },
+      levels: { speed: 1, cargo: 1, dexterity: 1 },
+      addToMainResources,
+    },
+  ].map(unit => new Unit(unit))
+
+  const drawUnits = (ctx) => {
+    if (!ctx) return
+
+    units.forEach(unit => unit.drawUnit(ctx))
+    console.log(`🚀 ~ drawUnits ~ units:`, units)
+  }
+
 
   const rafIdRef = useRef<number | null>(null)
   const gameLoop = useCallback(
@@ -151,4 +139,37 @@ const useCanvas = () => {
     drawFPS,
     handleClick
   }
+}
+
+export class Unit {
+  id: string
+  position: [number, number]
+  // resources: ResourceRecord
+  emoji: string
+  size: number
+  centerDrawPoint: () => [number, number]
+
+  constructor({
+    id,
+    position,
+    emoji = '❌',
+    size = 10,
+    }: NodeTypeData) {
+    this.id = id
+    this.position = position
+    this.emoji = emoji
+    this.size = size
+    this.centerDrawPoint = () => [
+      this.position[0] - size / 2,
+      this.position[1] + size / 2,
+    ]
+  }
+
+  drawUnit(ctx: CanvasRenderingContext2D) {
+    ctx.font = `${this.size}px serif`
+    ctx.fillText(this.emoji, ...this.centerDrawPoint())
+    ctx.font = '16px serif'
+
+  }
+
 }
