@@ -1,27 +1,101 @@
-import { unitNodesAtom } from "@/atoms"
+import { resourcesAtom, unitNodesAtom } from "@/atoms"
 import { useAtom } from "jotai"
 import { NodeType, ResourceRecord, TransportNodeType } from '@/types/node'
 import { CanvasNode } from "@/classes"
-// import { CanvasNode, Planet, ResourceNode } from '../nodes'
+import { useBuildingNodes } from "./useBuildingNodes"
+import { useHomeNode } from "./useHomeNode"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
-export const useUnitsNode = ({ ctx }: { ctx: CanvasRenderingContext2D }) => {
-  const [unitNodes, setUnitNodes] = useAtom(unitNodesAtom)
+export const useUnitsNode = ({
+  ctx,
+  unitNodes,
+  homeNode,
+  buildingNodes,
+}: {
+  ctx: CanvasRenderingContext2D | null
+  unitNodes: any
+  homeNode: any
+  buildingsData: any
+}) => {
 
-  getUnitNodes = async (mapId) => {
-    if (!mapId) return
 
-    setUnitNodes([{
-      type: 'UNIT',
-      status: 'active',
-      level: 1,
-      map_id: mapId,
-      position: [10, 2],
-    }])
-  }
+  const [, setMainResources] = useAtom(resourcesAtom)
+
+  useEffect(() => {
+    if (!buildingNodes.length) return
+    const getUnitNodes = async () => {
+      const unitNodesList = buildingNodes.map((building) => new UnitNode({
+        id: building.id,
+        ctx,
+        // size: unit.size,
+        // emoji: unit.emoji,
+        homeNode: { position: homeNode.position },
+        parentNode: building,
+        targetNode: { position: building.position },
+        levels: { speed: 1, cargo: 1 },
+        dexterity: 1,
+        addToMainResources: () => {},
+      }))
+
+      setUnitNodes(unitNodesList)
+    }
+    getUnitNodes()
+  }, [buildingNodes])
+
+  const newUnitNodes = useMemo(() => {
+      if (
+        !ctx ||
+        !Object.keys(homeNode).length ||
+        !unitNodes ||
+        buildingNodes.length === 0
+      ) return []
+
+      const addToMainResources = (resource: keyof ResourceRecord, amount: number) =>
+        setMainResources(prev => ({
+          ...prev,
+          [resource]: (prev[resource] || 0) + amount,
+        }))
+
+      return unitNodes.map(node => {
+        const parentNode = buildingNodes.find(({ id }) => id === node.parentId)
+
+        return new UnitNode({
+          ctx,
+          ...node,
+          homeNode,
+          parentNode,
+          position: homeNode.position,
+          addToMainResources,
+        })
+      })
+    }, [ctx, homeNode, unitNodes, buildingNodes, setMainResources])
+
+
+
+  const [units, setUnits] = useState([])
+  // console.log(unitNodes, units)
+  useEffect(() => {
+    setUnits(newUnitNodes)
+  }, [newUnitNodes])
+
+  useEffect(() => {
+    console.log(`🚀 ~units:`, units)
+    // if (units.length > 0) {
+    // }
+  }, [unitNodes])
+
+  const drawUnits = useCallback(() => {
+    if (units.length > 0) {
+      console.log(`🚀 ~units:`, units)
+      units.forEach((unit) => {
+        unit.drawUnit()
+      })
+    }
+  }, [units])
 
   return {
     unitNodes,
-    getUnitNodes,
+    drawUnits,
   }
 }
 
@@ -30,13 +104,13 @@ export class UnitNode extends CanvasNode {
   homeNode: NodeType
   parentNode?: ResourceNode
   targetNode: NodeType
-  // position: [number, number]
+  position: [number, number]
   isLoading: boolean
   levels: {
     speed: number
     cargo: number
+    dexterity: number
   }
-  dexterity: number
   // resources: ResourceRecord
   addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
 
@@ -47,10 +121,7 @@ export class UnitNode extends CanvasNode {
     emoji = '❌',
     homeNode,
     parentNode,
-    targetNode = parentNode,
-    isLoading = false,
     levels,
-    dexterity = 1,
     addToMainResources,
   }: TransportNodeType) {
     super({
@@ -63,17 +134,18 @@ export class UnitNode extends CanvasNode {
     })
     this.homeNode = homeNode
     this.parentNode = parentNode
-    this.targetNode = targetNode
-    this.isLoading = isLoading
+    this.targetNode = parentNode
+    this.isLoading = false
     this.levels = {
       speed: levels.speed,
-      cargo: levels.cargo
+      cargo: levels.cargo,
+      dexterity: levels.dexterity
     }
-    this.dexterity = dexterity
     this.addToMainResources = addToMainResources
   }
 
   drawUnit() {
+    console.log(`🚀 ~ drawUnit ~ drawUnit:`, drawUnit)
     this.updatePosition()
     super.drawUnit()
   }

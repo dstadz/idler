@@ -1,11 +1,21 @@
- 'use client'
+'use client'
 
 import { useUnitsNode } from '@/hooks/nodes/useUnitsNode'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 
 const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {
   const { ctx, canvasRef, clearWholeRect, drawFPS } = useCanvas()
-  const { unitNodes, getUnitNodes } = useUnitsNode(ctx)
+
+  const unitNodes = []
+  const homeNode = []
+  const buildingNodes = []
+  unitNodes
+  const { drawUnits } = useUnitsNode({
+    ctx,
+    homeNode,
+    buildingNodes,
+    unitNodes
+  })
 
   const rafIdRef = useRef<number | null>(null)
   const gameLoop = useCallback(
@@ -14,6 +24,7 @@ const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeig
 
       clearWholeRect(canvasRef.current)
       drawFPS(timestamp)
+      drawUnits()
 
       rafIdRef.current = requestAnimationFrame(gameLoop)
     },
@@ -26,13 +37,13 @@ const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeig
     if (!canStart || rafIdRef.current) return
     rafIdRef.current = requestAnimationFrame(gameLoop)
 
-    return () => {
-      if (rafIdRef.current) {
-        // cancelAnimationFrame(rafIdRef.current)
-        console.log('Game loop stopped')
-      }
-      // rafIdRef.current = null
-    }
+    // return () => {
+    //   if (rafIdRef.current) {
+    //     // cancelAnimationFrame(rafIdRef.current)
+    //     console.log('Game loop stopped')
+    //   }
+    //   // rafIdRef.current = null
+    // }
   }, [ctx, gameLoop])
 
 

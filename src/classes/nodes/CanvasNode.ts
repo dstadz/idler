@@ -55,6 +55,7 @@ export class CanvasNode {
     })
   }
   drawUnit() {
+    console.log(this)
     this.ctx.font = `${this.size}px serif`
     this.ctx.fillText(this.emoji, ...this.centerDrawPoint())
     this.ctx.font = '16px serif'
