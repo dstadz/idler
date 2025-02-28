@@ -1,30 +1,56 @@
 'use client'
-
-import { useUnitsNode } from '@/hooks/nodes/useUnitsNode'
 import React, { useCallback, useEffect, useRef, useState } from 'react'
+
+export class Unit {
+  position: [number, number]
+  size: number
+  emoji: string
+
+  constructor({
+    position = [0, 0],
+    size = 10,
+    emoji = '❌'
+  }: UnitData) {
+    this.position = position
+    this.size = size
+    this.emoji = emoji
+  }
+
+  drawUnit(ctx: CanvasRenderingContext2D) {
+    ctx.font = `${this.size}px serif`
+    ctx.fillText(this.emoji, ...this.position)
+  }
+}
+
+const units = [
+  {
+    position: [200, 100],
+    size: 15,
+    emoji: "🐦‍"
+  },
+  {
+    position: [100, 200],
+    size: 20,
+    emoji: "🦁"
+  },
+].map(unit => new Unit(unit))
+const drawUnits = (ctx) => {
+  if (!ctx) return
+
+  units.forEach(unit => unit.drawUnit(ctx))
+}
 
 const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {
   const { ctx, canvasRef, clearWholeRect, drawFPS } = useCanvas()
-
-  const unitNodes = []
-  const homeNode = []
-  const buildingNodes = []
-  unitNodes
-  const { drawUnits } = useUnitsNode({
-    ctx,
-    homeNode,
-    buildingNodes,
-    unitNodes
-  })
 
   const rafIdRef = useRef<number | null>(null)
   const gameLoop = useCallback(
     (timestamp: number) => {
       if (!ctx || !canvasRef.current) return
-
       clearWholeRect(canvasRef.current)
       drawFPS(timestamp)
-      drawUnits()
+
+      drawUnits(ctx)
 
       rafIdRef.current = requestAnimationFrame(gameLoop)
     },
@@ -32,18 +58,19 @@ const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeig
   )
 
   useEffect(() => {
-    const canStart = ctx
 
-    if (!canStart || rafIdRef.current) return
+
+    if (!ctx || rafIdRef.current) return
+
     rafIdRef.current = requestAnimationFrame(gameLoop)
 
-    // return () => {
-    //   if (rafIdRef.current) {
-    //     // cancelAnimationFrame(rafIdRef.current)
-    //     console.log('Game loop stopped')
-    //   }
-    //   // rafIdRef.current = null
-    // }
+    return () => {
+      if (rafIdRef.current) {
+        // cancelAnimationFrame(rafIdRef.current)
+        console.log('Game loop stopped')
+      }
+      // rafIdRef.current = null
+    }
   }, [ctx, gameLoop])
 
 
