@@ -1,15 +1,21 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { resourcesAtom } from '@/atoms'
 import { useAtom  } from 'jotai'
 import { Unit } from '@/classes';
 import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes';
 
-
-
 export const useUnits = ({ ctx }: { ctx: CanvasRenderingContext2D }) => {
   const { buildingNodes } = useBuildingNodes()
+  const commonProps = {
+    ctx,
+    buildingNodes,
+  }
+
   const [units, setUnits] = useState([]);
-  const unitData = useMemo(() => [
+  const unitData = useMemo(() => {
+    if (!buildingNodes) return []
+
+    return [
     {
       id: 'unit1',
       size: 32,
@@ -24,22 +30,19 @@ export const useUnits = ({ ctx }: { ctx: CanvasRenderingContext2D }) => {
       position: [500, 100],
       levels: { speed: 1, cargo: 3, dexterity: 1 },
     },
-  ], [])
-
-  const commonProps = {
-    ctx,
-    buildingNodes,
-    targetNode: { position: [400, 400] },
-  }
+  ].map(unit => new Unit({ ...unit, ...commonProps }))
+  }, [buildingNodes])
 
   useEffect(() => {
-    setUnits(unitData.map(unit => new Unit({ ...unit, ...commonProps })))
+    console.log(`🚀 ~ useEffect ~ unitData:`, unitData)
+    setUnits(unitData)
   }, [unitData])
 
 
-  const drawUnits = (ctx: CanvasRenderingContext2D) => {
-    units.forEach(unit => unit.drawUnit(ctx))
-  }
+  const drawUnits = useCallback((ctx: CanvasRenderingContext2D) => {
+    unitData.forEach(unit => unit.drawUnit(ctx))
+  },
+  [unitData])
 
   return {
     units,

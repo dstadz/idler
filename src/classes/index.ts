@@ -21,7 +21,6 @@ export class Unit {
     //worldProps,
     ctx,
     buildingNodes,
-    mainResources,
     addToMainResources,
 
     }: NodeTypeData) {
@@ -36,7 +35,6 @@ export class Unit {
 
     this.ctx = ctx
     this.buildingNodes = buildingNodes
-    this.mainResources = mainResources
     this.addToMainResources = addToMainResources
 
   }
@@ -51,7 +49,7 @@ export class Unit {
 
   updatePosition(arrivalAction?: () => void) {
     const targetPosition = this.targetNode?.position
-    console.log(`🚀 ~ updatePosition ~ targetPosition:`, this)
+    console.log(`🚀 ~ updatePosition ~ this:`, this)
 
     if (
       !targetPosition ||
