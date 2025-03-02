@@ -2,7 +2,7 @@ import React from 'react'
 // import { createClient } from '@/utils/supabase/server'
 // import { cookies } from 'next/headers'
 import { Stack } from '@mui/material'
-// import Canvas from '@/components/canvas/Canvas'
+import Canvas from '@/components/canvas/Canvas'
 import HexGrid from '@/components/hexgrid/HexGrid'
 import Gamefield from '@/components/Gamefield'
 
@@ -24,7 +24,7 @@ export default async function Page() {
 
 const styles = {
   wrapper: {
-    // flex: 1,
+    flex: 1,
     // overflow: 'hidden',
     // height: '100dvh',
     // width: '100%',

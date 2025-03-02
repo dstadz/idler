@@ -49,7 +49,7 @@ export class Unit {
 
   updatePosition(arrivalAction?: () => void) {
     const targetPosition = this.targetNode?.position
-    console.log(`🚀 ~ updatePosition ~ this:`, this)
+    // console.log(`🚀 ~ updatePosition ~ this:`, this)
 
     if (
       !targetPosition ||

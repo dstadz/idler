@@ -102,15 +102,15 @@ const styles = {
   flexDirection: 'row',
   justifyContent: 'space-between',
   alignItems: 'center',
-  borderColor: 'green',
-  borderWidth: 5,
+  // borderColor: 'green',
+  // borderWidth: 5,
   zIndex: 2,
   },
   resources: {
   flex: 1,
   flexDirection: 'row',
-  borderColor: 'blue',
-  borderWidth: 5,
+  // borderColor: 'blue',
+  // borderWidth: 5,
   },
   canvas: {
   borderColor: 'red',
@@ -123,8 +123,8 @@ const styles = {
   justifyContent: 'end',
   },
   dataButton: {
-  borderColor: 'blue',
-  borderWidth: 1,
+  // borderColor: 'blue',
+  // borderWidth: 1,
   },
   middleRow: {
   flex: 10,
@@ -165,7 +165,6 @@ const styles = {
   },
 
   pageWrapper: {
-    border: '3px solid purple',
     position: 'absolute',
     top: 0,
     left: 0,

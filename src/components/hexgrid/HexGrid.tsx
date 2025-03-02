@@ -84,7 +84,6 @@ const HexGrid = () => {
       component={'section'}
       direction={'column'}
       sx={{
-        border: '3px solid blue',
         display: 'flex',
         alignItems: 'flex-start',
         paddingTop: `${hexHeight / 4}px`,
