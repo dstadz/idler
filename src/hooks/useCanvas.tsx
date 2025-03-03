@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Unit } from './Unit'
+import { Unit } from '../game/Unit'
 
 export const useCanvas = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null)

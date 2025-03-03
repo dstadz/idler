@@ -1,6 +1,6 @@
 'use client'
 import { useCanvas } from './useCanvas'
-import { useUnits } from './useUnits'
+import { useUnits } from '@/hooks/nodes/useUnits'
 import React, { useCallback, useEffect } from 'react'
 
 const Canvas = ({ canvasWidth, canvasHeight }: { canvasWidth: number, canvasHeight: number }) => {

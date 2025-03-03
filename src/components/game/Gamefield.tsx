@@ -5,7 +5,7 @@ import { Box } from '@mui/material';
 
 import PropTypes from 'prop-types';
 import { hexHeight } from '@/utils/constants';
-import { Unit, useUnitDivs } from '../canvas/Unit';
+import { Unit, useUnitDivs } from './Unit';
 
 
 const Gamefield = () => {
