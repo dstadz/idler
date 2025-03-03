@@ -11,6 +11,9 @@ import { Unit, useUnitDivs } from '../canvas/Unit';
 const Gamefield = () => {
   const { units, updatePosition } = useUnitDivs();
 
+    useEffect(() => {
+      updatePosition(units?.[0]?.id, () => console.log('hi'))
+    }, [units])
   // useEffect(() => {
   //   const intervalId = setInterval(() => units.forEach(updatePosition), 16); // 16ms = 60fps
   //   return () => clearInterval(intervalId);
@@ -32,7 +35,8 @@ const Gamefield = () => {
         pointerEvents: 'none',
       }}
     >
-      {units.map((unit) => <Unit key={unit.id} unit={unit} />)} </div>
+      {units.map((unit) => <Unit key={unit.id} unit={unit} />)}
+    </div>
   );
 };
 

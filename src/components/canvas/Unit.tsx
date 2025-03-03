@@ -1,5 +1,6 @@
+'use client'
+ import React, { useEffect, useState } from "react"
 import { useUnitDivs } from './useUnitDivs';
-import React, { useEffect, useState } from "react"
 import PropTypes from 'prop-types';
 import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes';
 
@@ -32,32 +33,32 @@ export const useUnitDivs = () => {
       position: node.position,
       size: node.size,
       emoji: node.emoji,
-      speed: node.speed,
+      speed: node.levels.speed,
       buildingNodes,
-      target: [1000, 1000]
+      target: [400, 400]
     }));
     setUnits(initialUnits);
   }, [buildingNodes]);
 
-  const updatePosition = (unit) => {
-    if (!unit) return
-    const updatedUnits = units.map((u) => {
-      if (u.id === unit.id) {
-        return { ...u, position: unit.position };
-      }
-      return u;
-    });
+  const updatePosition = (unitId, handleArrival) => {
+    const unit = {...units.find((unit) => unit.id === unitId)}
+    if (!unit || !unit.target) return
+
     const dx = unit.target[0] - unit.position[0];
     const dy = unit.target[1] - unit.position[1];
     const distance = Math.sqrt(dx * dx + dy * dy);
     const speed = unit.speed;
-    const step = Math.min(speed, distance);
-    const newX = unit.position[0] + (dx / distance) * step;
-    const newY = unit.position[1] + (dy / distance) * step;
+    if (speed > distance) {
+      handleArrival()
+      return
+    }
 
-    console.log(`🚀 ~ updatePosition ~ unit:`, unit)
-    setUnits(updatedUnits);
-    return { ...unit, position: [newX, newY] };
+    const newX = unit.position[0] + (dx / distance) * speed;
+    const newY = unit.position[1] + (dy / distance) * speed;
+    const newUnit = { ...unit, position: [newX, newY] };
+    console.log(unit.emoji, newUnit.position, unit)
+    const updatedUnits = units.map((u) => u.id === unitId ? newUnit : u);
+    setUnits(updatedUnits)
   }
 
   return { units , updatePosition };
@@ -66,9 +67,13 @@ export const useUnitDivs = () => {
 
 
 export const Unit = ({ unit }) => {
-  console.log(`🚀 ~ Unit ~ unit:`, unit)
   const { position, size, emoji } = unit
   const { updatePosition } = useUnitDivs();
+
+  useEffect(() => {
+    console.log(unit.emoji, unit.position, unit)
+    updatePosition(unit.id, console.log(unit))
+  }, [unit])
 
   // const getCoordFromTile = (tile) => {
   //   const [row, col] = tile

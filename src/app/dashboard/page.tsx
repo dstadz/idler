@@ -5,6 +5,7 @@ import { Stack } from '@mui/material'
 import Canvas from '@/components/canvas/Canvas'
 import HexGrid from '@/components/hexgrid/HexGrid'
 import Gamefield from '@/components/game/Gamefield'
+import MoveButton from '@/components/MoveButton'
 
 export default async function Page() {
   // const cookieStore = await cookies()
@@ -18,6 +19,7 @@ export default async function Page() {
       {/* <Canvas canvasHeight={475} canvasWidth={750} /> */}
       <Gamefield />
       <HexGrid />
+      <MoveButton />
     </Stack>
   )
 }
