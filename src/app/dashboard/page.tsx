@@ -4,7 +4,7 @@ import React from 'react'
 import { Stack } from '@mui/material'
 import Canvas from '@/components/canvas/Canvas'
 import HexGrid from '@/components/hexgrid/HexGrid'
-import Gamefield from '@/components/Gamefield'
+import Gamefield from '@/components/game/Gamefield'
 
 export default async function Page() {
   // const cookieStore = await cookies()
