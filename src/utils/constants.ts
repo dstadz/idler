@@ -309,35 +309,29 @@ const NODES ={
 export const hexWidth = 60
 export const hexHeight = hexWidth * (Math.sqrt(3)/2)
 
-export const radiateFromXYAtoB = (
-  a,
-  b,
-  x = Math.floor(Math.random() * 100),
-  y = Math.floor(Math.random() * 100),
-) => `
+export const radiateFromXYAtoB = (a, b, x = 50, y = 50 ) => `
   radial-gradient(circle at ${x}% ${y}%, ${a}, ${b})`
 
-
 export const tileBackgrounds = {
-  GRASS: radiateFromXYAtoB(
-  'hsl(120, 70%, 60%)',
-  'hsl(120, 55%, 45%)'),
+  GRASS : radiateFromXYAtoB(
+    'hsl( 96, 50%, 50%)',
+    'hsl( 96, 35%, 40%)'),
   JUNGLE: radiateFromXYAtoB(
-  'hsl(140, 80%, 50%)',
-  'hsl(140, 65%, 35%)'),
+    'hsl(140, 50%, 45%)',
+    'hsl(140, 60%, 25%)'),
   FOREST: radiateFromXYAtoB(
-  'hsl(110, 60%, 35%)',
-  'hsl(110, 45%, 20%)'),
-  DIRT: radiateFromXYAtoB(
-  'hsl( 30, 70%, 50%)',
-  'hsl( 30, 50%, 35%)'),
-  SAND: radiateFromXYAtoB(
-  'hsl( 45, 90%, 85%)',
-  'hsl( 40, 70%, 70%)'),
-  STONE: radiateFromXYAtoB(
-  'hsl(220, 15%, 50%)',
-  'hsl(220, 25%, 35%)'),
-  SEA: radiateFromXYAtoB(
-  'hsla(200, 75%, 40%, 0.7)',
-  'hsla(200, 85%, 30%, 0.9)'),
+    'hsl(135, 30%, 30%)',
+    'hsl(135, 45%, 15%)'),
+  DIRT  : radiateFromXYAtoB(
+    'hsl( 30, 60%, 40%)',
+    'hsl( 30, 35%, 25%)'),
+  SAND  : radiateFromXYAtoB(
+    'hsl( 45, 70%, 75%)',
+    'hsl( 35, 45%, 65%)'),
+  STONE : radiateFromXYAtoB(
+    'hsl(185, 10%, 40%)',
+    'hsl(235, 35%, 25%)'),
+  SEA   : radiateFromXYAtoB(
+    'hsla(200, 50%, 20%, 0.5)',
+    'hsla(200, 55%, 30%, 0.9)'),
 }

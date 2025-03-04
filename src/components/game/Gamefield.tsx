@@ -1,23 +1,14 @@
 'use client'
-import React, { useState, useEffect, useMemo } from 'react';
-import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes';
-import { Box } from '@mui/material';
-
-import PropTypes from 'prop-types';
-import { hexHeight } from '@/utils/constants';
+import React, { useEffect } from 'react';
 import { Unit, useUnitDivs } from './Unit';
 
-
 const Gamefield = () => {
-  const { units, updatePosition } = useUnitDivs();
+  const { units, updateUnitsPositions } = useUnitDivs();
 
-    useEffect(() => {
-      updatePosition(units?.[0]?.id, () => console.log('hi'))
-    }, [units])
-  // useEffect(() => {
-  //   const intervalId = setInterval(() => units.forEach(updatePosition), 16); // 16ms = 60fps
-  //   return () => clearInterval(intervalId);
-  // }, [updatePosition]);
+
+  useEffect(() => {
+    requestAnimationFrame(updateUnitsPositions);
+  }, [updateUnitsPositions]);
 
   return (
     <div
@@ -29,13 +20,13 @@ const Gamefield = () => {
         left: 0,
         width: '100dvw',
         height: '100vh',
-        // right: 0,
-        // bottom: 0,
         zIndex: 1,
         pointerEvents: 'none',
       }}
     >
-      {units.map((unit) => <Unit key={unit.id} unit={unit} />)}
+      {units.map((unit) => (
+        <Unit key={unit.id} unit={unit} />
+      ))}
     </div>
   );
 };

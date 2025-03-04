@@ -20,6 +20,20 @@ const unitData = [
     position: [500, 100],
     levels: { speed: 1, cargo: 3, dexterity: 1 },
   },
+  {
+    id: 'unit3',
+    size: 32,
+    emoji: "🐉",
+    position: [200, 400],
+    levels: { speed: 1, cargo: 1, dexterity: 1 },
+  },
+  {
+    id: 'unit4',
+    size: 32,
+    emoji: "🪼",
+    position: [100, 500],
+    levels: { speed: 1, cargo: 3, dexterity: 1 },
+  },
 ]
 
 export const useUnitDivs = () => {
@@ -40,48 +54,42 @@ export const useUnitDivs = () => {
     setUnits(initialUnits);
   }, [buildingNodes]);
 
-  const updatePosition = (unitId, handleArrival) => {
-    const unit = {...units.find((unit) => unit.id === unitId)}
-    if (!unit || !unit.target) return
+  const handleArrival = () => {
+    console.log('default HA()')
+  }
 
-    const dx = unit.target[0] - unit.position[0];
-    const dy = unit.target[1] - unit.position[1];
-    const distance = Math.sqrt(dx * dx + dy * dy);
-    const speed = unit.speed;
-    if (speed > distance) {
-      handleArrival()
-      return
+  const updateUnitsPositions = () => {
+    const updatedUnits = [];
+    for (const unit of units) {
+
+      const dx = unit.target[0] - unit.position[0];
+      const dy = unit.target[1] - unit.position[1];
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      const speed = unit.speed;
+      if (speed > distance) {
+        handleArrival()
+        continue
+      }
+
+      const newX = unit.position[0] + (dx / distance) * speed;
+      const newY = unit.position[1] + (dy / distance) * speed;
+      const newUnit = { ...unit, position: [newX, newY] };
+
+      updatedUnits.push(newUnit);
     }
-
-    const newX = unit.position[0] + (dx / distance) * speed;
-    const newY = unit.position[1] + (dy / distance) * speed;
-    const newUnit = { ...unit, position: [newX, newY] };
-    console.log(unit.emoji, newUnit.position, unit)
-    const updatedUnits = units.map((u) => u.id === unitId ? newUnit : u);
     setUnits(updatedUnits)
   }
 
-  return { units , updatePosition };
+  return {
+    units,
+    updateUnitsPositions,
+  };
 }
 
 
 
 export const Unit = ({ unit }) => {
   const { position, size, emoji } = unit
-  const { updatePosition } = useUnitDivs();
-
-  useEffect(() => {
-    console.log(unit.emoji, unit.position, unit)
-    updatePosition(unit.id, console.log(unit))
-  }, [unit])
-
-  // const getCoordFromTile = (tile) => {
-  //   const [row, col] = tile
-  //   const top = hexHeight / 2 + (row * hexHeight)
-  //   const left = col * hexHeight * .75
-  //   console.log(`🚀 ~ getCoordFromTile ~ { top, left }:`, { top, left })
-  //   return { top, left }
-  // }
   return (
     <div
       style={{
@@ -96,7 +104,6 @@ export const Unit = ({ unit }) => {
       }}
     >
       {emoji}
-      {/* <button onClick={() => updatePosition(unit)}>Move</button> */}
     </div>
   );
 }

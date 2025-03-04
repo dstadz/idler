@@ -21,17 +21,14 @@ const HexCell = ({
   cell: object
   rowIndex: number
   colIndex: number
-  (): void
 }) => {
   const {
     id,
     type,
-    // level,
     building,
     // status,
   } = cell
   const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
-  // const [isActive, setIsActive] = useState(false)
 
   const handleClick = () => {
     setSelectedTile(prev => prev.id === id ? {} : cell)
@@ -49,7 +46,6 @@ const HexCell = ({
           position: 'relative',
           background:
             selectedTile.id === id ? 'red' :
-            // selectedTilesAtom.includes(({ id }) => id === cell.id) ? 'green' :
             tileBackgrounds[type],
           clipPath: hexagonPath,
           cursor: 'pointer',
