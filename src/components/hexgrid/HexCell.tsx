@@ -17,6 +17,7 @@ const HexCell = ({
   cell,
   rowIndex,
   colIndex,
+  clickCell,
 }: {
   cell: object
   rowIndex: number
@@ -62,7 +63,7 @@ const HexCell = ({
         }
 
       </Box>
-      {selectedTile.id === id && <HexCellModal cell={cell} modalType={'Admin'} />}
+      {isActive && <HexCellModal cell={cell} modalType={'Admin'} />}
     </Stack>
   )
 }

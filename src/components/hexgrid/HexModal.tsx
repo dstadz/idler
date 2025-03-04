@@ -1,38 +1,27 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Stack } from "@mui/material"
 import Button from '../UI/Button'
-import { BUILDING_OBJECTS, tileBackgrounds } from '@/utils/constants'
 
 const HexCellModal = ({ cell, modalType }: { cell: HexCell, modalType: string }) => {
   const {
     type,
     level,
-    // status,-
+    status,
   } = cell
-
-  const [newType, setNewType] = useState('')
 
   return (
     <Stack sx={{
       border: '3px solid red',
-      borderRadius: 4,
-      background: 'hsla(247, 73%, 90%, 1)',
-      justifyContent: 'space-between',
+      background: 'white',
       position: 'absolute',
       bottom: 100,
       minHeight: 160,
       minWidth: 120
     }}>
-      <Stack
-        sx={{
-          p: 1,
-          background: tileBackgrounds.SEA,
-          color: 'white',
-          borderTopLeftRadius: 12,
-          borderTopRightRadius: 12,
+      <Stack>{modalType}</Stack>
+      <Stack>{type} {level} {status}</Stack>
 
-        }}
-      >{modalType}</Stack>
+      <Stack>{modalType}</Stack>
       <Stack
         sx={{
           p: 1,
