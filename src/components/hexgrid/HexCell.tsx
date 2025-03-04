@@ -63,7 +63,7 @@ const HexCell = ({
         }
 
       </Box>
-      {isActive && <HexCellModal cell={cell} modalType={'Admin'} />}
+      {selectedTile.id === id && <HexCellModal cell={cell} modalType={'Admin'} />}
     </Stack>
   )
 }
