@@ -1,10 +1,10 @@
+'use client'
 import React from 'react'
 import Box from '@mui/material/Box'
-import { Stack } from '@mui/material'
+import { Stack, Typography } from '@mui/material'
 import { hexHeight, hexWidth, tileBackgrounds } from '@/utils/constants'
 import { useAtom } from 'jotai'
 import {
-  hexCellsAtom,
   selectedTileAtom,
   // selectedTilesAtom,
 } from '@/atoms'
@@ -22,36 +22,31 @@ const HexCell = ({
   cell: object
   rowIndex: number
   colIndex: number
-  clickCell(): void
 }) => {
   const {
     id,
     type,
-    level,
-    isActive,
     building,
-    status,
+    // status,
   } = cell
-  const [_, setHexCells] = useAtom(hexCellsAtom)
   const [selectedTile, setSelectedTile] = useAtom(selectedTileAtom)
-  // const [selectedsTile, setSelectedsTile] = useAtom(selectedTilesAtom)
 
+  const handleClick = () => {
+    setSelectedTile(prev => prev.id === id ? {} : cell)
+    console.log(`🚀 ~ handleClick ~ cell:`, cell)
+  }
 
   return (
     <Stack sx={{ position: 'relative' }}>
       <Box
         key={cell.id}
-        onClick={() => clickCell({
-          ...cell,
-          position: [rowIndex, colIndex],
-        })}
+        onClick={handleClick}
         sx={{
           width: hexWidth,
           height: hexHeight,
           position: 'relative',
           background:
             selectedTile.id === id ? 'red' :
-            // selectedTilesAtom.includes(({ id }) => id === cell.id) ? 'green' :
             tileBackgrounds[type],
           clipPath: hexagonPath,
           cursor: 'pointer',
@@ -62,7 +57,10 @@ const HexCell = ({
           boxShadow: '0 0 0 2px black',
         }}
       >
-        {building && <BuildingNode building={building} />}
+        {building
+          ? <BuildingNode building={building} />
+          : <Typography> {`${rowIndex}, ${colIndex}`}</Typography>
+        }
 
       </Box>
       {isActive && <HexCellModal cell={cell} modalType={'Admin'} />}

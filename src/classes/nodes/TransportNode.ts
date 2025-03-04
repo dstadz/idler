@@ -2,7 +2,7 @@ import { NodeType, ResourceRecord, TransportNodeType } from '@/types/node'
 import { CanvasNode, Planet, ResourceNode } from '../nodes'
 
 export class TransportNode extends CanvasNode {
-  homeNode: NodeType
+  homeNode
   parentNode?: ResourceNode
   targetNode: NodeType
   // position: [number, number]
@@ -17,19 +17,14 @@ export class TransportNode extends CanvasNode {
 
   constructor({
     id,
-    ctx,
     size = 10,
     emoji = '❌',
     homeNode,
     parentNode,
-    targetNode = parentNode,
-    isLoading = false,
     levels,
-    dexterity = 1,
     addToMainResources,
   }: TransportNodeType) {
     super({
-      ctx,
       position: homeNode.position,
       emoji,
       size,
@@ -38,19 +33,20 @@ export class TransportNode extends CanvasNode {
     })
     this.homeNode = homeNode
     this.parentNode = parentNode
-    this.targetNode = targetNode
-    this.isLoading = isLoading
+    this.targetNode = parentNode
+    this.isLoading = false
     this.levels = {
       speed: levels.speed,
-      cargo: levels.cargo
+      cargo: levels.cargo,
+      dexterity: levels.dexterity,
     }
-    this.dexterity = dexterity
     this.addToMainResources = addToMainResources
   }
 
-  drawUnit() {
+  drawUnit(ctx: CanvasRenderingContext2D) {
+    // console.log(this.position, this.emoji, this.targetNode)
     this.updatePosition()
-    super.drawUnit()
+    super.drawUnit(ctx)
   }
     /** -- WIP to flip the emoji when moving right
     this.ctx.save()
@@ -75,7 +71,7 @@ export class TransportNode extends CanvasNode {
   }
 
   startLoading() {
-    const loadingTime = 1000 / this.dexterity
+    const loadingTime = 1000 / this.levels.dexterity
     const availableResourceList = Object.keys(this.targetNode.resources)
       .filter(key => this.targetNode.resources[key as keyof ResourceRecord] > 1)
 
@@ -101,7 +97,7 @@ export class TransportNode extends CanvasNode {
   }
 
   startUnloading() {
-    const unloadingTime = 1000 / this.dexterity
+    const unloadingTime = 1000 / this.levels.dexterity
     setTimeout(() => {
       this.deliverResources()
       this.isLoading = false

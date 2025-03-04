@@ -1,18 +1,16 @@
 'use client'
 import React, { useEffect } from 'react'
-import { Provider as JotaiProvider, useAtom } from 'jotai'
+import { Provider as JotaiProvider, useSetAtom } from 'jotai'
 import './globals.css'
 import { supabase } from '@/lib/supabase'
 import { userIdAtom } from '@/atoms'
-import { useParams } from 'next/navigation'
 
 const ProviderStack = [
   JotaiProvider,
 ]
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  const [userId, setUserId] = useAtom(userIdAtom)
-  const params = useParams<{ tag: string; item: string }>()
+  const setUserId = useSetAtom(userIdAtom)
   // console.log(`🚀 ~ file: layout.tsx:15 ~ RootLayout ~ params:`, params)
 
 //   if (!userId) {
@@ -23,7 +21,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 // }
 
   useEffect(() => {
-    const { data, error } = supabase
+    // const { data, error } =
+    supabase
     .auth
     .onAuthStateChange((event, session) => {
       setUserId(session?.user?.id)
@@ -35,7 +34,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   const Providers = ProviderStack.reduce((AccProvider, CurrentProvider) => {
     const WrappedProviders = ({ children: providerChildren }: { children: React.ReactNode }) => (
       <AccProvider>
-        <CurrentProvider>{providerChildren}</CurrentProvider>
+        <CurrentProvider>
+          {providerChildren}
+        </CurrentProvider>
       </AccProvider>
     )
     return WrappedProviders
@@ -45,7 +46,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <Providers>
       <html lang='en' suppressHydrationWarning={true}>
         <body suppressHydrationWarning={true}>
-          <main className='flex min-h-screen min-w-screen flex-col items-center justify-between'>
+        <main className='flex min-h-screen min-w-screen flex-col items-center justify-between'>
             {children}
           </main>
         </body>

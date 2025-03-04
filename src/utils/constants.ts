@@ -266,6 +266,11 @@ export const BUILDING_OBJECTS = {
     NAME: 'Village',
     level: [{ icon: '🏕️'}, { icon: '🏡' }, { icon: '🏰' }],
   },
+  HOME: {
+    NAME: 'Home',
+    level: [ { icon: '🏡' }, { icon: '🏰' }],
+
+  }
   // BARRACKS: {
   //   NAME: 'Barracks',
   //   EMOJI: '🏢',

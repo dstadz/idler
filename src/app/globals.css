@@ -16,14 +16,25 @@
   }
 }
 
+html {
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
+}
+
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
+    to bottom,
+    transparent,
+    rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb));
+    overflow: hidden;
+}
+
+main {
+  overflow: hidden;
 }
 
 @layer utilities {
