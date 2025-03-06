@@ -14,7 +14,7 @@ const Gamefield = () => {
     <div
       className='gamefield'
       style={{
-        border: '10px solid orange',
+        border: '3px solid orange',
         position: 'absolute',
         top: 0,
         left: 0,
@@ -24,9 +24,7 @@ const Gamefield = () => {
         pointerEvents: 'none',
       }}
     >
-      {units.map((unit) => (
-        <Unit key={unit.id} unit={unit} />
-      ))}
+      {units.map((unit) => <Unit key={unit.id} unit={unit} />)}
     </div>
   );
 };
