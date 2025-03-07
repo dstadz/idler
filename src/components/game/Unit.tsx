@@ -1,11 +1,11 @@
 'use client'
 import React, { useCallback, useEffect, useState } from "react"
-import { useUnitDivs } from './useUnitDivs';
-import PropTypes from 'prop-types';
-import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes';
-import { useHomeNode } from "@/hooks/nodes/useHomeNode";
-import { hexHeight, hexWidth } from "@/utils/constants";
-import { Box, Stack, Typography } from "@mui/material";
+import { useUnitDivs } from './useUnitDivs'
+import PropTypes from 'prop-types'
+import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes'
+import { useHomeNode } from "@/hooks/nodes/useHomeNode"
+import { hexHeight, hexWidth } from "@/utils/constants"
+import { Box, Stack, Typography } from "@mui/material"
 
 export const convertHexPositionToPixel = (position) => {
   const [x, y] = position
@@ -14,7 +14,6 @@ export const convertHexPositionToPixel = (position) => {
   const [newY, newX] = [
     ((isShifted ? 3 : 1) / 4 * hexWidth) + (y * hexWidth),
     (hexHeight * .25) + (x * hexHeight * .75),
-    // (hexHeight / 2) + (x * hexHeight),
   ]
   return [newY, newX]
 }
@@ -25,7 +24,7 @@ const unitData = [
     size: 32,
     emoji: "🦁",
     position: [100, 100],
-    levels: { speed: 1, cargo: 1, dexterity: 1 },
+    levels: { speed: 1, cargo: 1, dexterity: 3 },
   },
   {
     id: 'unit2',
@@ -57,83 +56,81 @@ export const useUnitDivs = () => {
 
   useEffect(() => {
     if (!buildingNodes || !homeNode) return
-  const initialUnits = unitData.map((node) => ({
-    id: node.id,
-    position: node.position,
-    size: node.size,
-    emoji: node.emoji,
-    levels: node.levels,
-    inventory: [{ name: 'wood', quantity: 3 }],
-  }));
-  setUnits(initialUnits);
+    const initialUnits = unitData.map((node) => ({
+      id: node.id,
+      position: node.position,
+      size: node.size,
+      emoji: node.emoji,
+      levels: node.levels,
+      inventory: [{ name: 'wood', quantity: 3 }],
+      waiting: false,
+    }))
+    setUnits(initialUnits)
 
-  return () => {
-    setUnits([]);
-  }
-}, [buildingNodes, homeNode]);
+    return () => {
+      setUnits([])
+    }
+  }, [buildingNodes, homeNode])
 
-const getPriorityTargetNode = unit => {
-  const target = [ 400, 400]
-  return { target }
-}
 
-const startLoading = unit => {
-  console.log(`🚀 ~  ~ startLoading:`, unit)
-  const loadingTime = 1000 / unit.levels.dexterity
-  // const availableResourceList = Object.keys(unit.target.inventory)
-  //   .filter(key => unit.target.inventory[key as keyof ResourceRecord] > 1)
-
-  // if (availableResourceList.length === 0) {
-  //     unit.isLoading = false
-  //     return
+  // const getPriorityTargetNode = unit => {
+  //   const target = [ 400, 400]
+  //   return { target }
   // }
 
-  // const ranIdx = Math.floor(Math.random() * availableResourceList.length)
-  // const resource = availableResourceList[ranIdx] as keyof ResourceRecord
+  // const startLoading = unit => {
+  //   console.log(`🚀 ~  ~ startLoading:`, unit)
+  //   const loadingTime = 1000 / unit.levels.dexterity
+  //   // const availableResourceList = Object.keys(unit.target.inventory)
+  //   //   .filter(key => unit.target.inventory[key as keyof ResourceRecord] > 1)
 
-  // setTimeout(() => {
-      // if (!unit.inventory || !unit.target.inventory || !(resource in unit.target.inventory)) return
+  //   // if (availableResourceList.length === 0) {
+  //   //     unit.isLoading = false
+  //   //     return
+  //   // }
 
-      // const availableAmount = unit.target.inventory[resource] || 0
-      // const transferAmount = Math.min(Math.floor(availableAmount), unit.levels.cargo)
+  //   // const ranIdx = Math.floor(Math.random() * availableResourceList.length)
+  //   // const resource = availableResourceList[ranIdx] as keyof ResourceRecord
 
-      // unit.inventory[resource] = (unit.inventory[resource] || 0) + transferAmount
-      // unit.target.inventory[resource] -= transferAmount
-      // unit.target = unit.homeNode
-      return unit
-  // }, loadingTime)
-}
+  //   // setTimeout(() => {
+  //       // if (!unit.inventory || !unit.target.inventory || !(resource in unit.target.inventory)) return
 
-const startUnloading = unit => {
-  console.log(`🚀 ~ startUnloading ~ unit:`, unit)
-  const { levels } = unit
-  const unloadingTime = 1000 / (levels.dexterity || 1)
-  setTimeout(() => {
-    console.log(`🚀 ~ updatedUnit:`, updatedUnit)
-  const updatedUnit = {
-    ...unit,
-    ...deliverResources(unit),
-    isLoading: false,
-    target: getPriorityTargetNode(unit),
-  }
-  }, unloadingTime)
-}
+  //       // const availableAmount = unit.target.inventory[resource] || 0
+  //       // const transferAmount = Math.min(Math.floor(availableAmount), unit.levels.cargo)
 
-const deliverResources = unit => {
-  console.log(`🚀 ~ deliverResources ~ unit:`, unit)
-  const { inventory } = unit
-  return {
-    ...unit,
-    inventory: [],
-  }
-}
+  //       // unit.inventory[resource] = (unit.inventory[resource] || 0) + transferAmount
+  //       // unit.target.inventory[resource] -= transferAmount
+  //       // unit.target = unit.homeNode
+  //       return unit
+  //   // }, loadingTime)
+  // }
 
+  // const startUnloading = unit => {
+  //   const { levels } = unit
+  //   const unloadingTime = 1000 / (levels.dexterity || 1)
+  //   setTimeout(() => {
+  //     console.log(`🚀 ~ updatedUnit:`, updatedUnit)
+  //   const updatedUnit = {
+  //     ...unit,
+  //     ...deliverResources(unit),
+  //     isLoading: false,
+  //     target: getPriorityTargetNode(unit),
+  //   }
+  //   }, unloadingTime)
+  // }
 
-
+  // const deliverResources = unit => {
+  //   console.log(`🚀 ~ deliverResources ~ unit:`, unit)
+  //   const { inventory } = unit
+  //   return {
+  //     ...unit,
+  //     inventory: [],
+  //   }
+  // }
   const getRandomBuilding = () => {
     if (!buildingNodes.length) return homeNode
     const node = buildingNodes[Math.floor(Math.random() * buildingNodes.length)]
-    return { ...node, position: convertHexPositionToPixel(node.position), }
+    return { ...node, position: convertHexPositionToPixel(node.position) }
   }
 
   const handleUnitArrival = (unit) => {
@@ -151,13 +148,15 @@ const deliverResources = unit => {
       ...unit,
       inventory: [{ name: 'wood', quantity: 1 }], // Always picks up 1 wood
       target: homeNode,
+      waiting: true,
     }
   }
 
   const updateUnitPosition = (unit) => {
+    if (unit.waiting) return unit
     if (!unit.target) return { ...unit, target: homeNode }
 
-    const { position, target, levels: { speed } } = unit
+    const { position, target = homeNode, levels: { speed, dexterity } } = unit
     const [targetX, targetY] = target.position
     const [currentX, currentY] = position
 
@@ -166,21 +165,29 @@ const deliverResources = unit => {
     const distance = Math.sqrt(dx * dx + dy * dy)
 
     if (distance <= speed) {
-      return handleUnitArrival(unit)
+      setTimeout(() => {
+        setUnits((prevUnits) =>
+        prevUnits.map((u) => u.id === unit.id ? {
+            ...handleUnitArrival(unit),
+            waiting: false,
+            target: unit.target === homeNode ? getRandomBuilding() : homeNode
+          } : u)
+        )
+      }, 3000 / dexterity)
+      return { ...unit, waiting: true }
     }
 
     const newPosition = [
       currentX + (dx / distance) * speed,
       currentY + (dy / distance) * speed,
     ]
-
     return { ...unit, position: newPosition }
   }
 
   const updateUnitsPositions = useCallback(() => {
-    if (!units.length) return
+    if (!units.length || !buildingNodes || !homeNode.map_id) return
     setUnits(units.map(updateUnitPosition))
-  }, [units])
+  }, [units, buildingNodes, homeNode])
 
   return {
     units,
