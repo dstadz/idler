@@ -64,9 +64,7 @@ export const useUnitDivs = () => {
       size: node.size,
       emoji: node.emoji,
       speed: node.levels.speed,
-      homeNode: { ...homeNode , position: [600, 600] },
-      target: [300, 300],
-      inventory: []
+      inventory: [{ name: 'wood', quantity: 3 }],
     }));
     setUnits(initialUnits);
 
@@ -76,20 +74,23 @@ export const useUnitDivs = () => {
   }, [buildingNodes, homeNode]);
 
 
-  const updateTarget = (unit, target) => {
-    const updatedUnit = { ...unit, target: convertHexPositionToPixel(target) }
+  const updateUnitTarget = (unit, target) => {
+    const updatedUnit = { ...unit, target }
     return updatedUnit
   }
 
-  const updatePosition = unit => {
-    const { target, position, speed } = unit
-    if (!target || !position) return unit
+  const updateUnitPosition = unit => {
+    const { target, position, speed, inventory } = unit
+    if (!target || !position) return {
+      ...unit,
+      target: homeNode.position,
+    }
     const dx = target[0] - position[0];
     const dy = target[1] - position[1];
     const distance = Math.sqrt(dx * dx + dy * dy);
     const hasArrived = distance <= speed;
     let updatedUnit = { ...unit }
-    if (hasArrived) updatedUnit = handleArrival(unit)
+    if (hasArrived) updatedUnit = handleUnitArrival(unit)
 
     const newPosition = hasArrived ? target : [
       position[0] + (dx / distance) * speed,
@@ -99,28 +100,39 @@ export const useUnitDivs = () => {
     return updatedUnit
   }
 
-  const handleArrival = useCallback((unit) => {
-    if (!buildingNodes) return
-    const newTarget =  buildingNodes[Math.floor(Math.random() * buildingNodes.length)]
 
-    return updateTarget(unit, newTarget.position)
+  const handleUnitArrival = useCallback((unit) => {
+    if (!buildingNodes) return
+    const { inventory, homeNode, targetNode } = unit
+    console.log(`🚀 ~ handleUnitArrival ~ unit:`, unit)
+
+        const isLoading = true
+        if (
+          targetNode.emoji === '🏕️'
+        ) {
+          console.log('loading')
+          startLoading()
+        } else if (target === homeNode) {
+          startUnloading()
+        }
   }, [buildingNodes])
 
 
   const updateUnitsPositions = useCallback(() => {
     if (!units?.length) return []
-    const updatedUnits = units.map(updatePosition)
+    const updatedUnits = units.map(updateUnitPosition)
     setUnits(updatedUnits)
-  }, [units, handleArrival])
+  }, [units, handleUnitArrival])
 
-    return {
-      units,
-      updateUnitsPositions,
-    };
-  }
+  return {
+    units,
+    updateUnitsPositions,
+  };
+}
 
 export const Unit = ({ unit }) => {
   const { position, size, emoji } = unit
+  console.log(`🚀 ~ Unit ~ unit:`, unit)
   return (
     <div
       style={{

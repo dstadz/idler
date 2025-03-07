@@ -56,7 +56,7 @@ const HexGrid = () => {
         .catch(err => console.log(err))
       setHexCells(newCells)
 
-      const [y, x] = homeNode.position
+      const [y, x] = homeNode.tile
       const homeCell = newCells[y][x] = {
         ...newCells[y][x],
         building: { ...homeNode },
