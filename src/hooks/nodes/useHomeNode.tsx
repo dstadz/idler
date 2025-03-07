@@ -1,4 +1,5 @@
 import { homeNodeAtom } from "@/atoms"
+import { convertHexPositionToPixel } from "@/utils/gameHelpers"
 import { useAtom } from "jotai"
 
 export const useHomeNode = () => {
@@ -12,7 +13,8 @@ export const useHomeNode = () => {
       status: 'active',
       level: 1,
       map_id: mapId,
-      position: [10, 2],
+      tile: [10, 2],
+      position: convertHexPositionToPixel([10, 2]),
     })
   }
 
