@@ -3,11 +3,10 @@ import React, { useEffect } from 'react'
 import { Unit } from './Unit'
 import { Box } from '@mui/material'
 import { useUnitDivs } from './useUnitDivs'
+import { styles } from '@/utils/styles'
 
 const Gamefield = () => {
   const { units, updateUnitsPositions } = useUnitDivs()
-
-
   useEffect(() => {
     requestAnimationFrame(updateUnitsPositions)
   }, [updateUnitsPositions])
@@ -20,16 +19,3 @@ const Gamefield = () => {
 }
 
 export default Gamefield
-
-const styles = {
-  gamefield: {
-    border: '3px solid orange',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100dvw',
-    height: '100vh',
-    zIndex: 1,
-    pointerEvents: 'none',
-  },
-}
