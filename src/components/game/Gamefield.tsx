@@ -1,32 +1,35 @@
 'use client'
-import React, { useEffect } from 'react';
-import { Unit, useUnitDivs } from './Unit';
+import React, { useEffect } from 'react'
+import { Unit } from './Unit'
+import { Box } from '@mui/material'
+import { useUnitDivs } from './useUnitDivs'
 
 const Gamefield = () => {
-  const { units, updateUnitsPositions } = useUnitDivs();
+  const { units, updateUnitsPositions } = useUnitDivs()
 
 
   useEffect(() => {
-    requestAnimationFrame(updateUnitsPositions);
-  }, [updateUnitsPositions]);
+    requestAnimationFrame(updateUnitsPositions)
+  }, [updateUnitsPositions])
 
   return (
-    <div
-      className='gamefield'
-      style={{
-        border: '3px solid orange',
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        width: '100dvw',
-        height: '100vh',
-        zIndex: 1,
-        pointerEvents: 'none',
-      }}
-    >
+    <Box className='gamefield' sx={styles.gamefield} >
       {units.map((unit) => <Unit key={unit.id} unit={unit} />)}
-    </div>
-  );
-};
+    </Box>
+  )
+}
 
-export default Gamefield;
+export default Gamefield
+
+const styles = {
+  gamefield: {
+    border: '3px solid orange',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100dvw',
+    height: '100vh',
+    zIndex: 1,
+    pointerEvents: 'none',
+  },
+}

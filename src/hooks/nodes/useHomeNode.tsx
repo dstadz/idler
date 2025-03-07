@@ -1,5 +1,5 @@
 import { homeNodeAtom } from "@/atoms"
-import { convertHexPositionToPixel } from "@/components/game/Unit"
+import { convertHexPositionToPixel } from "@/utils/gameHelpers"
 import { useAtom } from "jotai"
 
 export const useHomeNode = () => {
