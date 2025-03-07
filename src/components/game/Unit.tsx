@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes';
 import { useHomeNode } from "@/hooks/nodes/useHomeNode";
 import { hexHeight, hexWidth } from "@/utils/constants";
+import { Box, Stack, Typography } from "@mui/material";
 
 export const convertHexPositionToPixel = (position) => {
   const [x, y] = position
@@ -19,20 +20,20 @@ export const convertHexPositionToPixel = (position) => {
 }
 
 const unitData = [
-  {
-    id: 'unit1',
-    size: 32,
-    emoji: "🦁",
-    position: [100, 100],
-    levels: { speed: 1, cargo: 1, dexterity: 1 },
-  },
-  {
-    id: 'unit2',
-    size: 32,
-    emoji: "🐘",
-    position: [500, 100],
-    levels: { speed: 1, cargo: 3, dexterity: 1 },
-  },
+  // {
+  //   id: 'unit1',
+  //   size: 32,
+  //   emoji: "🦁",
+  //   position: [100, 100],
+  //   levels: { speed: 1, cargo: 1, dexterity: 1 },
+  // },
+  // {
+  //   id: 'unit2',
+  //   size: 32,
+  //   emoji: "🐘",
+  //   position: [500, 100],
+  //   levels: { speed: 1, cargo: 3, dexterity: 1 },
+  // },
   {
     id: 'unit3',
     size: 32,
@@ -40,13 +41,13 @@ const unitData = [
     position: [200, 400],
     levels: { speed: 1, cargo: 1, dexterity: 1 },
   },
-  {
-    id: 'unit4',
-    size: 32,
-    emoji: "🪼",
-    position: [100, 500],
-    levels: { speed: 1, cargo: 3, dexterity: 1 },
-  },
+  // {
+  //   id: 'unit4',
+  //   size: 32,
+  //   emoji: "🪼",
+  //   position: [100, 500],
+  //   levels: { speed: 1, cargo: 3, dexterity: 1 },
+  // },
 ]
 
 export const useUnitDivs = () => {
@@ -63,7 +64,7 @@ export const useUnitDivs = () => {
       position: node.position,
       size: node.size,
       emoji: node.emoji,
-      speed: node.levels.speed,
+      levels: node.levels,
       inventory: [{ name: 'wood', quantity: 3 }],
     }));
     setUnits(initialUnits);
@@ -73,20 +74,84 @@ export const useUnitDivs = () => {
     }
   }, [buildingNodes, homeNode]);
 
-
-  const updateUnitTarget = (unit, target) => {
-    const updatedUnit = { ...unit, target }
-    return updatedUnit
+  const getPriorityTargetNode = unit => {
+    const target = [ 400, 400]
+    return { target }
   }
 
+  const startLoading = unit => {
+    console.log(`🚀 ~  ~ startLoading:`, unit)
+    const loadingTime = 1000 / unit.levels.dexterity
+    // const availableResourceList = Object.keys(unit.target.inventory)
+    //   .filter(key => unit.target.inventory[key as keyof ResourceRecord] > 1)
+
+    // if (availableResourceList.length === 0) {
+    //     unit.isLoading = false
+    //     return
+    // }
+
+    // const ranIdx = Math.floor(Math.random() * availableResourceList.length)
+    // const resource = availableResourceList[ranIdx] as keyof ResourceRecord
+
+    // setTimeout(() => {
+        // if (!unit.inventory || !unit.target.inventory || !(resource in unit.target.inventory)) return
+
+        // const availableAmount = unit.target.inventory[resource] || 0
+        // const transferAmount = Math.min(Math.floor(availableAmount), unit.levels.cargo)
+
+        // unit.inventory[resource] = (unit.inventory[resource] || 0) + transferAmount
+        // unit.target.inventory[resource] -= transferAmount
+        // unit.target = unit.homeNode
+        return unit
+    // }, loadingTime)
+  }
+
+  const startUnloading = unit => {
+    console.log(`🚀 ~ startUnloading ~ unit:`, unit)
+    const { levels } = unit
+    const unloadingTime = 1000 / (levels.dexterity || 1)
+    setTimeout(() => {
+      console.log(`🚀 ~ updatedUnit:`, updatedUnit)
+    const updatedUnit = {
+      ...unit,
+      ...deliverResources(unit),
+      isLoading: false,
+      target: getPriorityTargetNode(unit),
+    }
+    }, unloadingTime)
+  }
+
+  const deliverResources = unit => {
+    console.log(`🚀 ~ deliverResources ~ unit:`, unit)
+    const { inventory } = unit
+    return {
+      ...unit,
+      inventory: [],
+    }
+  }
+
+
+
+  const handleUnitArrival = useCallback((unit) => {
+    if (!buildingNodes) return
+    const { target } = unit
+    console.log(`🚀 ~ handleUnitArrival ~ unit:`, unit)
+
+    if (target.position === homeNode.position) startUnloading(unit)
+    else startLoading(unit)
+
+  }, [buildingNodes])
+
   const updateUnitPosition = unit => {
-    const { target, position, speed, inventory } = unit
+    // console.log(`🚀 ~ updateUnitPosition ~ unit:`, unit)
+    const { target, position, levels: { speed } } = unit
     if (!target || !position) return {
       ...unit,
-      target: homeNode.position,
+      target: homeNode,
     }
-    const dx = target[0] - position[0];
-    const dy = target[1] - position[1];
+    const [targetX, targetY] = target.position
+    const dx = targetX - position[0];
+    const dy = targetY - position[1];
     const distance = Math.sqrt(dx * dx + dy * dy);
     const hasArrived = distance <= speed;
     let updatedUnit = { ...unit }
@@ -96,33 +161,16 @@ export const useUnitDivs = () => {
       position[0] + (dx / distance) * speed,
       position[1] + (dy / distance) * speed,
     ];
+    // console.log(`🚀 ~ updateUnitPosition ~ updatedUnit:`, updatedUnit)
     updatedUnit = { ...updatedUnit, position: newPosition };
     return updatedUnit
   }
-
-
-  const handleUnitArrival = useCallback((unit) => {
-    if (!buildingNodes) return
-    const { inventory, homeNode, targetNode } = unit
-    console.log(`🚀 ~ handleUnitArrival ~ unit:`, unit)
-
-        const isLoading = true
-        if (
-          targetNode.emoji === '🏕️'
-        ) {
-          console.log('loading')
-          startLoading()
-        } else if (target === homeNode) {
-          startUnloading()
-        }
-  }, [buildingNodes])
-
 
   const updateUnitsPositions = useCallback(() => {
     if (!units?.length) return []
     const updatedUnits = units.map(updateUnitPosition)
     setUnits(updatedUnits)
-  }, [units, handleUnitArrival])
+  }, [units])
 
   return {
     units,
@@ -131,8 +179,7 @@ export const useUnitDivs = () => {
 }
 
 export const Unit = ({ unit }) => {
-  const { position, size, emoji } = unit
-  console.log(`🚀 ~ Unit ~ unit:`, unit)
+  const { position, size, emoji, isLoading, target, inventory } = unit
   return (
     <div
       style={{
@@ -147,7 +194,14 @@ export const Unit = ({ unit }) => {
         pointerEvents: 'none',
       }}
     >
-      {emoji}
+      <Box>
+        <Typography>{isLoading ? '🔄' : emoji}</Typography>
+      </Box>
+      <Stack>
+        {inventory.length > 0 && inventory.map(resource => (
+          <Typography key={resource.name}>{resource.name}: {resource.quantity}</Typography>
+        ))}
+      </Stack>
     </div>
   );
 }
