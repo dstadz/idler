@@ -17,16 +17,19 @@ row: {
   height: '10%',
   flexDirection: 'row',
   justifyContent: 'space-between',
-  alignItems: 'center',
+  alignItems: 'space-between',
   // borderColor: 'green',
   // borderWidth: 5,
   zIndex: 2,
 },
 resources: {
-  flex: 1,
   flexDirection: 'row',
-  // borderColor: 'blue',
-  // borderWidth: 5,
+},
+resource: {
+  background: 'hsl(0, 0%, 50%)',
+  borderRadius: 5,
+  padding: 0.5,
+  margin: 1,
 },
 canvas: {
   borderColor: 'red',
@@ -67,9 +70,6 @@ hexGrid: {
   zIndex: -1,
 },
 topRow: {
-  top: 0,
-  left: 0,
-  width: '100%',
   height: 50,
 },
 bottomRow: {
