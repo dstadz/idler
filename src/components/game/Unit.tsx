@@ -6,6 +6,7 @@ import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes'
 import { useHomeNode } from "@/hooks/nodes/useHomeNode"
 import { hexHeight, hexWidth } from "@/utils/constants"
 import { Box, Stack, Typography } from "@mui/material"
+import { getDistanceFromTarget } from "@/utils/gameHelpers"
 
 export const convertHexPositionToPixel = (position) => {
   const [x, y] = position
@@ -156,24 +157,18 @@ export const useUnitDivs = () => {
     if (unit.waiting) return unit
     if (!unit.target) return { ...unit, target: homeNode }
 
-    const { position, target = homeNode, levels: { speed, dexterity } } = unit
-    const [targetX, targetY] = target.position
-    const [currentX, currentY] = position
 
-    const dx = targetX - currentX
-    const dy = targetY - currentY
-    const distance = Math.sqrt(dx * dx + dy * dy)
+    const { speed, dexterity } = unit.levels
+    const distance = getDistanceFromTarget(unit)
 
     if (distance <= speed) {
-      setTimeout(() => {
-        setUnits((prevUnits) =>
+      setTimeout(() => setUnits((prevUnits) =>
         prevUnits.map((u) => u.id === unit.id ? {
-            ...handleUnitArrival(unit),
-            waiting: false,
-            target: unit.target === homeNode ? getRandomBuilding() : homeNode
-          } : u)
-        )
-      }, 3000 / dexterity)
+          ...handleUnitArrival(unit),
+          waiting: false,
+          target: unit.target === homeNode ? getRandomBuilding() : homeNode
+        } : u)
+      ), 3000 / dexterity)
       return { ...unit, waiting: true }
     }
 
