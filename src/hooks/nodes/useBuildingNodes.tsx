@@ -28,7 +28,7 @@ export const useBuildingNodes = () => {
   }, [mapData])
 
   useEffect(() => {
-    if (!mapData) return
+    if (!mapData.id) return
       getBuildingNodes(mapData.id)
     }, [mapData])
 

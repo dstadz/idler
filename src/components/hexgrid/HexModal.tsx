@@ -1,6 +1,7 @@
 import React from 'react'
 import { Stack } from "@mui/material"
 import Button from '../UI/Button'
+import { BUILDING_OBJECTS } from '@/utils/constants'
 
 const HexCellModal = ({ cell, modalType }: { cell: HexCell, modalType: string }) => {
   const {

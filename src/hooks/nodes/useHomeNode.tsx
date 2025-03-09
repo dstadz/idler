@@ -1,9 +1,11 @@
-import { homeNodeAtom } from "@/atoms"
+import { homeNodeAtom, mapDataAtom } from "@/atoms"
 import { convertHexPositionToPixel } from "@/utils/gameHelpers"
-import { useAtom } from "jotai"
+import { useAtom, useAtomValue } from "jotai"
+import { useEffect } from "react"
 
 export const useHomeNode = () => {
   const [homeNode, setHomeNode] = useAtom(homeNodeAtom)
+  const mapData = useAtomValue(mapDataAtom)
 
   const getHomeNode = async (mapId) => {
     if (!mapId) return
@@ -18,8 +20,10 @@ export const useHomeNode = () => {
     })
   }
 
-  return {
-    homeNode,
-    getHomeNode,
-  }
+  useEffect(() => {
+    if (!mapData.id) return
+    getHomeNode(mapData.id)
+  }, [mapData])
+
+  return { homeNode }
 }
