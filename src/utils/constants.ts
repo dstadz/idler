@@ -335,3 +335,34 @@ export const tileBackgrounds = {
     'hsla(200, 50%, 20%, 0.5)',
     'hsla(200, 55%, 30%, 0.9)'),
 }
+
+export const unitData = [
+  {
+    id: 'unit1',
+    size: 32,
+    emoji: "🦁",
+    position: [100, 100],
+    levels: { speed: 3, cargo: 1, dexterity: 3 },
+  },
+  {
+    id: 'unit2',
+    size: 32,
+    emoji: "🐘",
+    position: [500, 100],
+    levels: { speed: 1, cargo: 3, dexterity: 1 },
+  },
+  {
+    id: 'unit3',
+    size: 32,
+    emoji: "🐉",
+    position: [200, 400],
+    levels: { speed: 1, cargo: 1, dexterity: 1 },
+  },
+  {
+    id: 'unit4',
+    size: 32,
+    emoji: "🪼",
+    position: [100, 400],
+    levels: { speed: 1, cargo: 3, dexterity: 4 },
+  },
+]

@@ -13,7 +13,7 @@ const HexGrid = () => {
   const [mapData] = useAtom(mapDataAtom)
   const [hexCells, setHexCells] = useAtom(hexCellsAtom)
   const { homeNode, getHomeNode } = useHomeNode()
-  const { buildingNodes, getBuildingNodes } = useBuildingNodes()
+  const { buildingNodes } = useBuildingNodes()
 
   const updateHexCell = (rowIndex, colIndex, updatedCell) => {
     setHexCells(prev =>
@@ -28,7 +28,6 @@ const HexGrid = () => {
   useEffect(() => {
     if (!mapData.id) return
     getHomeNode(mapData.id)
-    getBuildingNodes(mapData.id)
   }, [mapData])
 
   useEffect(() => {

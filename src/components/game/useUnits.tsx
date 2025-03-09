@@ -4,38 +4,7 @@ import { useHomeNode } from "@/hooks/nodes/useHomeNode"
 import { convertHexPositionToPixel, getDistanceFromTarget } from "@/utils/gameHelpers"
 import { useAtom } from "jotai"
 import { unitNodesAtom } from "@/atoms"
-
-const unitData = [
-  {
-    id: 'unit1',
-    size: 32,
-    emoji: "🦁",
-    position: [100, 100],
-    levels: { speed: 3, cargo: 1, dexterity: 3 },
-  },
-  {
-    id: 'unit2',
-    size: 32,
-    emoji: "🐘",
-    position: [500, 100],
-    levels: { speed: 1, cargo: 3, dexterity: 1 },
-  },
-  {
-    id: 'unit3',
-    size: 32,
-    emoji: "🐉",
-    position: [200, 400],
-    levels: { speed: 1, cargo: 1, dexterity: 1 },
-  },
-  {
-    id: 'unit4',
-    size: 32,
-    emoji: "🪼",
-    position: [100, 400],
-    levels: { speed: 1, cargo: 3, dexterity: 4 },
-  },
-]
-
+import { unitData } from "@/utils/constants"
 
 export const useUnits = () => {
   const { homeNode } = useHomeNode()
@@ -93,28 +62,8 @@ export const useUnits = () => {
   //   // }, loadingTime)
   // }
 
-  // const startUnloading = unit => {
-  //   const { levels } = unit
-  //   const unloadingTime = 1000 / (levels.dexterity || 1)
-  //   setTimeout(() => {
-  //     console.log(`🚀 ~ updatedUnit:`, updatedUnit)
-  //   const updatedUnit = {
-  //     ...unit,
-  //     ...deliverResources(unit),
-  //     isLoading: false,
-  //     target: getPriorityTargetNode(unit),
-  //   }
-  //   }, unloadingTime)
-  // }
 
-  // const deliverResources = unit => {
-  //   console.log(`🚀 ~ deliverResources ~ unit:`, unit)
-  //   const { inventory } = unit
-  //   return {
-  //     ...unit,
-  //     inventory: [],
-  //   }
-  // }
+
   const getRandomBuilding = () => {
     if (!buildingNodes.length) return homeNode
     const node = buildingNodes[Math.floor(Math.random() * buildingNodes.length)]

@@ -1,11 +1,13 @@
+import { useCallback, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
-import { buildingNodesAtom, homeNodeAtom } from '@/atoms'
+import { buildingNodesAtom, mapDataAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
-import { useCallback } from 'react'
 
 export const useBuildingNodes = () => {
+  const mapData = useAtomValue(mapDataAtom)
+
   const [buildingNodes, setBuildingNodes] = useAtom(buildingNodesAtom)
-  const homeNode = useAtomValue(homeNodeAtom)
+
   const getBuildingNodes = useCallback(async (mapId) => {
     const { data: buildingNodesData, error: buildingNodesError } = await supabase
       .from('building_nodes')
@@ -20,13 +22,17 @@ export const useBuildingNodes = () => {
         type: building.type,
         level: building.level,
         status: building.status,
-        home: homeNode,
         // resources: JSON.parse(building.resources),
       })),
     ])
-  }, [homeNode])
+  }, [mapData])
 
-  return { buildingNodes, getBuildingNodes }
+  useEffect(() => {
+    if (!mapData) return
+      getBuildingNodes(mapData.id)
+    }, [mapData])
+
+  return { buildingNodes }
 }
   // useEffect(() => {
   //   if (!ctx) return
