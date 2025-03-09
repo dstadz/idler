@@ -1,7 +1,7 @@
 import { tileBackgrounds } from "./constants";
 
 export const styles = {
-  wrapper: {
+wrapper: {
   flex: 1,
   border: '3px solid white',
   justifyContent: 'space-between',
@@ -10,35 +10,38 @@ export const styles = {
   backgroundColor: tileBackgrounds.SEA,
   height: '100dvh',
   width: '100dvw',
-  },
-  row: {
+},
+row: {
   // flex: 1,
   // position: 'absolute',
   height: '10%',
   flexDirection: 'row',
   justifyContent: 'space-between',
-  alignItems: 'center',
+  alignItems: 'space-between',
   // borderColor: 'green',
   // borderWidth: 5,
   zIndex: 2,
-  },
-  resources: {
-  flex: 1,
+},
+resources: {
   flexDirection: 'row',
-  // borderColor: 'blue',
-  // borderWidth: 5,
-  },
-  canvas: {
+},
+resource: {
+  background: 'hsl(0, 0%, 50%)',
+  borderRadius: 5,
+  padding: 0.5,
+  margin: 1,
+},
+canvas: {
   borderColor: 'red',
   borderWidth: 5,
   height: '100%',
   pointerEvents: 'none',
-  },
-  statBlock: {
+},
+statBlock: {
   flexDirection: 'row',
   justifyContent: 'end',
-  },
-  dataButton: {
+},
+dataButton: {
   // borderColor: 'blue',
   // borderWidth: 1,
   },
@@ -49,41 +52,49 @@ export const styles = {
   pointerEvents: 'none',
   // borderColor: 'blue',
   // borderWidth: 5,
-  },
-  botLeft: {
+},
+botLeft: {
   borderColor: 'orange',
   borderWidth: 5,
-  },
-  botRight: {
+},
+botRight: {
   borderColor: 'pink',
   borderWidth: 5,
-  },
-  hexGrid: {
+},
+hexGrid: {
   position: 'absolute',
   top: 0,
   left: 0,
   width: '100%',
   height: '100%',
   zIndex: -1,
-  },
-  topRow: {
-  top: 0,
-  left: 0,
-  width: '100%',
+},
+topRow: {
   height: 50,
-  },
-  bottomRow: {
+},
+bottomRow: {
   position: 'absolute',
   bottom: 0,
   left: 0,
   width: '100%',
   height: 50,
-  },
+},
+pageWrapper: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  // zIndex: -1,
+},
 
-  pageWrapper: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    // zIndex: -1,
-  },
+gamefield: {
+  border: '3px solid orange',
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: '100dvw',
+  height: '100vh',
+  zIndex: 1,
+  pointerEvents: 'none',
+},
+
 }

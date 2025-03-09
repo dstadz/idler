@@ -1,6 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { resourcesAtom } from '@/atoms'
-import { useAtom  } from 'jotai'
+import { useCallback, useEffect, useState } from 'react'
 import { Unit } from '@/classes';
 import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes';
 
@@ -43,42 +41,5 @@ export const useUnits = ({ ctx }: { ctx: CanvasRenderingContext2D }) => {
   return {
     units,
     drawUnits,
-  }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export const useResources = () => {
-  const [resources, setMainResources] = useAtom(resourcesAtom)
-
-  const addToMainResources = (resource: keyof ResourceRecord, amount: number) =>
-    setMainResources(prev => ({
-      ...prev,
-      [resource]: (prev[resource] || 0) + amount,
-    }))
-
-
-  return {
-    resources,
-    addToMainResources,
   }
 }

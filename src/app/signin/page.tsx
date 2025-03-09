@@ -5,8 +5,8 @@ import React, { useState } from 'react'
 import { supabase } from '@/lib/supabase'
 
 export default function SignIn() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
+  const [email, setEmail] = useState('bb@bb.com')
+  const [password, setPassword] = useState('bbbbbb')
   const [error, setError] = useState<string | null>(null)
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

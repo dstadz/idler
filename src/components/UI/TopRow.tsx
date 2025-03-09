@@ -1,14 +1,18 @@
-
+import React from 'react'
+import { useResources } from '@/hooks/nodes/useResources'
 import { styles } from '@/utils/styles'
 import { Stack, Typography } from '@mui/material'
-import React from 'react'
 
 const TopRow = () => {
+  const { resourceList, resources } = useResources()
   return (
     <Stack className='top-row' sx={styles.row}>
     <Stack className='resources' sx={styles.resources}>
-    <Typography>stuff: 10</Typography>
-    <Typography>things: 15</Typography>
+      {resourceList.map(resource => (
+        <Stack key={resource} sx={styles.resource}>
+          <Typography>{resource}: {resources[resource]}</Typography>
+        </Stack>
+      ))}
     </Stack>
     <Stack className='settings' sx={styles.statBlock}>
       <Stack sx={styles.dataButton}>
