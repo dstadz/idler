@@ -1,7 +1,9 @@
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect } from "react"
 import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes'
 import { useHomeNode } from "@/hooks/nodes/useHomeNode"
 import { convertHexPositionToPixel, getDistanceFromTarget } from "@/utils/gameHelpers"
+import { useAtom } from "jotai"
+import { unitNodesAtom } from "@/atoms"
 
 const unitData = [
   {
@@ -35,10 +37,10 @@ const unitData = [
 ]
 
 
-export const useUnitDivs = () => {
+export const useUnits = () => {
   const { homeNode } = useHomeNode()
   const { buildingNodes } = useBuildingNodes()
-  const [units, setUnits] = useState([])
+  const [units, setUnits] = useAtom(unitNodesAtom)
 
   useEffect(() => {
     if (!buildingNodes || !homeNode) return
@@ -157,7 +159,7 @@ export const useUnitDivs = () => {
 
   const updateUnitsPositions = useCallback(() => {
     if (!units.length || !buildingNodes || !homeNode.map_id) return
-    setUnits(units.map(updateUnitPosition))
+    setUnits(u => u.map(updateUnitPosition))
   }, [units, buildingNodes, homeNode])
 
   return {

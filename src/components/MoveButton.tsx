@@ -1,11 +1,11 @@
 'use client'
 import React from 'react'
-import { useUnitDivs } from './canvas/Unit'
+import { useUnits } from './canvas/Unit'
 
 const MoveButton = () => {
   const {
     updatePosition
-  } = useUnitDivs()
+  } = useUnits()
   return (
     <div>MoveButton
       <button onClick={() => updatePosition('unit1')}>Move</button>

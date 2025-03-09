@@ -59,7 +59,7 @@ const HexCell = ({
       >
         {building
           ? <BuildingNode building={building} />
-          : <Typography> {`${rowIndex}, ${colIndex}`}</Typography>
+          : <Typography color='hsla(0, 0%, 00%, 0.125)'> {`${rowIndex}, ${colIndex}`}</Typography>
         }
 
       </Box>

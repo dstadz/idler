@@ -2,10 +2,10 @@
 import React, { useEffect } from 'react'
 import { Unit } from './Unit'
 import { Box } from '@mui/material'
-import { useUnitDivs } from './useUnitDivs'
+import { useUnits } from './useUnits'
 
 const Gamefield = () => {
-  const { units, updateUnitsPositions } = useUnitDivs()
+  const { units, updateUnitsPositions } = useUnits()
 
 
   useEffect(() => {
