@@ -9,7 +9,7 @@ const unitData = [
     size: 32,
     emoji: "🦁",
     position: [100, 100],
-    levels: { speed: 1, cargo: 1, dexterity: 3 },
+    levels: { speed: 3, cargo: 1, dexterity: 3 },
   },
   {
     id: 'unit2',
@@ -29,8 +29,8 @@ const unitData = [
     id: 'unit4',
     size: 32,
     emoji: "🪼",
-    position: [100, 500],
-    levels: { speed: 1, cargo: 3, dexterity: 1 },
+    position: [100, 400],
+    levels: { speed: 1, cargo: 3, dexterity: 4 },
   },
 ]
 
@@ -49,7 +49,7 @@ export const useUnitDivs = () => {
       emoji: node.emoji,
       levels: node.levels,
       inventory: [{ name: 'wood', quantity: 3 }],
-      waiting: false,
+      waitingTime: 0,
     }))
     setUnits(initialUnits)
 
@@ -119,27 +119,24 @@ export const useUnitDivs = () => {
     return { ...node, position: convertHexPositionToPixel(node.position) }
   }
 
-  const handleUnitArrival = (unit) => {
+  const handleUnitArrival = (unitOld) => {
+    const unit = { ...unitOld }
     if (!unit.target) return unit
 
-    if (unit.target === homeNode) {
-      return {
-        ...unit,
-        inventory: [],
-        target: getRandomBuilding(),
-      }
-    }
+    unit.waitingTime = 10 - unit.levels.dexterity
 
-    return {
-      ...unit,
-      inventory: [{ name: 'wood', quantity: 1 }], // Always picks up 1 wood
-      target: homeNode,
-      waiting: true,
+    if (unit.target === homeNode) {
+      unit.inventory = []
+      unit.target = getRandomBuilding()
+    } else {
+      unit.target = homeNode
+      unit.inventory = [{ name: 'wood', quantity: 1 }] // Always picks up 1 wood
     }
+    return unit
   }
 
   const updateUnitPosition = (unit) => {
-    if (unit.waiting) return unit
+    if (unit.waitingTime) return { ...unit, waitingTime: unit.waitingTime - 1 }
     if (!unit.target) return { ...unit, target: homeNode }
 
 
@@ -148,13 +145,10 @@ export const useUnitDivs = () => {
 
     if (distance <= speed) {
       setTimeout(() => setUnits((prevUnits) =>
-        prevUnits.map((u) => u.id === unit.id ? {
-          ...handleUnitArrival(unit),
-          waiting: false,
-          target: unit.target === homeNode ? getRandomBuilding() : homeNode
-        } : u)
+        prevUnits.map((u) => u.id === unit.id ? handleUnitArrival(unit) : u)
       ), 3000 / dexterity)
-      return { ...unit, waiting: true }
+
+      return { ...unit }
     }
 
 

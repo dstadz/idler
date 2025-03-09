@@ -5,10 +5,12 @@ import PropTypes from 'prop-types'
 import { Box, Stack, Typography } from '@mui/material'
 
 export const Unit = ({ unit }) => {
-  const { position, size, emoji, inventory } = unit
+  const { position, size, emoji, inventory, waitingTime } = unit
   return (
-    <div
-      style={{
+    <Stack
+      sx={{
+        border: '1px solid red',
+
         position: 'absolute',
         top: `${position[1]}px`,
         left: `${position[0]}px`,
@@ -18,15 +20,16 @@ export const Unit = ({ unit }) => {
         pointerEvents: 'none',
       }}
     >
-      <Box>
-        <Typography>{emoji}</Typography>
-      </Box>
       <Stack>
         {inventory.length > 0 && inventory.map(resource => (
           <Typography key={resource.name}>{resource.name}: {resource.quantity}</Typography>
         ))}
       </Stack>
-    </div>
+      <Stack flexDirection={'row'}>
+        <Typography>{emoji}</Typography>
+        <Box sx={{ background: 'green', width: `${waitingTime * 10 }px`, height: '20px' }}/>
+      </Stack>
+    </Stack>
   )
 }
 
@@ -37,5 +40,6 @@ Unit.propTypes = {
     size: PropTypes.number.isRequired,
     emoji: PropTypes.string.isRequired,
     inventory: PropTypes.arrayOf(PropTypes.object).isRequired,
+    waitingTime: PropTypes.number,
   }).isRequired,
 }
