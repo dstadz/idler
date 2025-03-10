@@ -7,6 +7,7 @@ import { resourcesAtom } from '@/atoms'
 import { useAtom } from 'jotai'
 import { RESOURCES } from '@/utils/contants/game'
 import PropTypes from 'prop-types'
+import { useHomeNode } from '@/hooks/nodes/useHomeNode'
 
 const newres = [
   {
@@ -31,6 +32,9 @@ const useResources = () => {
 const Gamefield = () => {
   const { units, updateUnitsPositions } = useUnits()
   const { freeResourcesList } = useResources()
+  const { homeNode } = useHomeNode()
+  // if (!homeNode.map_id) return null
+
 
   useEffect(() => {
     requestAnimationFrame(updateUnitsPositions)

@@ -1,11 +1,97 @@
 'use client'
 
-import React from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Box, Stack, Typography } from '@mui/material'
+import { convertHexPositionToPixel, getDistanceFromTarget } from "@/utils/gameHelpers"
+import { useHomeNode } from '@/hooks/nodes/useHomeNode'
+import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes'
+
+
+export const useUnit = ({ unit: oldUnit }) => {
+  const [unit, setUnit] = useState(oldUnit)
+  // const { buildingNodes } = useBuildingNodes()
+  const { homeNode } = useHomeNode()
+  // const [units, setUnits] = useAtom(unitNodesAtom)
+
+  // const getRandomBuilding = () => {
+  //   if (!buildingNodes.length) return homeNode
+  //   const node = buildingNodes[Math.floor(Math.random() * buildingNodes.length)]
+  //   return { ...node, position: convertHexPositionToPixel(node.position) }
+  // }
+
+  // const handleUnitArrival = () => {
+  //   console.log(`🚀 ~ handleUnitArrival:`)
+  //   if (!unit.target) return unit
+
+  //   unit.waitingTime = 10 - unit.levels.dexterity
+
+  //   if (unit.target === homeNode) {
+  //     unit.inventory = []
+  //     unit.target = getRandomBuilding()
+  //   } else {
+  //     unit.target = homeNode
+  //     unit.inventory = [{ name: 'wood', quantity: 1 }] // Always picks up 1 wood
+  //   }
+  //   return unit
+  // }
+
+
+  const updateUnit = () => {
+    if (!homeNode.map_id) return
+    console.log(`🚀 ~ updateUnit ~ homeNode:`, homeNode)
+    // setUnit(prev => {
+    //   const updatedUnit = { ...prev }
+    //   if (!prev.target) updatedUnit.target = homeNode
+    //   if (prev.waitingTime > 0) updatedUnit.waitingTime = prev.waitingTime - 1
+
+    //   const { position, target, levels: { speed } } = updatedUnit
+    //   const [targetX, targetY] = target.position
+    //   const [currentX, currentY] = position
+    //   const dx = targetX - currentX
+    //   const dy = targetY - currentY
+    //   const distance = Math.sqrt(dx * dx + dy * dy)
+    //   const newPosition = [
+    //     currentX + (dx / distance) * speed,
+    //     currentY + (dy / distance) * speed,
+    //   ]
+    //   if (distance <= speed) {
+    //     updatedUnit.xxx = handleUnitArrival()
+    //   } else {
+    //     updatedUnit.position = newPosition
+    //   }
+    //   console.log(`🚀uU`, updatedUnit)
+
+    //   return updatedUnit
+    // })
+  }
+
+  return {
+    ...unit,
+    updateUnit,
+  }
+}
 
 export const Unit = ({ unit }) => {
-  const { position, size, emoji, inventory, waitingTime } = unit
+  const {
+    position,
+    size,
+    emoji,
+    inventory,
+    waitingTime,
+
+    // updateUnit
+  } = unit
+
+
+  // useEffect(() => {
+  //   requestAnimationFrame(updateUnit)
+  //   // return () => cancelAnimationFrame(updateUnit)
+  // }, [updateUnit])
+
+  // useEffect(() => {
+  //   console.log(`🚀 ~ Unit ~ position`, position)
+  // }, [position])
   return (
     <Stack
       sx={{
