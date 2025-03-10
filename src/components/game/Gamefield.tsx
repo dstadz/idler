@@ -43,7 +43,7 @@ const Gamefield = () => {
   }, [updateUnitsPositions])
 
   if (!homeNode.map_id) return null
-  console.log(`🚀 ~ Gamefield ~ units:`, units[0])
+
   return (
     <Box className='gamefield' sx={styles.gamefield} >
       {units.map((unit) => <Unit key={unit.id} unit={unit} />)}

@@ -2,6 +2,7 @@ import { useCallback, useEffect } from 'react'
 import { useAtom, useAtomValue } from 'jotai'
 import { buildingNodesAtom, mapDataAtom } from '@/atoms'
 import { supabase } from '@/lib/supabase'
+import { convertHexPositionToPixel } from '@/utils/gameHelpers'
 
 export const useBuildingNodes = () => {
   const mapData = useAtomValue(mapDataAtom)
@@ -33,7 +34,13 @@ export const useBuildingNodes = () => {
       getBuildingNodes(mapData.id)
     }, [mapData])
 
-  return { buildingNodes }
+    const getRandomBuilding = () => {
+      if (!buildingNodes.length) return homeNode
+      const node = buildingNodes[Math.floor(Math.random() * buildingNodes.length)]
+      return { ...node, position: convertHexPositionToPixel(node.position) }
+    }
+
+  return { buildingNodes, getRandomBuilding }
 }
   // useEffect(() => {
   //   if (!ctx) return

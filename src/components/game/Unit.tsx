@@ -12,24 +12,13 @@ export const Unit = ({ unit }) => {
     emoji,
     inventory,
     waitingTime,
-
-    // updateUnit
+    color = 'red',
   } = unit
-  console.log(`🚀 ~ Unit ~ unit:`, unit)
 
-
-  // useEffect(() => {
-  //   requestAnimationFrame(updateUnit)
-  //   // return () => cancelAnimationFrame(updateUnit)
-  // }, [updateUnit])
-
-  // useEffect(() => {
-  //   console.log(`🚀 ~ Unit ~ position`, position)
-  // }, [position])
   return (
     <Stack
       sx={{
-        border: '1px solid red',
+        border: `1px solid ${color}`,
 
         position: 'absolute',
         top: `${position[1]}px`,
@@ -61,10 +50,22 @@ Unit.propTypes = {
     emoji: PropTypes.string.isRequired,
     inventory: PropTypes.arrayOf(PropTypes.object).isRequired,
     waitingTime: PropTypes.number,
+    color: PropTypes.string,
   }).isRequired,
 }
 
 export const UnitPlus = ({ unit }) => {
   const newUnit = useUnit({ unit })
-  return <Unit unit={newUnit} />
+  return <Unit unit={{ ...newUnit, color: 'green' }} />
+}
+
+UnitPlus.propTypes = {
+  unit: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    position: PropTypes.arrayOf(PropTypes.number).isRequired,
+    size: PropTypes.number.isRequired,
+    emoji: PropTypes.string.isRequired,
+    inventory: PropTypes.arrayOf(PropTypes.object).isRequired,
+    waitingTime: PropTypes.number,
+  }).isRequired,
 }

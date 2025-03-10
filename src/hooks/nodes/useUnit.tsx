@@ -1,25 +1,27 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useHomeNode } from "./useHomeNode"
+import { useBuildingNodes } from "./useBuildingNodes"
 
 export const useUnit = ({ unit: oldUnit }) => {
   const [unit, setUnit] = useState(oldUnit)
   const { homeNode } = useHomeNode()
+  const { getRandomBuilding } = useBuildingNodes()
 
-  // const handleUnitArrival = () => {
-  //   console.log(`🚀 ~ handleUnitArrival:`)
-  //   if (!unit.target) return unit
+  const handleUnitArrival = () => {
+    console.log(`🚀 ~ handleUnitArrival:`)
+    if (!unit.target) return unit
 
-  //   unit.waitingTime = 10 - unit.levels.dexterity
+    unit.waitingTime = 10 - unit.levels.dexterity
 
-  //   if (unit.target === homeNode) {
-  //     unit.inventory = []
-  //     unit.target = getRandomBuilding()
-  //   } else {
-  //     unit.target = homeNode
-  //     unit.inventory = [{ name: 'wood', quantity: 1 }] // Always picks up 1 wood
-  //   }
-  //   return unit
-  // }
+    if (unit.target === homeNode) {
+      unit.inventory = []
+      unit.target = getRandomBuilding()
+    } else {
+      unit.target = homeNode
+      unit.inventory = [{ name: 'wood', quantity: 1 }] // Always picks up 1 wood
+    }
+    return unit
+  }
 
   const updateUnitPosition = (unit) => {
     if (unit.waitingTime) return { ...unit, waitingTime: unit.waitingTime - 1 }
@@ -66,17 +68,15 @@ export const useUnit = ({ unit: oldUnit }) => {
       }
       console.log(`🚀uU`, updatedUnit)
 
-
-
-
-
-
       return updatedUnit
     })
   }
 
-  return {
-    ...unit,
-    updateUnit,
-  }
+  useEffect(() => {
+    requestAnimationFrame(updateUnit)
+
+    return () => cancelAnimationFrame(updateUnit)
+  }, [updateUnit])
+
+  return { ...unit }
 }
