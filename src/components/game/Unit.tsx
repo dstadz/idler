@@ -10,15 +10,7 @@ import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes'
 
 export const useUnit = ({ unit: oldUnit }) => {
   const [unit, setUnit] = useState(oldUnit)
-  // const { buildingNodes } = useBuildingNodes()
   const { homeNode } = useHomeNode()
-  // const [units, setUnits] = useAtom(unitNodesAtom)
-
-  // const getRandomBuilding = () => {
-  //   if (!buildingNodes.length) return homeNode
-  //   const node = buildingNodes[Math.floor(Math.random() * buildingNodes.length)]
-  //   return { ...node, position: convertHexPositionToPixel(node.position) }
-  // }
 
   // const handleUnitArrival = () => {
   //   console.log(`🚀 ~ handleUnitArrival:`)
@@ -36,34 +28,58 @@ export const useUnit = ({ unit: oldUnit }) => {
   //   return unit
   // }
 
+  const updateUnitPosition = (unit) => {
+    if (unit.waitingTime) return { ...unit, waitingTime: unit.waitingTime - 1 }
+    if (!unit.target) return { ...unit, target: homeNode }
+
+
+    const { speed, dexterity } = unit.levels
+    const { distance, newPosition } = getDistanceFromTarget(unit)
+
+    if (distance <= speed) {
+      setTimeout(() => setUnits((prevUnits) =>
+        prevUnits.map((u) => u.id === unit.id ? handleUnitArrival(unit) : u)
+      ), 3000 / dexterity)
+
+      return { ...unit }
+    }
+
+
+    return { ...unit, position: newPosition }
+  }
+
 
   const updateUnit = () => {
-    if (!homeNode.map_id) return
-    console.log(`🚀 ~ updateUnit ~ homeNode:`, homeNode)
-    // setUnit(prev => {
-    //   const updatedUnit = { ...prev }
-    //   if (!prev.target) updatedUnit.target = homeNode
-    //   if (prev.waitingTime > 0) updatedUnit.waitingTime = prev.waitingTime - 1
+    if (!unit.id || !homeNode.map_id) return
+    console.log(`🚀 ~ updateUnit ~ unit`, unit)
+    setUnit(prev => {
+      const updatedUnit = { ...prev }
+      if (!prev.target) updatedUnit.target = homeNode
+      if (prev.waitingTime > 0) updatedUnit.waitingTime = prev.waitingTime - 1
+      const { position, target, levels: { speed } } = updatedUnit
+      const [targetX, targetY] = target.position
+      const [currentX, currentY] = position
+      const dx = targetX - currentX
+      const dy = targetY - currentY
+      const distance = Math.sqrt(dx * dx + dy * dy)
+      const newPosition = [
+        currentX + (dx / distance) * speed,
+        currentY + (dy / distance) * speed,
+      ]
+      if (distance <= speed) {
+        updatedUnit.xxx = handleUnitArrival()
+      } else {
+        updatedUnit.position = newPosition
+      }
+      console.log(`🚀uU`, updatedUnit)
 
-    //   const { position, target, levels: { speed } } = updatedUnit
-    //   const [targetX, targetY] = target.position
-    //   const [currentX, currentY] = position
-    //   const dx = targetX - currentX
-    //   const dy = targetY - currentY
-    //   const distance = Math.sqrt(dx * dx + dy * dy)
-    //   const newPosition = [
-    //     currentX + (dx / distance) * speed,
-    //     currentY + (dy / distance) * speed,
-    //   ]
-    //   if (distance <= speed) {
-    //     updatedUnit.xxx = handleUnitArrival()
-    //   } else {
-    //     updatedUnit.position = newPosition
-    //   }
-    //   console.log(`🚀uU`, updatedUnit)
 
-    //   return updatedUnit
-    // })
+
+
+
+
+      return updatedUnit
+    })
   }
 
   return {
@@ -82,6 +98,7 @@ export const Unit = ({ unit }) => {
 
     // updateUnit
   } = unit
+  console.log(`🚀 ~ Unit ~ unit:`, unit)
 
 
   // useEffect(() => {

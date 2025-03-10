@@ -2,14 +2,17 @@ import { useCallback, useEffect } from "react"
 import { useBuildingNodes } from '@/hooks/nodes/useBuildingNodes'
 import { useHomeNode } from "@/hooks/nodes/useHomeNode"
 import { convertHexPositionToPixel, getDistanceFromTarget } from "@/utils/gameHelpers"
-import { useAtom } from "jotai"
+import { atom, useAtom } from "jotai"
 import { unitNodesAtom } from "@/atoms"
 import { unitData } from "@/utils/constants"
 
+export const soloUnitsAtom = atom([]) //useAtom()
 export const useUnits = () => {
   const { homeNode } = useHomeNode()
   const { buildingNodes } = useBuildingNodes()
   const [units, setUnits] = useAtom(unitNodesAtom)
+  const [soloUnits, setSoloUnits] = useAtom(soloUnitsAtom)
+
 
   useEffect(() => {
     if (!buildingNodes || !homeNode) return
@@ -22,10 +25,12 @@ export const useUnits = () => {
       inventory: [{ name: 'wood', quantity: 3 }],
       waitingTime: 0,
     }))
-    setUnits(initialUnits)
+    setUnits([initialUnits[0]])
+    setSoloUnits([initialUnits[2]])
 
     return () => {
       setUnits([])
+      setSoloUnits([])
     }
   }, [buildingNodes, homeNode])
 
