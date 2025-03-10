@@ -15,6 +15,7 @@ export const useBuildingNodes = () => {
       .eq('map_id', mapId)
     if (buildingNodesError) console.log(buildingNodesError)
     if (!buildingNodesData) return
+
     setBuildingNodes([
       ...buildingNodesData.map((building) => ({
         position: [building.position_x, building.position_y],

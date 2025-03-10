@@ -1,10 +1,7 @@
 import { atom } from 'jotai'
 
-export { resourcesAtom, moneyAtom } from './resources'
-export { planetAtom } from './planet'
-export { userAtom, userIdAtom } from './user'
-
-
+export const userAtom = atom(null)
+export const userIdAtom = atom('')
 
 export const selectedTileAtom = atom({})
 export const selectedTilesAtom = atom([])
@@ -14,3 +11,6 @@ export const mapDataAtom = atom({})
 export const unitNodesAtom = atom([])
 export const homeNodeAtom = atom({})
 export const buildingNodesAtom = atom([])
+export const resourcesAtom = atom({})
+
+export const moneyAtom = atom(1000)

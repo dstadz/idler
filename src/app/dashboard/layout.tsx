@@ -24,6 +24,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
     }
     setMap()
   }, [userId])
+
   useEffect(() => {
     // const { data, error } =
     supabase
