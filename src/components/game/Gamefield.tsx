@@ -1,6 +1,6 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import { Unit } from './Unit'
+import { Unit, UnitPlus } from './Unit'
 import { Box } from '@mui/material'
 import { soloUnitsAtom, useUnits } from '@/hooks/nodes/useUnits'
 import { resourcesAtom } from '@/atoms'
@@ -47,7 +47,7 @@ const Gamefield = () => {
   return (
     <Box className='gamefield' sx={styles.gamefield} >
       {units.map((unit) => <Unit key={unit.id} unit={unit} />)}
-      <Unit unit={soloUnits[0]} />
+      <UnitPlus unit={soloUnits[0]} />
       {freeResourcesList.map(resource => <Resource key={resource.id} resource={resource} />)}
 
       <ul>
