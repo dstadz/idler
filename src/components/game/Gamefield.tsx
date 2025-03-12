@@ -57,6 +57,13 @@ const Gamefield = () => {
           {/* waiting: {unit.waitingTime} */}
         </li>)}
       </ul>
+
+      <ul>
+        {[soloUnits[0]].map((unit) => <li key={unit.id}>
+          {unit.emoji}
+          [{Math.floor(unit.position[0])}, {Math.floor(unit.position[1])}]
+        </li>)}
+      </ul>
     </Box>
   )
 }

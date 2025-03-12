@@ -23,50 +23,36 @@ export const useUnit = ({ unit: oldUnit }) => {
     return unit
   }
 
-  const updateUnitPosition = (unit) => {
-    if (unit.waitingTime) return { ...unit, waitingTime: unit.waitingTime - 1 }
-    if (!unit.target) return { ...unit, target: homeNode }
-
-
-    const { speed, dexterity } = unit.levels
-    const { distance, newPosition } = getDistanceFromTarget(unit)
-
+  const updateUnitPosition = (prev) => {
+    const updatedUnit = { ...prev }
+    if (!prev.target) updatedUnit.target = homeNode
+    if (prev.waitingTime > 0) updatedUnit.waitingTime = prev.waitingTime - 1
+    const { position, target, levels: { speed } } = updatedUnit
+    const [targetX, targetY] = target.position
+    const [currentX, currentY] = position
+    const dx = targetX - currentX
+    const dy = targetY - currentY
+    const distance = Math.sqrt(dx * dx + dy * dy)
+    const newPosition = [
+      currentX + (dx / distance) * speed,
+      currentY + (dy / distance) * speed,
+    ]
     if (distance <= speed) {
-      setTimeout(() => setUnits((prevUnits) =>
-        prevUnits.map((u) => u.id === unit.id ? handleUnitArrival(unit) : u)
-      ), 3000 / dexterity)
-
-      return { ...unit }
+      updatedUnit.xxx = handleUnitArrival()
+    } else {
+      updatedUnit.position = newPosition
     }
-
-
-    return { ...unit, position: newPosition }
+    return updatedUnit
   }
 
 
   const updateUnit = () => {
     if (!unit.id || !homeNode.map_id) return
-    console.log(`🚀 ~ updateUnit ~ unit`, unit)
     setUnit(prev => {
-      const updatedUnit = { ...prev }
-      if (!prev.target) updatedUnit.target = homeNode
-      if (prev.waitingTime > 0) updatedUnit.waitingTime = prev.waitingTime - 1
-      const { position, target, levels: { speed } } = updatedUnit
-      const [targetX, targetY] = target.position
-      const [currentX, currentY] = position
-      const dx = targetX - currentX
-      const dy = targetY - currentY
-      const distance = Math.sqrt(dx * dx + dy * dy)
-      const newPosition = [
-        currentX + (dx / distance) * speed,
-        currentY + (dy / distance) * speed,
-      ]
-      if (distance <= speed) {
-        updatedUnit.xxx = handleUnitArrival()
-      } else {
-        updatedUnit.position = newPosition
+      const updatedUnit = {
+        ...prev,
+        ...updateUnitPosition(prev),
       }
-      console.log(`🚀uU`, updatedUnit)
 
       return updatedUnit
     })

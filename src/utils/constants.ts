@@ -356,13 +356,13 @@ export const unitData = [
     size: 32,
     emoji: "🐉",
     position: [200, 400],
-    levels: { speed: 1, cargo: 1, dexterity: 1 },
+    levels: { speed: 1, cargo: 1, dexterity: 3 },
   },
   {
     id: 'unit4',
     size: 32,
     emoji: "🪼",
     position: [100, 400],
-    levels: { speed: 1, cargo: 3, dexterity: 4 },
+    levels: { speed: 2, cargo: 2, dexterity: 2 },
   },
 ]
