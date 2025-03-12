@@ -1,38 +1,14 @@
 'use client'
-import React, { useEffect, useState } from 'react'
-import { Unit, UnitPlus } from './Unit'
+import React, { useEffect } from 'react'
+import { Unit } from './Unit'
 import { Box } from '@mui/material'
-import { soloUnitsAtom, useUnits } from '@/hooks/nodes/useUnits'
-import { resourcesAtom } from '@/atoms'
-import { useAtom, useAtomValue } from 'jotai'
+import { useUnits } from '@/hooks/nodes/useUnits'
 import { RESOURCES } from '@/utils/contants/game'
 import PropTypes from 'prop-types'
 import { useHomeNode } from '@/hooks/nodes/useHomeNode'
 
-const newres = [
-  {
-    id: 'res1',
-    type: RESOURCES.STONE.NAME.toUpperCase(),
-    amount: 100,
-    position: [300, 300]
-  }
-]
-const useResources = () => {
-    // const { freeResources } = useResources()
-    const [resources, setResources] = useAtom(resourcesAtom)
-    const [freeResourcesList, setFreeResourcesList] = useState([])
-
-    useEffect(() => {
-      setFreeResourcesList(newres)
-    }, [])
-
-
-    return { resources, freeResourcesList }
-}
 const Gamefield = () => {
   const { units, updateUnitsPositions } = useUnits()
-  const soloUnits = useAtomValue(soloUnitsAtom)
-  const { freeResourcesList } = useResources()
   const { homeNode } = useHomeNode()
 
 
@@ -47,21 +23,12 @@ const Gamefield = () => {
   return (
     <Box className='gamefield' sx={styles.gamefield} >
       {units.map((unit) => <Unit key={unit.id} unit={unit} />)}
-      <UnitPlus unit={soloUnits[0]} />
-      {freeResourcesList.map(resource => <Resource key={resource.id} resource={resource} />)}
 
       <ul>
         {units.map((unit) => <li key={unit.id}>
           {unit.emoji}
           [{Math.floor(unit.position[0])}, {Math.floor(unit.position[1])}]
           {/* waiting: {unit.waitingTime} */}
-        </li>)}
-      </ul>
-
-      <ul>
-        {[soloUnits[0]].map((unit) => <li key={unit.id}>
-          {unit.emoji}
-          [{Math.floor(unit.position[0])}, {Math.floor(unit.position[1])}]
         </li>)}
       </ul>
     </Box>

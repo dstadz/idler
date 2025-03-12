@@ -29,14 +29,14 @@ export const Unit = ({ unit }) => {
         pointerEvents: 'none',
       }}
     >
+      <Stack flexDirection={'row'}>
+        <Typography>{emoji}</Typography>
+        <Box sx={{ background: 'green', width: `${waitingTime * 10 }px`, height: '20px' }}/>
+      </Stack>
       <Stack>
         {inventory.length > 0 && inventory.map(resource => (
           <Typography key={resource.name}>{resource.name}: {resource.quantity}</Typography>
         ))}
-      </Stack>
-      <Stack flexDirection={'row'}>
-        <Typography>{emoji}</Typography>
-        <Box sx={{ background: 'green', width: `${waitingTime * 10 }px`, height: '20px' }}/>
       </Stack>
     </Stack>
   )
