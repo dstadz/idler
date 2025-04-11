@@ -28,6 +28,13 @@ export default function SignIn() {
         // Store email and password locally
         localStorage.setItem('email', email)
         localStorage.setItem('password', password)
+
+        // Set session persistence
+        await supabase.auth.setSession({
+          access_token: data.session.access_token,
+          refresh_token: data.session.refresh_token,
+        })
+
         window.location.href = '/dashboard'
       } else {
         setError('Authentication failed. Please try again.')

@@ -21,14 +21,23 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 // }
 
   useEffect(() => {
-    // const { data, error } =
-    supabase
-    .auth
-    .onAuthStateChange((event, session) => {
+    // Check for existing session
+    const checkSession = async () => {
+      const { data: { session }, error } = await supabase.auth.getSession()
+      if (session) {
+        setUserId(session.user.id)
+      }
+    }
+    checkSession()
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUserId(session?.user?.id)
     })
 
-    return () => { supabase.auth.onAuthStateChange(null) }
+    return () => {
+      subscription?.unsubscribe()
+    }
   }, [setUserId])
 
   const Providers = ProviderStack.reduce((AccProvider, CurrentProvider) => {
