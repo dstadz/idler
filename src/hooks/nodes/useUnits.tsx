@@ -42,14 +42,23 @@ export const useUnits = () => {
     const unit = { ...unitOld }
     if (!unit.target) return unit
 
-    if (unit.target === homeNode) {
-      unit.inventory = []
-      unit.target = getRandomBuilding()
-    } else {
-      unit.target = homeNode
-      unit.inventory = [{ name: 'wood', quantity: 1 }]
-    }
-    return unit
+    // Add a small delay before changing target to prevent visual jitter
+    const arrivalDelay = 100 // ms
+
+    setTimeout(() => {
+      if (unit.target === homeNode) {
+        unit.inventory = []
+        unit.target = getRandomBuilding()
+      } else {
+        unit.target = homeNode
+        unit.inventory = [{ name: 'wood', quantity: 1 }]
+      }
+      setUnits(prevUnits =>
+        prevUnits.map(u => u.id === unit.id ? unit : u)
+      )
+    }, arrivalDelay)
+
+    return { ...unit, isArriving: true }
   }
 
   const updateUnitPosition = (unit) => {
@@ -59,17 +68,56 @@ export const useUnits = () => {
     const { distance, newPosition } = getDistanceFromTarget(unit)
 
     if (distance <= speed) {
+      // If we're already in the arrival process, don't start another one
+      if (unit.isArriving) return unit
+
+      const loadingTime = 3000 / dexterity
+      const startTime = Date.now()
+
       const timeoutId = setTimeout(() => {
         setUnits(prevUnits =>
           prevUnits.map(u => u.id === unit.id ? handleUnitArrival(unit) : u)
         )
-      }, 3000 / dexterity)
+      }, loadingTime)
 
-      // Store the timeout ID in the unit object instead of returning the cleanup function
-      return { ...unit, timeoutId }
+      // Use requestAnimationFrame for smoother animation
+      let animationFrameId
+      const animateProgress = () => {
+        const elapsed = Date.now() - startTime
+        const progress = Math.min(100, (elapsed / loadingTime) * 100)
+
+        setUnits(prevUnits =>
+          prevUnits.map(u =>
+            u.id === unit.id
+              ? { ...u, loadingProgress: progress, isLoading: true, isArriving: true }
+              : u
+          )
+        )
+
+        if (progress < 100) {
+          animationFrameId = requestAnimationFrame(animateProgress)
+        }
+      }
+
+      animationFrameId = requestAnimationFrame(animateProgress)
+
+      return {
+        ...unit,
+        timeoutId,
+        loadingProgress: 0,
+        isLoading: true,
+        isArriving: true,
+        animationFrameId
+      }
     }
 
-    return { ...unit, position: newPosition }
+    return {
+      ...unit,
+      position: newPosition,
+      loadingProgress: 0,
+      isLoading: false,
+      isArriving: false
+    }
   }
 
   const updateUnitsPositions = useCallback(() => {
@@ -79,12 +127,15 @@ export const useUnits = () => {
     setUnits(updatedUnits)
   }, [buildingNodes, homeNode])
 
-  // Clean up any pending timeouts when component unmounts
+  // Clean up any pending timeouts and animation frames when component unmounts
   useEffect(() => {
     return () => {
       unitsRef.current.forEach(unit => {
         if (unit.timeoutId) {
           clearTimeout(unit.timeoutId)
+        }
+        if (unit.animationFrameId) {
+          cancelAnimationFrame(unit.animationFrameId)
         }
       })
     }
