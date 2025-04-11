@@ -11,25 +11,42 @@ const Gamefield = () => {
   const { homeNode } = useHomeNode()
   const { units, updateUnitsPositions } = useUnits()
   const animationFrameRef = useRef<number | null>(null)
+  const lastUpdateTimeRef = useRef<number>(0)
+  const targetFPS = 60
+  const frameInterval = 1000 / targetFPS
 
-  const animate = useCallback(() => {
-    updateUnitsPositions()
+  const animate = useCallback((timestamp: number) => {
+    if (!lastUpdateTimeRef.current) {
+      lastUpdateTimeRef.current = timestamp
+    }
+
+    const elapsed = timestamp - lastUpdateTimeRef.current
+
+    if (elapsed >= frameInterval) {
+      updateUnitsPositions()
+      lastUpdateTimeRef.current = timestamp
+    }
+
     animationFrameRef.current = requestAnimationFrame(animate)
   }, [updateUnitsPositions])
 
   useEffect(() => {
     animationFrameRef.current = requestAnimationFrame(animate)
     return () => {
-      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current)
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
+      }
     }
   }, [animate])
 
-
-  if (!homeNode.map_id) return null
+  if (!homeNode.map_id || !units.length) return null
 
   return (
     <Box className='gamefield' sx={styles.gamefield} >
-      {units.map((unit) => <Unit key={unit.id} unit={unit} />)}
+      {units.map((unit) => (
+        <Unit key={unit.id} unit={unit} />
+      ))}
 
       <ul>
         {units.map((unit) => <li key={unit.id}>

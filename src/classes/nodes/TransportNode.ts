@@ -10,10 +10,12 @@ export class TransportNode extends CanvasNode {
   levels: {
     speed: number
     cargo: number
+    dexterity: number
   }
   dexterity: number
   // resources: ResourceRecord
   addToMainResources: (resource: keyof ResourceRecord, amount: number) => void
+  timeoutId: NodeJS.Timeout | null
 
   constructor({
     id,
@@ -41,6 +43,7 @@ export class TransportNode extends CanvasNode {
       dexterity: levels.dexterity,
     }
     this.addToMainResources = addToMainResources
+    this.timeoutId = null
   }
 
   drawUnit(ctx: CanvasRenderingContext2D) {
@@ -76,33 +79,39 @@ export class TransportNode extends CanvasNode {
       .filter(key => this.targetNode.resources[key as keyof ResourceRecord] > 1)
 
     if (availableResourceList.length === 0) {
-        this.isLoading = false
-        return
+      this.isLoading = false
+      return
     }
 
     const ranIdx = Math.floor(Math.random() * availableResourceList.length)
     const resource = availableResourceList[ranIdx] as keyof ResourceRecord
 
-    setTimeout(() => {
-        if (!this.resources || !this.targetNode.resources || !(resource in this.targetNode.resources)) return
+    const timeoutId = setTimeout(() => {
+      if (!this.resources || !this.targetNode.resources || !(resource in this.targetNode.resources)) return
 
-        this.isLoading = false
-        const availableAmount = this.targetNode.resources[resource] || 0
-        const transferAmount = Math.min(Math.floor(availableAmount), this.levels.cargo)
+      this.isLoading = false
+      const availableAmount = this.targetNode.resources[resource] || 0
+      const transferAmount = Math.min(Math.floor(availableAmount), this.levels.cargo)
 
-        this.resources[resource] = (this.resources[resource] || 0) + transferAmount
-        this.targetNode.resources[resource] -= transferAmount
-        this.targetNode = this.homeNode
+      this.resources[resource] = (this.resources[resource] || 0) + transferAmount
+      this.targetNode.resources[resource] -= transferAmount
+      this.targetNode = this.homeNode
     }, loadingTime)
+
+    // Store timeout ID for cleanup
+    this.timeoutId = timeoutId
   }
 
   startUnloading() {
     const unloadingTime = 1000 / this.levels.dexterity
-    setTimeout(() => {
+    const timeoutId = setTimeout(() => {
       this.deliverResources()
       this.isLoading = false
       this.targetNode = this.parentNode || this.homeNode
     }, unloadingTime)
+
+    // Store timeout ID for cleanup
+    this.timeoutId = timeoutId
   }
 
   deliverResources() {
@@ -147,5 +156,12 @@ export class TransportNode extends CanvasNode {
 
   updateSkill(skill: string) {
     this.levels[skill] += 1
+  }
+
+  cleanup() {
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId)
+      this.timeoutId = null
+    }
   }
 }

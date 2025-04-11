@@ -59,13 +59,14 @@ export const useUnits = () => {
     const { distance, newPosition } = getDistanceFromTarget(unit)
 
     if (distance <= speed) {
-      setTimeout(() => {
+      const timeoutId = setTimeout(() => {
         setUnits(prevUnits =>
           prevUnits.map(u => u.id === unit.id ? handleUnitArrival(unit) : u)
         )
       }, 3000 / dexterity)
 
-      return { ...unit }
+      // Store the timeout ID in the unit object instead of returning the cleanup function
+      return { ...unit, timeoutId }
     }
 
     return { ...unit, position: newPosition }
@@ -77,6 +78,17 @@ export const useUnits = () => {
     const updatedUnits = unitsRef.current.map(updateUnitPosition)
     setUnits(updatedUnits)
   }, [buildingNodes, homeNode])
+
+  // Clean up any pending timeouts when component unmounts
+  useEffect(() => {
+    return () => {
+      unitsRef.current.forEach(unit => {
+        if (unit.timeoutId) {
+          clearTimeout(unit.timeoutId)
+        }
+      })
+    }
+  }, [])
 
   return {
     units,
