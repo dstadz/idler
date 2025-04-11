@@ -2,9 +2,9 @@ import React from 'react'
 // import { createClient } from '@/utils/supabase/server'
 // import { cookies } from 'next/headers'
 import { Stack } from '@mui/material'
-import Canvas from '@/components/canvas/Canvas'
-import HexGrid from '@/components/hexgrid/HexGrid'
-import Gamefield from '@/components/game/Gamefield'
+// import Canvas from '@/components/canvas/Canvas'
+// import HexGrid from '@/components/hexgrid/HexGrid'
+// import Gamefield from '@/components/game/Gamefield'
 
 export default async function Page() {
   // const cookieStore = await cookies()
@@ -16,17 +16,17 @@ export default async function Page() {
   return (
     <Stack className="map-wrapper" sx={styles.wrapper}>
       {/* <Canvas canvasHeight={475} canvasWidth={750} /> */}
-      <Gamefield />
-      <HexGrid />
+      {/* <Gamefield /> */}
+      {/* <HexGrid /> */}
     </Stack>
   )
 }
 
 const styles = {
   wrapper: {
-    flex: 1,
-    // overflow: 'hidden',
-    // height: '100dvh',
-    // width: '100%',
+    width: '100%',
+    height: '100%',
+    position: 'relative',
+    overflow: 'hidden',
   },
 }

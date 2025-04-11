@@ -10,7 +10,6 @@ interface HexModalProps {
   modalType: 'Admin' | 'Player'
   onClose: () => void
 }
-
 const modalStyle: SxProps<Theme> = {
   position: 'absolute',
   top: '50%',
@@ -79,7 +78,6 @@ const HexCellModal: React.FC<HexModalProps> = ({ cell, modalType, onClose }) => 
         <Stack spacing={3}>
           <Stack direction="row" spacing={2} alignItems="center">
             <Typography variant="h5" component="h2" sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-              {/* {buildingInfo.emoji} {buildingInfo.name} */}
             </Typography>
           </Stack>
 
@@ -94,10 +92,8 @@ const HexCellModal: React.FC<HexModalProps> = ({ cell, modalType, onClose }) => 
               Status: {building.status}
             </Typography>
             <Typography variant="body1">
-              {/* Production: {buildingInfo.production * building.level} / turn */}
             </Typography>
             <Typography variant="body1">
-              {/* Maintenance: {buildingInfo.maintenance * building.level} / turn */}
             </Typography>
           </Stack>
 
@@ -107,7 +103,6 @@ const HexCellModal: React.FC<HexModalProps> = ({ cell, modalType, onClose }) => 
                 variant="contained"
                 color="primary"
                 onClick={handleUpgrade}
-                // disabled={building.level >= buildingInfo.maxLevel}
                 sx={{ flex: 1 }}
               >
                 Upgrade (Level {building.level + 1})
