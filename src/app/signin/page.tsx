@@ -13,23 +13,7 @@ export default function SignIn() {
     e.preventDefault()
     setError(null)
 
-    const storedEmail = localStorage.getItem('email')
-    const storedPassword = localStorage.getItem('password')
-
-    if (storedEmail && storedPassword) {
-      const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
-        email: storedEmail,
-        password: storedPassword,
-      })
-
-      if (supabaseError) {
-        setError(supabaseError.message)
-      } else if (data) {
-        window.location.href = '/dashboard'
-      } else {
-        console.error('Error: Unknown error occurred')
-      }
-    } else {
+    try {
       const { data, error: supabaseError } = await supabase.auth.signInWithPassword({
         email,
         password,
@@ -37,16 +21,20 @@ export default function SignIn() {
 
       if (supabaseError) {
         setError(supabaseError.message)
-      } else if (data) {
+        return
+      }
+
+      if (data?.user) {
         // Store email and password locally
         localStorage.setItem('email', email)
         localStorage.setItem('password', password)
-
-        // User is signed in, you can redirect them to the dashboard
         window.location.href = '/dashboard'
       } else {
-        console.error('Error: Unknown error occurred')
+        setError('Authentication failed. Please try again.')
       }
+    } catch (err) {
+      setError('An unexpected error occurred. Please try again.')
+      console.error('Sign in error:', err)
     }
   }
 

@@ -45,8 +45,14 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <Providers>
       <html lang='en' suppressHydrationWarning={true}>
+        <head>
+          <script
+            crossOrigin="anonymous"
+            src="//unpkg.com/react-scan/dist/auto.global.js"
+          />
+        </head>
         <body suppressHydrationWarning={true}>
-        <main className='flex min-h-screen min-w-screen flex-col items-center justify-between'>
+          <main className='flex min-h-screen min-w-screen flex-col items-center justify-between'>
             {children}
           </main>
         </body>

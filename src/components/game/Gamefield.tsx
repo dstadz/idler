@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect, useRef } from 'react'
 import { Unit } from './Unit'
 import { Box } from '@mui/material'
 import { useUnits } from '@/hooks/nodes/useUnits'
@@ -8,15 +8,22 @@ import PropTypes from 'prop-types'
 import { useHomeNode } from '@/hooks/nodes/useHomeNode'
 
 const Gamefield = () => {
-  const { units, updateUnitsPositions } = useUnits()
   const { homeNode } = useHomeNode()
+  const { units, updateUnitsPositions } = useUnits()
+  const animationFrameRef = useRef<number | null>(null)
 
+  const animate = useCallback(() => {
+    updateUnitsPositions()
+    animationFrameRef.current = requestAnimationFrame(animate)
+  }, [updateUnitsPositions])
 
   useEffect(() => {
-    requestAnimationFrame(updateUnitsPositions)
+    animationFrameRef.current = requestAnimationFrame(animate)
+    return () => {
+      if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current)
+    }
+  }, [animate])
 
-    return () => cancelAnimationFrame(updateUnitsPositions)
-  }, [updateUnitsPositions])
 
   if (!homeNode.map_id) return null
 
@@ -28,7 +35,6 @@ const Gamefield = () => {
         {units.map((unit) => <li key={unit.id}>
           {unit.emoji}
           [{Math.floor(unit.position[0])}, {Math.floor(unit.position[1])}]
-          {/* waiting: {unit.waitingTime} */}
         </li>)}
       </ul>
     </Box>

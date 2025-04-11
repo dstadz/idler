@@ -11,7 +11,6 @@ export const Unit = ({ unit }) => {
     size,
     emoji,
     inventory,
-    waitingTime,
     color = 'red',
   } = unit
 
@@ -31,7 +30,6 @@ export const Unit = ({ unit }) => {
     >
       <Stack flexDirection={'row'}>
         <Typography>{emoji}</Typography>
-        <Box sx={{ background: 'green', width: `${waitingTime * 10 }px`, height: '20px' }}/>
       </Stack>
       <Stack>
         {inventory.length > 0 && inventory.map(resource => (
@@ -49,7 +47,6 @@ Unit.propTypes = {
     size: PropTypes.number.isRequired,
     emoji: PropTypes.string.isRequired,
     inventory: PropTypes.arrayOf(PropTypes.object).isRequired,
-    waitingTime: PropTypes.number,
     color: PropTypes.string,
   }).isRequired,
 }
@@ -66,6 +63,5 @@ UnitPlus.propTypes = {
     size: PropTypes.number.isRequired,
     emoji: PropTypes.string.isRequired,
     inventory: PropTypes.arrayOf(PropTypes.object).isRequired,
-    waitingTime: PropTypes.number,
   }).isRequired,
 }

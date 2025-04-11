@@ -11,5 +11,4 @@ export type Unit = {
     name: string
     quantity: number
   }[]
-  waitingTime: number
 }
