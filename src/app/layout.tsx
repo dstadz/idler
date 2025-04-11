@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect } from 'react'
+import React, { useEffect, ReactNode } from 'react'
 import { Provider as JotaiProvider, useSetAtom } from 'jotai'
 import './globals.css'
 import { supabase } from '@/lib/supabase'
@@ -11,7 +11,11 @@ const ProviderStack = [
   GameStateProvider,
 ]
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+interface RootLayoutProps {
+  children: ReactNode
+}
+
+export default function RootLayout({ children }: RootLayoutProps) {
   const setUserId = useSetAtom(userIdAtom)
   // console.log(`🚀 ~ file: layout.tsx:15 ~ RootLayout ~ params:`, params)
 
@@ -24,8 +28,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
 
   useEffect(() => {
     // Check for existing session
-    const checkSession = async () => {
-      const { data: { session }, error } = await supabase.auth.getSession()
+    const checkSession = async (): Promise<void> => {
+      const { data: { session } } = await supabase.auth.getSession()
       if (session) {
         setUserId(session.user.id)
       }
@@ -33,7 +37,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     checkSession()
 
     // Listen for auth state changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUserId(session?.user?.id)
     })
 
@@ -43,7 +47,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   }, [setUserId])
 
   const Providers = ProviderStack.reduce((AccProvider, CurrentProvider) => {
-    const WrappedProviders = ({ children: providerChildren }: { children: React.ReactNode }) => (
+    const WrappedProviders = ({ children: providerChildren }: { children: ReactNode }) => (
       <AccProvider>
         <CurrentProvider>
           {providerChildren}
@@ -51,7 +55,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       </AccProvider>
     )
     return WrappedProviders
-  }, ({ children: layoutChildren }: { children: React.ReactNode }) => <>{layoutChildren}</>)
+  }, ({ children: layoutChildren }: { children: ReactNode }) => <>{layoutChildren}</>)
 
   return (
     <Providers>

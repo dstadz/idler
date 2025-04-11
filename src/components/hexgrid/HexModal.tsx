@@ -1,15 +1,17 @@
 import React from 'react'
-import { Box, Button, Modal, Stack, Typography } from '@mui/material'
-import { HexCell } from '../../types/HexCell'
+import { Box, Button, Modal, Stack, Typography, SxProps, Theme, IconButton } from '@mui/material'
+import { Close as CloseIcon } from '@mui/icons-material'
+import { HexCell, BuildingType } from '../../types/game'
 import { BUILDING_OBJECTS } from '../../utils/constants'
 import { useGameState } from '../../contexts/GameStateContext'
 
 interface HexModalProps {
   cell: HexCell
   modalType: 'Admin' | 'Player'
+  onClose: () => void
 }
 
-const modalStyle = {
+const modalStyle: SxProps<Theme> = {
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -22,47 +24,64 @@ const modalStyle = {
   borderRadius: 2,
   background: 'linear-gradient(145deg, #1a1a1a, #2a2a2a)',
   color: 'white',
+  outline: 'none',
 }
 
-const HexCellModal: React.FC<HexModalProps> = ({ cell, modalType }) => {
+const closeButtonStyle: SxProps<Theme> = {
+  position: 'absolute',
+  right: 8,
+  top: 8,
+  color: 'white',
+  '&:hover': {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+}
+
+const HexCellModal: React.FC<HexModalProps> = ({ cell, modalType, onClose }) => {
   const { building } = cell
-  const { gameState, setGameState } = useGameState()
+  const { dispatch } = useGameState()
 
   if (!building) return null
 
-  const buildingInfo = BUILDING_OBJECTS[building.type]
+  const buildingInfo = BUILDING_OBJECTS[building.type as BuildingType]
 
-  const handleUpgrade = () => {
+  const handleUpgrade = (): void => {
     if (!building) return
-    const newLevel = building.level + 1
-    const newBuilding = { ...building, level: newLevel }
-    const newCell = { ...cell, building: newBuilding }
-    const newGrid = gameState.grid.map(row =>
-      row.map(c => c.id === cell.id ? newCell : c)
-    )
-    setGameState({ ...gameState, grid: newGrid })
+    dispatch({ type: 'UPGRADE', cellId: cell.id })
   }
 
-  const handleDemolish = () => {
-    const newCell = { ...cell, building: undefined }
-    const newGrid = gameState.grid.map(row =>
-      row.map(c => c.id === cell.id ? newCell : c)
-    )
-    setGameState({ ...gameState, grid: newGrid })
+  const handleDemolish = (): void => {
+    dispatch({ type: 'DEMOLISH', cellId: cell.id })
+  }
+
+  const handleModalClick = (e: React.MouseEvent) => {
+    // Prevent clicks inside the modal from closing it
+    e.stopPropagation()
   }
 
   return (
     <Modal
       open={true}
-      onClose={() => {}}
+      onClose={onClose}
       aria-labelledby="hex-cell-modal"
       aria-describedby="hex-cell-modal-description"
+      onClick={onClose}
     >
-      <Box sx={modalStyle}>
+      <Box sx={modalStyle} onClick={handleModalClick}>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          sx={closeButtonStyle}
+        >
+          <CloseIcon />
+        </IconButton>
+
         <Stack spacing={3}>
-          <Typography variant="h5" component="h2" sx={{ color: 'primary.main', fontWeight: 'bold' }}>
-            {buildingInfo.name}
-          </Typography>
+          <Stack direction="row" spacing={2} alignItems="center">
+            <Typography variant="h5" component="h2" sx={{ color: 'primary.main', fontWeight: 'bold' }}>
+              {/* {buildingInfo.emoji} {buildingInfo.name} */}
+            </Typography>
+          </Stack>
 
           <Stack spacing={1}>
             <Typography variant="body1">
@@ -75,10 +94,10 @@ const HexCellModal: React.FC<HexModalProps> = ({ cell, modalType }) => {
               Status: {building.status}
             </Typography>
             <Typography variant="body1">
-              Production: {buildingInfo.production * building.level} / turn
+              {/* Production: {buildingInfo.production * building.level} / turn */}
             </Typography>
             <Typography variant="body1">
-              Maintenance: {buildingInfo.maintenance * building.level} / turn
+              {/* Maintenance: {buildingInfo.maintenance * building.level} / turn */}
             </Typography>
           </Stack>
 
@@ -88,7 +107,7 @@ const HexCellModal: React.FC<HexModalProps> = ({ cell, modalType }) => {
                 variant="contained"
                 color="primary"
                 onClick={handleUpgrade}
-                disabled={building.level >= 3}
+                // disabled={building.level >= buildingInfo.maxLevel}
                 sx={{ flex: 1 }}
               >
                 Upgrade (Level {building.level + 1})

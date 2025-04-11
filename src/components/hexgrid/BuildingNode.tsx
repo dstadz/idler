@@ -9,8 +9,9 @@ const {
   // status,
   type,
 } = building
+console.log(`🚀 ~ BuildingNode ~ building:`, building)
 
-  const buildingEmoji = BUILDING_OBJECTS?.[type]?.level?.[level - 1]?.icon ||'x'
+  const buildingEmoji = BUILDING_OBJECTS?.[type]?.EMOJI ||'x'
   return (
     <Box
       sx={{

@@ -1,4 +1,156 @@
 import { ResourceRecord } from '@/types/node'
+import { BuildingConfig, BuildingType, Resources } from '../types/game'
+
+export const GRID_SIZE = 5
+export const HEX_SIZE = 50
+export const HEX_WIDTH = HEX_SIZE * 2
+export const HEX_HEIGHT = Math.sqrt(3) * HEX_SIZE
+
+export const STARTING_RESOURCES: Resources = {
+  gold: 1000,
+  wood: 500,
+  stone: 500,
+  food: 1000
+}
+
+export const BUILDING_OBJECTS: Record<BuildingType, BuildingConfig> = {
+  FARM: {
+    name: 'Farm',
+    description: 'Produces food for your settlement',
+    EMOJI: '🌾',
+    production: 10,
+    maintenance: 2,
+    constructionTime: 2,
+    constructionCost: {
+      gold: 100,
+      wood: 50,
+      stone: 20,
+      food: 0
+    },
+    upgradeCost: {
+      gold: 200,
+      wood: 100,
+      stone: 50,
+      food: 0
+    },
+    maxLevel: 3
+  },
+  MINE: {
+    name: 'Mine',
+    description: 'Extracts stone and gold from the earth',
+    EMOJI: '⛏️',
+    production: 5,
+    maintenance: 3,
+    constructionTime: 3,
+    constructionCost: {
+      gold: 150,
+      wood: 100,
+      stone: 50,
+      food: 0
+    },
+    upgradeCost: {
+      gold: 300,
+      wood: 150,
+      stone: 100,
+      food: 0
+    },
+    maxLevel: 3
+  },
+  LUMBER_MILL: {
+    name: 'Lumber Mill',
+    description: 'Processes wood from nearby forests',
+    EMOJI: '🪓',
+    production: 8,
+    maintenance: 2,
+    constructionTime: 2,
+    constructionCost: {
+      gold: 120,
+      wood: 80,
+      stone: 30,
+      food: 0
+    },
+    upgradeCost: {
+      gold: 240,
+      wood: 120,
+      stone: 60,
+      food: 0
+    },
+    maxLevel: 3
+  },
+  MARKET: {
+    name: 'Market',
+    description: 'Trades resources with other settlements',
+    EMOJI: '🏪',
+    production: 15,
+    maintenance: 5,
+    constructionTime: 4,
+    constructionCost: {
+      gold: 200,
+      wood: 150,
+      stone: 100,
+      food: 50
+    },
+    upgradeCost: {
+      gold: 400,
+      wood: 200,
+      stone: 150,
+      food: 100
+    },
+    maxLevel: 3
+  },
+  HOUSE: {
+    name: 'House',
+    description: 'Provides living space for your population',
+    EMOJI: '🏠',
+    production: 0,
+    maintenance: 1,
+    constructionTime: 1,
+    constructionCost: {
+      gold: 80,
+      wood: 100,
+      stone: 50,
+      food: 0
+    },
+    upgradeCost: {
+      gold: 160,
+      wood: 200,
+      stone: 100,
+      food: 0
+    },
+    maxLevel: 3
+  },
+  BARRACKS: {
+    name: 'Barracks',
+    description: 'Trains and houses military units',
+    EMOJI: '🏢',
+    production: 0,
+    maintenance: 10,
+    constructionTime: 5,
+    constructionCost: {
+      gold: 300,
+      wood: 200,
+      stone: 150,
+      food: 100
+    },
+    upgradeCost: {
+      gold: 600,
+      wood: 400,
+      stone: 300,
+      food: 200
+    },
+    maxLevel: 3
+  }
+}
+
+export const TERRAIN_TYPES = ['grass', 'water', 'mountain', 'forest'] as const
+
+export const GAME_SETTINGS = {
+  gridSize: GRID_SIZE,
+  startingResources: STARTING_RESOURCES,
+  turnDuration: 60, // seconds
+  constructionSpeed: 1, // units per second
+  harvestInterval: 300 // seconds
+}
 
 export const NAV_TABS = [
   // {
@@ -245,7 +397,7 @@ export const TILE_OBJECTS = {
   },
 }
 
-export const BUILDING_OBJECTS = {
+export const BUILDING_OBJECTS_old = {
   MINE: {
     NAME: 'Mine',
     EMOJI: '⛏️',
@@ -366,3 +518,139 @@ export const unitData = [
     levels: { speed: 2, cargo: 2, dexterity: 2 },
   },
 ]
+
+export const NODES: Record<string, NodePath> = {
+  IRON: {
+    raw: {
+      id: 'iron_ore',
+      name: 'Iron Ore',
+      type: 'RAW',
+      emoji: '🪨',
+      baseValue: 1,
+      processingTime: 1,
+      produces: [{ resource: 'IRON_ORE', quantity: 1 }]
+    },
+    refined: {
+      id: 'iron_ingot',
+      name: 'Iron Ingot',
+      type: 'REFINED',
+      emoji: '⛓️',
+      baseValue: 2,
+      processingTime: 2,
+      requiredResources: [{ resource: 'IRON_ORE', quantity: 2 }],
+      produces: [{ resource: 'IRON_INGOT', quantity: 1 }]
+    },
+    ingredient: {
+      id: 'steel',
+      name: 'Steel',
+      type: 'INGREDIENT',
+      emoji: '🔩',
+      baseValue: 5,
+      processingTime: 3,
+      requiredResources: [
+        { resource: 'IRON_INGOT', quantity: 2 },
+        { resource: 'COAL', quantity: 1 }
+      ],
+      produces: [{ resource: 'STEEL', quantity: 1 }]
+    }
+  },
+  COPPER: {
+    raw: {
+      id: 'copper_ore',
+      name: 'Copper Ore',
+      type: 'RAW',
+      emoji: '🪨',
+      baseValue: 1,
+      processingTime: 1,
+      produces: [{ resource: 'COPPER_ORE', quantity: 1 }]
+    },
+    refined: {
+      id: 'copper_ingot',
+      name: 'Copper Ingot',
+      type: 'REFINED',
+      emoji: '🔶',
+      baseValue: 2,
+      processingTime: 2,
+      requiredResources: [{ resource: 'COPPER_ORE', quantity: 2 }],
+      produces: [{ resource: 'COPPER_INGOT', quantity: 1 }]
+    },
+    ingredient: {
+      id: 'copper_wire',
+      name: 'Copper Wire',
+      type: 'INGREDIENT',
+      emoji: '🔌',
+      baseValue: 4,
+      processingTime: 2,
+      requiredResources: [{ resource: 'COPPER_INGOT', quantity: 1 }],
+      produces: [{ resource: 'COPPER_WIRE', quantity: 2 }]
+    }
+  },
+  WOOD: {
+    raw: {
+      id: 'wood',
+      name: 'Wood',
+      type: 'RAW',
+      emoji: '🪵',
+      baseValue: 1,
+      processingTime: 1,
+      produces: [{ resource: 'WOOD', quantity: 1 }]
+    },
+    refined: {
+      id: 'lumber',
+      name: 'Lumber',
+      type: 'REFINED',
+      emoji: '📦',
+      baseValue: 2,
+      processingTime: 2,
+      requiredResources: [{ resource: 'WOOD', quantity: 2 }],
+      produces: [{ resource: 'LUMBER', quantity: 1 }]
+    },
+    ingredient: {
+      id: 'furniture',
+      name: 'Furniture',
+      type: 'INGREDIENT',
+      emoji: '🪑',
+      baseValue: 5,
+      processingTime: 3,
+      requiredResources: [
+        { resource: 'LUMBER', quantity: 3 },
+        { resource: 'NAILS', quantity: 1 }
+      ],
+      produces: [{ resource: 'FURNITURE', quantity: 1 }]
+    }
+  },
+  FOOD: {
+    raw: {
+      id: 'wheat',
+      name: 'Wheat',
+      type: 'RAW',
+      emoji: '🌾',
+      baseValue: 1,
+      processingTime: 1,
+      produces: [{ resource: 'WHEAT', quantity: 1 }]
+    },
+    refined: {
+      id: 'flour',
+      name: 'Flour',
+      type: 'REFINED',
+      emoji: '🌾',
+      baseValue: 2,
+      processingTime: 2,
+      requiredResources: [{ resource: 'WHEAT', quantity: 2 }],
+      produces: [{ resource: 'FLOUR', quantity: 1 }]
+    },
+    ingredient: {
+      id: 'bread',
+      name: 'Bread',
+      type: 'INGREDIENT',
+      emoji: '🍞',
+      baseValue: 4,
+      processingTime: 2,
+      requiredResources: [
+        { resource: 'FLOUR', quantity: 1 },
+        { resource: 'WATER', quantity: 1 }
+      ],
+      produces: [{ resource: 'BREAD', quantity: 2 }]
+    }
+  }
+}
