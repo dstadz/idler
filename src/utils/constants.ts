@@ -314,26 +314,26 @@ export const radiateFromXYAtoB = (a, b, x = 50, y = 50 ) => `
 
 export const tileBackgrounds = {
   GRASS : radiateFromXYAtoB(
-    'hsl( 96, 50%, 50%)',
-    'hsl( 96, 35%, 40%)'),
+    'hsl(120, 70%, 60%)',  // Brighter, more vibrant green
+    'hsl(120, 50%, 45%)'), // Slightly darker but still bright
   JUNGLE: radiateFromXYAtoB(
-    'hsl(140, 50%, 45%)',
-    'hsl(140, 60%, 25%)'),
+    'hsl(140, 70%, 50%)',  // Rich, vibrant jungle green
+    'hsl(140, 60%, 35%)'), // Deep but not too dark
   FOREST: radiateFromXYAtoB(
-    'hsl(135, 30%, 30%)',
-    'hsl(135, 45%, 15%)'),
+    'hsl(135, 50%, 40%)',  // Warm forest green
+    'hsl(135, 60%, 25%)'), // Deep forest shade
   DIRT  : radiateFromXYAtoB(
-    'hsl( 30, 60%, 40%)',
-    'hsl( 30, 35%, 25%)'),
+    'hsl(35, 70%, 60%)',   // Warm, sandy brown
+    'hsl(35, 50%, 45%)'),  // Rich earth tone
   SAND  : radiateFromXYAtoB(
-    'hsl( 45, 70%, 75%)',
-    'hsl( 35, 45%, 65%)'),
+    'hsl(45, 80%, 85%)',   // Bright, warm sand
+    'hsl(45, 60%, 75%)'),  // Soft sand tone
   STONE : radiateFromXYAtoB(
-    'hsl(185, 10%, 40%)',
-    'hsl(235, 35%, 25%)'),
+    'hsl(200, 20%, 60%)',  // Soft, cool gray
+    'hsl(200, 30%, 45%)'), // Deep slate
   SEA   : radiateFromXYAtoB(
-    'hsla(200, 50%, 20%, 0.5)',
-    'hsla(200, 55%, 30%, 0.9)'),
+    'hsla(200, 70%, 50%, 0.7)',  // Bright, tropical blue
+    'hsla(200, 60%, 40%, 0.9)'), // Deep ocean blue
 }
 
 export const unitData = [

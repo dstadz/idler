@@ -46,24 +46,26 @@ const HexCell = ({
           height: hexHeight,
           position: 'relative',
           background:
-            selectedTile.id === id ? 'red' :
+            selectedTile.id === id ? 'rgba(255, 255, 255, 0.2)' :
             tileBackgrounds[type],
           clipPath: hexagonPath,
-          cursor: 'pointer',
+          cursor: building ? 'pointer' : 'default',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          transition: 'background-color 0.3s ease',
-          boxShadow: '0 0 0 2px black',
+          transition: 'all 0.3s ease',
+          boxShadow: selectedTile.id === id ? '0 0 0 3px rgba(255, 255, 255, 0.5)' : '0 0 0 2px black',
+          '&:hover': {
+            boxShadow: building ? '0 0 0 3px rgba(255, 255, 255, 0.3)' : '0 0 0 2px black',
+          }
         }}
       >
         {building
           ? <BuildingNode building={building} />
           : <Typography color='hsla(0, 0%, 00%, 0.125)'> {`${rowIndex}, ${colIndex}`}</Typography>
         }
-
       </Box>
-      {selectedTile.id === id && <HexCellModal cell={cell} modalType={'Admin'} />}
+      {selectedTile.id === id && building && <HexCellModal cell={cell} modalType={'Admin'} />}
     </Stack>
   )
 }
