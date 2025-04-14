@@ -25,7 +25,7 @@ export default function SignupPage() {
       const result = await res.json()
 
       if (res.ok) {
-        router.push('/dashboard')
+        router.push('/overworld')
       } else {
         setError(result.message || 'Signup failed')
         console.error('Signup failed:', result)

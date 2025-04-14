@@ -1,3 +1,4 @@
+'use client'
 import React, { createContext, useState, useContext, useEffect, useReducer, useCallback } from 'react'
 import { useInterval } from '@/hooks/useInterval'
 import { GameState, GameAction, GameEvent, User } from '../types/game'

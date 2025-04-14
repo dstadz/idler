@@ -47,7 +47,7 @@ export default function LevelPage({ params }: LevelPageProps) {
           size="large"
           sx={styles.playButton}
           component={Link}
-          href={`/game/${levelId}`}
+          href={`/level/${levelId}`}
         >
           Play Level
         </Button>

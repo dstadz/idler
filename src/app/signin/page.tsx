@@ -35,7 +35,7 @@ export default function SignIn() {
           refresh_token: data.session.refresh_token,
         })
 
-        window.location.href = '/dashboard'
+        window.location.href = '/overworld'
       } else {
         setError('Authentication failed. Please try again.')
       }
