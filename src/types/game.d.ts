@@ -14,7 +14,7 @@ export type Unit = {
 }
 
 // Building Types
-export type BuildingType = 'FARM' | 'MINE' | 'LUMBER_MILL' | 'MARKET' | 'HOUSE' | 'BARRACKS'
+export type BuildingType = 'HOME' | 'FARM' | 'MINE' | 'LUMBER_MILL' | 'MARKET' | 'HOUSE' | 'BARRACKS'
 
 export interface Building {
   type: BuildingType

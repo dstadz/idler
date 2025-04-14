@@ -27,9 +27,9 @@ export default function LevelLayout({
           </Toolbar>
         </AppBar>
         <Stack sx={styles.content}>
+          <GameControls />
           {children}
         </Stack>
-        <GameControls />
       </Stack>
     </GameStateProvider>
   )

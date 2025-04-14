@@ -43,7 +43,7 @@ export function GameControls() {
 
 const styles = {
   container: {
-    position: 'fixed',
+    backgroundColor: 'red',
     top: 8,
     right: 8,
     display: 'flex',

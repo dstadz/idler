@@ -14,6 +14,27 @@ export const STARTING_RESOURCES: Resources = {
 }
 
 export const BUILDING_OBJECTS: Record<BuildingType, BuildingConfig> = {
+  HOME: {
+    name: 'Home',
+    description: 'Your main settlement building',
+    EMOJI: '🏠',
+    production: 0,
+    maintenance: 0,
+    constructionTime: 0,
+    constructionCost: {
+      gold: 0,
+      wood: 0,
+      stone: 0,
+      food: 0
+    },
+    upgradeCost: {
+      gold: 0,
+      wood: 0,
+      stone: 0,
+      food: 0
+    },
+    maxLevel: 1
+  },
   FARM: {
     name: 'Farm',
     description: 'Produces food for your settlement',
