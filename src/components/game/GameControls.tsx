@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { IconButton } from '@mui/material'
 import { Pause, PlayArrow, Speed } from '@mui/icons-material'
@@ -7,7 +9,7 @@ export function GameControls() {
   const { state, dispatch } = useGameState()
 
   const handlePauseResume = () => {
-    if (state.isPaused) {
+    if (state?.isPaused) {
       dispatch({ type: 'RESUME_GAME' })
     } else {
       dispatch({ type: 'PAUSE_GAME' })
@@ -15,7 +17,7 @@ export function GameControls() {
   }
 
   const handleSpeedChange = () => {
-    const newSpeed = state.gameSpeed === 1 ? 2 : 1
+    const newSpeed = state?.gameSpeed === 1 ? 2 : 1
     dispatch({ type: 'SET_GAME_SPEED', payload: newSpeed })
   }
 
@@ -26,7 +28,7 @@ export function GameControls() {
         size="small"
         sx={styles.button}
       >
-        {state.isPaused ? <PlayArrow fontSize="small" /> : <Pause fontSize="small" />}
+        {state?.isPaused ? <PlayArrow fontSize="small" /> : <Pause fontSize="small" />}
       </IconButton>
       <IconButton
         onClick={handleSpeedChange}

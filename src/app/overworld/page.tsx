@@ -14,7 +14,7 @@ export default function OverworldPage() {
           {[1, 2, 3, 4, 5].map((level) => (
             <Link
               key={level}
-              href={`/overworld/level/${level}`}
+              href={`/level/${level}`}
               style={styles.levelLink}
             >
               <Stack sx={styles.levelTile}>
