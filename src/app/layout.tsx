@@ -4,11 +4,9 @@ import { Provider as JotaiProvider, useSetAtom } from 'jotai'
 import './globals.css'
 import { supabase } from '@/lib/supabase'
 import { userIdAtom } from '@/atoms'
-import { GameStateProvider } from '@/contexts/GameStateContext'
 
 const ProviderStack = [
   JotaiProvider,
-  GameStateProvider,
 ]
 
 interface RootLayoutProps {

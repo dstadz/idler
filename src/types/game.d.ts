@@ -154,3 +154,27 @@ export interface NodePath {
   ingredient?: Node
   final?: Node
 }
+
+export interface HexTile {
+  id: string
+  position: [number, number]
+  type: 'empty' | 'land' | 'water' | 'mountain' | 'forest'
+}
+
+export interface Unit {
+  id: string
+  emoji: string
+  position: [number, number]
+  size: number
+  levels: {
+    speed: number
+    cargo: number
+    mining: number
+    combat: number
+  }
+  inventory: Array<{
+    name: string
+    quantity: number
+  }>
+  type: 'ally' | 'enemy'
+}
