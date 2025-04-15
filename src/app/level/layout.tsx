@@ -6,6 +6,8 @@ import { Home as HomeIcon } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { ResourceInventory } from '@/interfaces/Nodes/nodes';
+import BuildingManager from '@/components/BuildingManager';
+import UnitManager from '@/components/UnitManager';
 
 export default function LevelLayout({
   children,
@@ -104,6 +106,10 @@ export default function LevelLayout({
           </Box>
         </Toolbar>
       </AppBar>
+      <Box sx={styles.ui}>
+        <BuildingManager />
+        <UnitManager />
+      </Box>
       <Box sx={styles.content}>
         {children}
       </Box>
@@ -117,6 +123,12 @@ const styles = {
     height: '100vh',
     overflow: 'hidden',
   },
+  ui: {
+    position: 'absolute',
+    top: '30%',
+    zIndex: 5,
+  },
+
   content: {
     flex: 1,
     overflow: 'auto',

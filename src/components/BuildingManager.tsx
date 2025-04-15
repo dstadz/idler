@@ -1,18 +1,14 @@
 import React from 'react';
 import { Box, Typography, Paper, LinearProgress } from '@mui/material';
-import { Building, BUILDING_TYPES } from '@/types/building';
+import { BUILDING_TYPES } from '@/types/building';
+import CollapsibleManager from './CollapsibleManager';
+import { useBuilding } from '@/hooks/useBuilding';
 
-interface BuildingManagerProps {
-  buildings: Building[];
-  onBuildingSelect: (buildingId: string) => void;
-}
+export default function BuildingManager() {
+  const { buildings, selectBuilding } = useBuilding();
 
-export default function BuildingManager({ buildings, onBuildingSelect }: BuildingManagerProps) {
   return (
-    <Box sx={styles.container}>
-      <Typography variant="h6" sx={styles.title}>
-        Buildings
-      </Typography>
+    <CollapsibleManager title="Buildings">
       <Box sx={styles.buildingsList}>
         {buildings.map((building) => (
           <Paper
@@ -22,7 +18,7 @@ export default function BuildingManager({ buildings, onBuildingSelect }: Buildin
               ...styles.buildingCard,
               border: building.isSelected ? '2px solid #2196F3' : 'none',
             }}
-            onClick={() => onBuildingSelect(building.id)}
+            onClick={() => selectBuilding(building.id)}
           >
             <Typography variant="h6">
               {BUILDING_TYPES[building.type].emoji} {building.name} (Lvl {building.level})
@@ -32,6 +28,8 @@ export default function BuildingManager({ buildings, onBuildingSelect }: Buildin
             </Typography>
             <Typography variant="body2">Health: {building.stats.health}</Typography>
             <Typography variant="body2">Production: {building.stats.production}/turn</Typography>
+            <Typography variant="body2">Storage: {building.stats.storage}</Typography>
+            <Typography variant="body2">Defense: {building.stats.defense}</Typography>
             {building.constructionProgress !== undefined && (
               <Box sx={{ mt: 1 }}>
                 <Typography variant="body2" sx={{ mb: 0.5 }}>Construction Progress:</Typography>
@@ -45,25 +43,11 @@ export default function BuildingManager({ buildings, onBuildingSelect }: Buildin
           </Paper>
         ))}
       </Box>
-    </Box>
+    </CollapsibleManager>
   );
 }
 
 const styles = {
-  container: {
-    position: 'absolute',
-    top: 20,
-    right: 20,
-    width: 300,
-    backgroundColor: 'rgba(255, 255, 255, 0.4)',
-    borderRadius: 2,
-    padding: 2,
-    zIndex: 1000,
-  },
-  title: {
-    mb: 2,
-    textAlign: 'center',
-  },
   buildingsList: {
     display: 'flex',
     flexDirection: 'column',

@@ -5,10 +5,11 @@ import { Stack, Typography, Box } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { GameState } from '@/types/game';
-import UnitManager from '@/components/UnitManager';
-import BuildingManager from '@/components/BuildingManager';
 import { Unit, UNIT_TYPES } from '@/types/unit';
 import { Building, BUILDING_TYPES } from '@/types/building';
+import { hexToScreen, screenToHex, distanceBetweenHexes } from '@/utils/hexUtils';
+import { useUnit } from '@/hooks/useUnit';
+import { useBuilding } from '@/hooks/useBuilding';
 
 const GRID_SIZE = 12; // 5x5 grid
 const CELL_WIDTH = 64;
@@ -24,14 +25,27 @@ interface Cell {
   };
 }
 
+const HOME_NODE = { x: 6, y: 6 };
+const MOVEMENT_SPEED = 10; // pixels per update
+const ARRIVAL_THRESHOLD = 15; // pixels
+const UPDATE_INTERVAL = 100; // ms
+
 const generateDummyUnits = (): Unit[] => {
+  const homeScreen = hexToScreen(HOME_NODE.x, HOME_NODE.y);
+
+  // Generate random offsets around home
+  const getRandomOffset = () => (Math.random() - 0.5) * 50; // ±25 pixels
+
   return [
     {
       id: '1',
       name: 'Worker 1',
       type: 'worker',
       stats: UNIT_TYPES.worker.baseStats,
-      position: { x: 2, y: 2 },
+      position: {
+        x: homeScreen.x + getRandomOffset(),
+        y: homeScreen.y + getRandomOffset(),
+      },
       level: 1,
       experience: 0,
       isSelected: false,
@@ -41,7 +55,10 @@ const generateDummyUnits = (): Unit[] => {
       name: 'Soldier 1',
       type: 'soldier',
       stats: UNIT_TYPES.soldier.baseStats,
-      position: { x: 3, y: 3 },
+      position: {
+        x: homeScreen.x + getRandomOffset(),
+        y: homeScreen.y + getRandomOffset(),
+      },
       level: 1,
       experience: 0,
       isSelected: false,
@@ -51,7 +68,10 @@ const generateDummyUnits = (): Unit[] => {
       name: 'Scout 1',
       type: 'scout',
       stats: UNIT_TYPES.scout.baseStats,
-      position: { x: 6, y: 4 },
+      position: {
+        x: homeScreen.x + getRandomOffset(),
+        y: homeScreen.y + getRandomOffset(),
+      },
       level: 1,
       experience: 0,
       isSelected: false,
@@ -86,42 +106,78 @@ export default function LevelPage() {
   const params = useParams();
   const levelId = params.id as string;
   const [gameState, setGameState] = useState<GameState | null>(null);
-  const [units, setUnits] = useState<Unit[]>(generateDummyUnits());
-  const [buildings, setBuildings] = useState<Building[]>([
-    {
-      id: '1',
-      name: 'Farm 1',
-      type: 'farm',
-      stats: { health: 200, production: 10, storage: 100, defense: 5 },
-      position: { x: 2, y: 2 },
-      level: 1,
-      isSelected: false,
-    },
-    {
-      id: '2',
-      name: 'Mine 1',
-      type: 'mine',
-      stats: { health: 250, production: 15, storage: 150, defense: 8 },
-      position: { x: 3, y: 5 },
-      level: 1,
-      isSelected: false,
-    },
-  ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Initialize our hooks
+  const { units, updateUnit, createUnit } = useUnit();
+  const { buildings, createBuilding } = useBuilding();
+
+  // Initialize dummy data
+  useEffect(() => {
+    console.log('Initializing dummy data...');
+
+    // Create dummy buildings if none exist
+    if (buildings.length === 0) {
+      console.log('Creating dummy buildings...');
+      const dummyBuildings = [
+        {
+          type: 'farm',
+          position: { x: 2, y: 2 },
+        },
+        {
+          type: 'mine',
+          position: { x: 3, y: 5 },
+        },
+      ];
+
+      dummyBuildings.forEach(building => {
+        createBuilding(building.type as keyof typeof BUILDING_TYPES, building.position);
+      });
+    }
+
+    // Create dummy units if none exist
+    if (units.length === 0) {
+      console.log('Creating dummy units...');
+      const homeScreen = hexToScreen(HOME_NODE.x, HOME_NODE.y);
+      const getRandomOffset = () => (Math.random() - 0.5) * 50;
+
+      const dummyUnits = [
+        {
+          type: 'worker',
+          position: {
+            x: homeScreen.x + getRandomOffset(),
+            y: homeScreen.y + getRandomOffset(),
+          },
+        },
+        {
+          type: 'soldier',
+          position: {
+            x: homeScreen.x + getRandomOffset(),
+            y: homeScreen.y + getRandomOffset(),
+          },
+        },
+        {
+          type: 'scout',
+          position: {
+            x: homeScreen.x + getRandomOffset(),
+            y: homeScreen.y + getRandomOffset(),
+          },
+        },
+      ];
+
+      dummyUnits.forEach(unit => {
+        createUnit(unit.type as keyof typeof UNIT_TYPES, unit.position);
+      });
+    }
+  }, [buildings.length, units.length, createBuilding, createUnit]);
+
   const handleUnitSelect = (unitId: string) => {
-    setUnits(units.map(unit => ({
-      ...unit,
-      isSelected: unit.id === unitId
-    })));
+    // Assuming setUnits is called elsewhere in the code
   };
 
   const handleBuildingSelect = (buildingId: string) => {
-    setBuildings(buildings.map(building => ({
-      ...building,
-      isSelected: building.id === buildingId
-    })));
+    // Assuming setBuildings is called elsewhere in the code
   };
 
   useEffect(() => {
@@ -160,6 +216,56 @@ export default function LevelPage() {
     fetchLevelData();
   }, [levelId]);
 
+  // Movement logic
+  useEffect(() => {
+    const interval = setInterval(() => {
+      units.forEach(unit => {
+        // Get the current target position
+        let target;
+        if (unit.targetPosition) {
+          target = unit.targetPosition;
+        } else if (unit.isAtHome) {
+          // At home, pick a random building
+          const randomBuilding = buildings[Math.floor(Math.random() * buildings.length)];
+          target = randomBuilding?.position;
+        } else {
+          // At a building, move back to home
+          target = HOME_NODE;
+        }
+
+        if (!target) return;
+
+        // Calculate direction to target
+        const dx = target.x - unit.position.x;
+        const dy = target.y - unit.position.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+
+        // If we're close enough to the target, snap to it and switch targets
+        if (distance < ARRIVAL_THRESHOLD) {
+          updateUnit(unit.id, {
+            position: target,
+            isAtHome: !unit.isAtHome,
+            targetPosition: null
+          });
+          return;
+        }
+
+        // Otherwise, move towards the target
+        const moveX = (dx / distance) * MOVEMENT_SPEED;
+        const moveY = (dy / distance) * MOVEMENT_SPEED;
+
+        updateUnit(unit.id, {
+          position: {
+            x: unit.position.x + moveX,
+            y: unit.position.y + moveY
+          }
+        });
+      });
+    }, UPDATE_INTERVAL);
+
+    return () => clearInterval(interval);
+  }, [units, buildings, updateUnit]);
+
   const getBuildingAtPosition = (x: number, y: number) => {
     return buildings.find(b => b.position.x === x && b.position.y === y);
   };
@@ -193,14 +299,6 @@ export default function LevelPage() {
         </Typography>
       )}
       <Box sx={styles.container}>
-        <UnitManager
-          units={units}
-          onUnitSelect={handleUnitSelect}
-        />
-        <BuildingManager
-          buildings={buildings}
-          onBuildingSelect={handleBuildingSelect}
-        />
         <Box sx={styles.gridContainer}>
           {gameState.grid.map((row, rowIndex) => (
             <Box
@@ -213,7 +311,7 @@ export default function LevelPage() {
             >
               {row.map((cell, colIndex) => {
                 const building = getBuildingAtPosition(colIndex, rowIndex);
-                const unit = getUnitAtPosition(colIndex, rowIndex);
+                const isHomeNode = colIndex === HOME_NODE.x && rowIndex === HOME_NODE.y;
 
                 return (
                   <Box
@@ -239,7 +337,7 @@ export default function LevelPage() {
                       >
                         {BUILDING_TYPES[building.type].emoji}
                       </Box>
-                    ) : unit ? (
+                    ) : isHomeNode ? (
                       <Box
                         sx={{
                           position: 'absolute',
@@ -247,12 +345,9 @@ export default function LevelPage() {
                           left: '50%',
                           transform: 'translate(-50%, -50%)',
                           fontSize: '24px',
-                          cursor: 'pointer',
-                          filter: unit.isSelected ? 'drop-shadow(0 0 5px #2196F3)' : 'none',
                         }}
-                        onClick={() => handleUnitSelect(unit.id)}
                       >
-                        {UNIT_TYPES[unit.type].emoji}
+                        🏠
                       </Box>
                     ) : (
                       <Typography
@@ -271,6 +366,26 @@ export default function LevelPage() {
                   </Box>
                 );
               })}
+            </Box>
+          ))}
+          {/* Render floating units */}
+          {units.map((unit) => (
+            <Box
+              key={unit.id}
+              sx={{
+                position: 'absolute',
+                left: unit.position.x,
+                top: unit.position.y,
+                zIndex: 100,
+                fontSize: '24px',
+                transform: 'translate(-50%, -50%)',
+                cursor: 'pointer',
+                filter: unit.isSelected ? 'drop-shadow(0 0 5px #2196F3)' : 'none',
+                transition: 'left 0.05s, top 0.05s',
+              }}
+              onClick={() => handleUnitSelect(unit.id)}
+            >
+              {UNIT_TYPES[unit.type].emoji}
             </Box>
           ))}
         </Box>
@@ -306,7 +421,15 @@ const styles = {
     flexDirection: 'column',
     position: 'relative',
     border: '1px solid #0f0',
-
+  },
+  managersContainer: {
+    position: 'absolute',
+    top: 20,
+    right: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 2,
+    zIndex: 1000,
   },
   gridRow: {
     display: 'flex',
