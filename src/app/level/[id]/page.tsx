@@ -5,6 +5,10 @@ import { Stack, Typography, Box } from '@mui/material';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { GameState } from '@/types/game';
+import UnitManager from '@/components/UnitManager';
+import BuildingManager from '@/components/BuildingManager';
+import { Unit, UNIT_TYPES } from '@/types/unit';
+import { Building, BUILDING_TYPES } from '@/types/building';
 
 const GRID_SIZE = 12; // 5x5 grid
 const CELL_WIDTH = 64;
@@ -19,6 +23,41 @@ interface Cell {
     level: number;
   };
 }
+
+const generateDummyUnits = (): Unit[] => {
+  return [
+    {
+      id: '1',
+      name: 'Worker 1',
+      type: 'worker',
+      stats: UNIT_TYPES.worker.baseStats,
+      position: { x: 2, y: 2 },
+      level: 1,
+      experience: 0,
+      isSelected: false,
+    },
+    {
+      id: '2',
+      name: 'Soldier 1',
+      type: 'soldier',
+      stats: UNIT_TYPES.soldier.baseStats,
+      position: { x: 3, y: 3 },
+      level: 1,
+      experience: 0,
+      isSelected: false,
+    },
+    {
+      id: '3',
+      name: 'Scout 1',
+      type: 'scout',
+      stats: UNIT_TYPES.scout.baseStats,
+      position: { x: 6, y: 4 },
+      level: 1,
+      experience: 0,
+      isSelected: false,
+    },
+  ];
+};
 
 const generateBlankMap = (): GameState => {
   const grid: Cell[][] = Array(GRID_SIZE).fill(null).map((_, row) =>
@@ -47,8 +86,43 @@ export default function LevelPage() {
   const params = useParams();
   const levelId = params.id as string;
   const [gameState, setGameState] = useState<GameState | null>(null);
+  const [units, setUnits] = useState<Unit[]>(generateDummyUnits());
+  const [buildings, setBuildings] = useState<Building[]>([
+    {
+      id: '1',
+      name: 'Farm 1',
+      type: 'farm',
+      stats: { health: 200, production: 10, storage: 100, defense: 5 },
+      position: { x: 2, y: 2 },
+      level: 1,
+      isSelected: false,
+    },
+    {
+      id: '2',
+      name: 'Mine 1',
+      type: 'mine',
+      stats: { health: 250, production: 15, storage: 150, defense: 8 },
+      position: { x: 3, y: 5 },
+      level: 1,
+      isSelected: false,
+    },
+  ]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const handleUnitSelect = (unitId: string) => {
+    setUnits(units.map(unit => ({
+      ...unit,
+      isSelected: unit.id === unitId
+    })));
+  };
+
+  const handleBuildingSelect = (buildingId: string) => {
+    setBuildings(buildings.map(building => ({
+      ...building,
+      isSelected: building.id === buildingId
+    })));
+  };
 
   useEffect(() => {
     const fetchLevelData = async () => {
@@ -86,6 +160,14 @@ export default function LevelPage() {
     fetchLevelData();
   }, [levelId]);
 
+  const getBuildingAtPosition = (x: number, y: number) => {
+    return buildings.find(b => b.position.x === x && b.position.y === y);
+  };
+
+  const getUnitAtPosition = (x: number, y: number) => {
+    return units.find(u => u.position.x === x && u.position.y === y);
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -110,32 +192,88 @@ export default function LevelPage() {
           {error} - Using default map
         </Typography>
       )}
-      <Box sx={styles.gridContainer}>
-        {gameState.grid.map((row, rowIndex) => (
-          <Box
-            key={rowIndex}
-            sx={{
-              ...styles.gridRow,
-              marginLeft: rowIndex % 2 === 1 ? `${CELL_WIDTH / 2}px` : 0,
-            }}
-          >
-            {row.map((cell) => (
-              <Box
-                key={cell.id}
-                sx={{
-                  ...styles.gridCell,
-                  backgroundColor: getCellColor(cell.terrain),
-                }}
-              >
-                {cell.building && (
-                  <Typography variant="body2">
-                    {cell.building.type} (Lvl {cell.building.level})
-                  </Typography>
-                )}
-              </Box>
-            ))}
-          </Box>
-        ))}
+      <Box sx={styles.container}>
+        <UnitManager
+          units={units}
+          onUnitSelect={handleUnitSelect}
+        />
+        <BuildingManager
+          buildings={buildings}
+          onBuildingSelect={handleBuildingSelect}
+        />
+        <Box sx={styles.gridContainer}>
+          {gameState.grid.map((row, rowIndex) => (
+            <Box
+              key={rowIndex}
+              sx={{
+                ...styles.gridRow,
+                marginLeft: rowIndex % 2 === 1 ? `${CELL_WIDTH / 2}px` : 0,
+                marginTop: `-${CELL_HEIGHT * 0.25}px`,
+              }}
+            >
+              {row.map((cell, colIndex) => {
+                const building = getBuildingAtPosition(colIndex, rowIndex);
+                const unit = getUnitAtPosition(colIndex, rowIndex);
+
+                return (
+                  <Box
+                    key={cell.id}
+                    sx={{
+                      ...styles.gridCell,
+                      backgroundColor: getCellColor(cell.terrain),
+                      position: 'relative',
+                    }}
+                  >
+                    {building ? (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          fontSize: '24px',
+                          cursor: 'pointer',
+                          filter: building.isSelected ? 'drop-shadow(0 0 5px #2196F3)' : 'none',
+                        }}
+                        onClick={() => handleBuildingSelect(building.id)}
+                      >
+                        {BUILDING_TYPES[building.type].emoji}
+                      </Box>
+                    ) : unit ? (
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          fontSize: '24px',
+                          cursor: 'pointer',
+                          filter: unit.isSelected ? 'drop-shadow(0 0 5px #2196F3)' : 'none',
+                        }}
+                        onClick={() => handleUnitSelect(unit.id)}
+                      >
+                        {UNIT_TYPES[unit.type].emoji}
+                      </Box>
+                    ) : (
+                      <Typography
+                        variant="caption"
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          color: 'rgba(0, 0, 0, 0.5)',
+                        }}
+                      >
+                        {colIndex},{rowIndex}
+                      </Typography>
+                    )}
+                  </Box>
+                );
+              })}
+            </Box>
+          ))}
+        </Box>
       </Box>
     </Stack>
   );
@@ -157,13 +295,21 @@ const getCellColor = (terrain: string) => {
 };
 
 const styles = {
+  container: {
+    display: 'flex',
+    flexDirection: 'column',
+    position: 'relative',
+    border: '1px solid #f00',
+  },
   gridContainer: {
     display: 'flex',
     flexDirection: 'column',
+    position: 'relative',
+    border: '1px solid #0f0',
+
   },
   gridRow: {
     display: 'flex',
-    marginTop: `-${CELL_HEIGHT * 0.25}px`,
   },
   gridCell: {
     width: CELL_WIDTH,
