@@ -52,33 +52,33 @@ export const getUnitTarget = (
   buildings: Building[],
   homeCenter: [number, number]
 ): [number, number] | null => {
+  // If unit has an explicit target, use it
   if (unit.targetPosition) {
     return unit.targetPosition as [number, number]
   }
 
   const distanceToHome = distance(unit.position, homeCenter)
+  const isAtHome = distanceToHome < ARRIVAL_THRESHOLD
 
-  if (distanceToHome < ARRIVAL_THRESHOLD) {
-    // At home, pick a random building
+  // If at home, pick a random building
+  if (isAtHome) {
     const randomBuilding = buildings[Math.floor(Math.random() * buildings.length)]
     return randomBuilding ? getBuildingCenter(randomBuilding) : null
   }
 
-  // Not at home, check if at any building
+  // Check if at any building
   const atBuilding = buildings.find(building => {
     const buildingCenter = getBuildingCenter(building)
     return distance(unit.position, buildingCenter) < ARRIVAL_THRESHOLD
   })
 
+  // If at a building, move back to home
   if (atBuilding) {
-    // At a building, move back to home
     return homeCenter
   }
 
-  // In transit, continue to current target
-  return unit.isAtHome && buildings[0]
-    ? getBuildingCenter(buildings[0])
-    : homeCenter
+  // If not at home or building, continue to current target
+  return unit.isAtHome ? getBuildingCenter(buildings[0]) : homeCenter
 }
 
 export const shouldUpdatePosition = (
@@ -86,13 +86,42 @@ export const shouldUpdatePosition = (
   target: [number, number],
   direction: [number, number]
 ): boolean => {
-  return (
-    current[0] !== target[0] ||
-    current[1] !== target[1]
-  ) && (
-    Math.abs(direction[0]) > MOVEMENT_SPEED ||
-    Math.abs(direction[1]) > MOVEMENT_SPEED
-  )
+  // Always update if we're not at the target
+  return current[0] !== target[0] || current[1] !== target[1]
+}
+
+export const updateUnitPosition = (
+  unit: Unit,
+  target: [number, number],
+  homeCenter: [number, number]
+): { position: [number, number], isAtHome: boolean, targetPosition: [number, number] | null } => {
+  const direction: [number, number] = [
+    target[0] - unit.position[0],
+    target[1] - unit.position[1]
+  ]
+  const distanceToTarget = distance([0, 0], direction)
+
+  // If close enough to target, snap to it
+  if (distanceToTarget < ARRIVAL_THRESHOLD) {
+    const isAtHome = distance(target, homeCenter) < ARRIVAL_THRESHOLD
+    return {
+      position: target,
+      isAtHome,
+      targetPosition: null
+    }
+  }
+
+  // Otherwise, move towards target
+  const normalizedDirection = normalize(direction)
+  const movement = scalePoint(normalizedDirection, MOVEMENT_SPEED)
+  const newPosition = addPoints(unit.position, movement)
+  const isAtHome = distance(newPosition, homeCenter) < ARRIVAL_THRESHOLD
+
+  return {
+    position: newPosition,
+    isAtHome,
+    targetPosition: target
+  }
 }
 
 // Map generation

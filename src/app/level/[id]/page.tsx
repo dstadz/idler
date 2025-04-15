@@ -24,6 +24,7 @@ import {
   getBuildingCenter,
   getUnitTarget,
   shouldUpdatePosition,
+  updateUnitPosition,
   generateBlankMap,
   getCellColor
 } from '@/utils/gameHelpers'
@@ -151,33 +152,8 @@ export default function LevelPage() {
         const target = getUnitTarget(unit, buildings, homeCenter)
         if (!target) return
 
-        const direction: [number, number] = [
-          target[0] - unit.position[0],
-          target[1] - unit.position[1]
-        ]
-        const distanceToTarget = distance([0, 0], direction)
-
-        if (distanceToTarget < ARRIVAL_THRESHOLD) {
-          const isAtHome = distance(unit.position, homeCenter) < ARRIVAL_THRESHOLD
-
-          if (shouldUpdatePosition(unit.position, target, direction)) {
-            updateUnit(unit.id, {
-              position: target,
-              isAtHome,
-              targetPosition: null
-            })
-          }
-          return
-        }
-
-        const normalizedDirection = normalize(direction)
-        const movement = scalePoint(normalizedDirection, MOVEMENT_SPEED)
-
-        if (shouldUpdatePosition(unit.position, target, direction)) {
-          updateUnit(unit.id, {
-            position: addPoints(unit.position, movement)
-          })
-        }
+        const update = updateUnitPosition(unit, target, homeCenter)
+        updateUnit(unit.id, update)
       })
     }, UPDATE_INTERVAL)
 
