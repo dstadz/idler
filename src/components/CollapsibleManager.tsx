@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { Box, Typography, Paper, IconButton, Collapse } from '@mui/material';
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import ExpandLessIcon from '@mui/icons-material/ExpandLess';
+import React, { useState } from 'react'
+import { Box, Typography, Paper, IconButton, Collapse } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ExpandLessIcon from '@mui/icons-material/ExpandLess'
 
 interface CollapsibleManagerProps {
-  title: string;
-  children: React.ReactNode;
+  title: string
+  children: React.ReactNode
 }
 
 export default function CollapsibleManager({ title, children }: CollapsibleManagerProps) {
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false)
 
   return (
     <Paper sx={styles.container}>
@@ -25,7 +25,7 @@ export default function CollapsibleManager({ title, children }: CollapsibleManag
         </Box>
       </Collapse>
     </Paper>
-  );
+  )
 }
 
 const styles = {
@@ -51,4 +51,4 @@ const styles = {
     maxHeight: '400px',
     overflowY: 'auto',
   },
-};
+}

@@ -107,8 +107,8 @@ export default function LevelLayout({
         </Toolbar>
       </AppBar>
       <Box sx={styles.ui}>
-        <BuildingManager />
         <UnitManager />
+        <BuildingManager />
       </Box>
       <Box sx={styles.content}>
         {children}

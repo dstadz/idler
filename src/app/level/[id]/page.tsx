@@ -1,193 +1,119 @@
 'use client'
 
-import React, { useEffect, useState } from 'react';
-import { Stack, Typography, Box } from '@mui/material';
-import { useParams } from 'next/navigation';
-import { supabase } from '@/lib/supabase';
-import { GameState } from '@/types/game';
-import { Unit, UNIT_TYPES } from '@/types/unit';
-import { Building, BUILDING_TYPES } from '@/types/building';
-import { hexToScreen, screenToHex, distanceBetweenHexes } from '@/utils/hexUtils';
-import { useUnit } from '@/hooks/useUnit';
-import { useBuilding } from '@/hooks/useBuilding';
-
-const GRID_SIZE = 12; // 5x5 grid
-const CELL_WIDTH = 64;
-const CELL_HEIGHT = CELL_WIDTH * Math.sqrt(3) / 2; // height = width * sin(60°)
-
-interface Cell {
-  id: string;
-  terrain: string;
-  isSelected: boolean;
-  building?: {
-    type: string;
-    level: number;
-  };
-}
-
-const HOME_NODE = { x: 6, y: 6 };
-const MOVEMENT_SPEED = 10; // pixels per update
-const ARRIVAL_THRESHOLD = 15; // pixels
-const UPDATE_INTERVAL = 100; // ms
-
-const generateDummyUnits = (): Unit[] => {
-  const homeScreen = hexToScreen(HOME_NODE.x, HOME_NODE.y);
-
-  // Generate random offsets around home
-  const getRandomOffset = () => (Math.random() - 0.5) * 50; // ±25 pixels
-
-  return [
-    {
-      id: '1',
-      name: 'Worker 1',
-      type: 'worker',
-      stats: UNIT_TYPES.worker.baseStats,
-      position: {
-        x: homeScreen.x + getRandomOffset(),
-        y: homeScreen.y + getRandomOffset(),
-      },
-      level: 1,
-      experience: 0,
-      isSelected: false,
-    },
-    {
-      id: '2',
-      name: 'Soldier 1',
-      type: 'soldier',
-      stats: UNIT_TYPES.soldier.baseStats,
-      position: {
-        x: homeScreen.x + getRandomOffset(),
-        y: homeScreen.y + getRandomOffset(),
-      },
-      level: 1,
-      experience: 0,
-      isSelected: false,
-    },
-    {
-      id: '3',
-      name: 'Scout 1',
-      type: 'scout',
-      stats: UNIT_TYPES.scout.baseStats,
-      position: {
-        x: homeScreen.x + getRandomOffset(),
-        y: homeScreen.y + getRandomOffset(),
-      },
-      level: 1,
-      experience: 0,
-      isSelected: false,
-    },
-  ];
-};
-
-const generateBlankMap = (): GameState => {
-  const grid: Cell[][] = Array(GRID_SIZE).fill(null).map((_, row) =>
-    Array(GRID_SIZE).fill(null).map((_, col) => ({
-      id: `cell-${row}-${col}`,
-      terrain: 'grass',
-      isSelected: false
-    }))
-  );
-
-  return {
-    grid: grid as any, // Type assertion since our Cell type doesn't match HexCell exactly
-    resources: {
-      gold: 0,
-      wood: 0,
-      stone: 0,
-      food: 0
-    },
-    turn: 1,
-    lastUpdate: Date.now(),
-    playerId: ''
-  };
-};
+import React, { useEffect, useState } from 'react'
+import { Stack, Typography, Box } from '@mui/material'
+import { useParams } from 'next/navigation'
+import { supabase } from '@/lib/supabase'
+import { GameState } from '@/types/game'
+import { UNIT_TYPES } from '@/types/unit'
+import { BUILDING_TYPES } from '@/types/building'
+import { useUnit } from '@/hooks/useUnit'
+import { useBuilding } from '@/hooks/useBuilding'
+import {
+  CELL_WIDTH,
+  CELL_HEIGHT,
+  HOME_NODE,
+  MOVEMENT_SPEED,
+  ARRIVAL_THRESHOLD,
+  UPDATE_INTERVAL,
+  distance,
+  addPoints,
+  scalePoint,
+  normalize,
+  getHomeCenter,
+  getBuildingCenter,
+  getUnitTarget,
+  shouldUpdatePosition,
+  generateBlankMap,
+  getCellColor
+} from '@/utils/gameHelpers'
 
 export default function LevelPage() {
-  const params = useParams();
-  const levelId = params.id as string;
-  const [gameState, setGameState] = useState<GameState | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const params = useParams()
+  const levelId = params.id as string
+  const [gameState, setGameState] = useState<GameState | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Initialize our hooks
-  const { units, updateUnit, createUnit } = useUnit();
-  const { buildings, createBuilding } = useBuilding();
+  const { units, updateUnit, createUnit } = useUnit()
+  const { buildings, createBuilding } = useBuilding()
 
   // Initialize dummy data
   useEffect(() => {
-    console.log('Initializing dummy data...');
+    console.log('Initializing dummy data...')
 
     // Create dummy buildings if none exist
     if (buildings.length === 0) {
-      console.log('Creating dummy buildings...');
+      console.log('Creating dummy buildings...')
       const dummyBuildings = [
         {
           type: 'farm',
-          position: { x: 2, y: 2 },
+          position: [2, 2],
         },
         {
           type: 'mine',
-          position: { x: 3, y: 5 },
+          position: [3, 5],
         },
-      ];
+      ]
 
       dummyBuildings.forEach(building => {
-        createBuilding(building.type as keyof typeof BUILDING_TYPES, building.position);
-      });
+        createBuilding(building.type as keyof typeof BUILDING_TYPES, building.position)
+      })
     }
 
     // Create dummy units if none exist
     if (units.length === 0) {
-      console.log('Creating dummy units...');
-      const homeScreen = hexToScreen(HOME_NODE.x, HOME_NODE.y);
-      const getRandomOffset = () => (Math.random() - 0.5) * 50;
+      console.log('Creating dummy units...')
+      const homeCenter = getHomeCenter()
+      const getRandomOffset = () => (Math.random() - 0.5) * 50
 
       const dummyUnits = [
         {
           type: 'worker',
-          position: {
-            x: homeScreen.x + getRandomOffset(),
-            y: homeScreen.y + getRandomOffset(),
-          },
+          position: [
+            homeCenter[0] + getRandomOffset(),
+            homeCenter[1] + getRandomOffset(),
+          ],
         },
         {
           type: 'soldier',
-          position: {
-            x: homeScreen.x + getRandomOffset(),
-            y: homeScreen.y + getRandomOffset(),
-          },
+          position: [
+            homeCenter[0] + getRandomOffset(),
+            homeCenter[1] + getRandomOffset(),
+          ],
         },
         {
           type: 'scout',
-          position: {
-            x: homeScreen.x + getRandomOffset(),
-            y: homeScreen.y + getRandomOffset(),
-          },
+          position: [
+            homeCenter[0] + getRandomOffset(),
+            homeCenter[1] + getRandomOffset(),
+          ],
         },
-      ];
+      ]
 
       dummyUnits.forEach(unit => {
-        createUnit(unit.type as keyof typeof UNIT_TYPES, unit.position);
-      });
+        createUnit(unit.type as keyof typeof UNIT_TYPES, unit.position)
+      })
     }
-  }, [buildings.length, units.length, createBuilding, createUnit]);
+  }, [buildings.length, units.length, createBuilding, createUnit])
 
   const handleUnitSelect = (unitId: string) => {
     // Assuming setUnits is called elsewhere in the code
-  };
+  }
 
   const handleBuildingSelect = (buildingId: string) => {
     // Assuming setBuildings is called elsewhere in the code
-  };
+  }
 
   useEffect(() => {
     const fetchLevelData = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await supabase.auth.getSession()
         if (!session) {
-          setError('Not authenticated');
-          setGameState(generateBlankMap());
-          return;
+          setError('Not authenticated')
+          setGameState(generateBlankMap())
+          return
         }
 
         const { data: levelData, error: levelError } = await supabase
@@ -195,91 +121,83 @@ export default function LevelPage() {
           .select('*')
           .eq('level_id', levelId)
           .eq('player_id', session.user.id)
-          .single();
+          .single()
 
         if (levelError) {
-          setError('Error fetching level data');
-          setGameState(generateBlankMap());
-          return;
+          setError('Error fetching level data')
+          setGameState(generateBlankMap())
+          return
         }
 
-        setGameState(levelData as GameState);
+        setGameState(levelData as GameState)
       } catch (error) {
-        console.error('Error fetching level data:', error);
-        setError('An unexpected error occurred');
-        setGameState(generateBlankMap());
+        console.error('Error fetching level data:', error)
+        setError('An unexpected error occurred')
+        setGameState(generateBlankMap())
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchLevelData();
-  }, [levelId]);
+    fetchLevelData()
+  }, [levelId])
 
   // Movement logic
   useEffect(() => {
     const interval = setInterval(() => {
+      const homeCenter = getHomeCenter()
+
       units.forEach(unit => {
-        // Get the current target position
-        let target;
-        if (unit.targetPosition) {
-          target = unit.targetPosition;
-        } else if (unit.isAtHome) {
-          // At home, pick a random building
-          const randomBuilding = buildings[Math.floor(Math.random() * buildings.length)];
-          target = randomBuilding?.position;
-        } else {
-          // At a building, move back to home
-          target = HOME_NODE;
-        }
+        const target = getUnitTarget(unit, buildings, homeCenter)
+        if (!target) return
 
-        if (!target) return;
+        const direction: [number, number] = [
+          target[0] - unit.position[0],
+          target[1] - unit.position[1]
+        ]
+        const distanceToTarget = distance([0, 0], direction)
 
-        // Calculate direction to target
-        const dx = target.x - unit.position.x;
-        const dy = target.y - unit.position.y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distanceToTarget < ARRIVAL_THRESHOLD) {
+          const isAtHome = distance(unit.position, homeCenter) < ARRIVAL_THRESHOLD
 
-        // If we're close enough to the target, snap to it and switch targets
-        if (distance < ARRIVAL_THRESHOLD) {
-          updateUnit(unit.id, {
-            position: target,
-            isAtHome: !unit.isAtHome,
-            targetPosition: null
-          });
-          return;
-        }
-
-        // Otherwise, move towards the target
-        const moveX = (dx / distance) * MOVEMENT_SPEED;
-        const moveY = (dy / distance) * MOVEMENT_SPEED;
-
-        updateUnit(unit.id, {
-          position: {
-            x: unit.position.x + moveX,
-            y: unit.position.y + moveY
+          if (shouldUpdatePosition(unit.position, target, direction)) {
+            updateUnit(unit.id, {
+              position: target,
+              isAtHome,
+              targetPosition: null
+            })
           }
-        });
-      });
-    }, UPDATE_INTERVAL);
+          return
+        }
 
-    return () => clearInterval(interval);
-  }, [units, buildings, updateUnit]);
+        const normalizedDirection = normalize(direction)
+        const movement = scalePoint(normalizedDirection, MOVEMENT_SPEED)
+
+        if (shouldUpdatePosition(unit.position, target, direction)) {
+          updateUnit(unit.id, {
+            position: addPoints(unit.position, movement)
+          })
+        }
+      })
+    }, UPDATE_INTERVAL)
+
+    return () => clearInterval(interval)
+  }, [units, buildings, updateUnit])
 
   const getBuildingAtPosition = (x: number, y: number) => {
-    return buildings.find(b => b.position.x === x && b.position.y === y);
-  };
+    return buildings.find(b => b.position[0] === x && b.position[1] === y)
+  }
 
   const getUnitAtPosition = (x: number, y: number) => {
-    return units.find(u => u.position.x === x && u.position.y === y);
-  };
+    return units.find(u => u.position[0] === x && u.position[1] === y)
+  }
 
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
         <Typography>Loading level data...</Typography>
       </Box>
-    );
+    )
   }
 
   if (!gameState) {
@@ -287,7 +205,7 @@ export default function LevelPage() {
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
         <Typography>No level data found</Typography>
       </Box>
-    );
+    )
   }
 
   return (
@@ -310,8 +228,8 @@ export default function LevelPage() {
               }}
             >
               {row.map((cell, colIndex) => {
-                const building = getBuildingAtPosition(colIndex, rowIndex);
-                const isHomeNode = colIndex === HOME_NODE.x && rowIndex === HOME_NODE.y;
+                const building = getBuildingAtPosition(colIndex, rowIndex)
+                const isHomeNode = colIndex === HOME_NODE[0] && rowIndex === HOME_NODE[1]
 
                 return (
                   <Box
@@ -364,7 +282,7 @@ export default function LevelPage() {
                       </Typography>
                     )}
                   </Box>
-                );
+                )
               })}
             </Box>
           ))}
@@ -374,8 +292,8 @@ export default function LevelPage() {
               key={unit.id}
               sx={{
                 position: 'absolute',
-                left: unit.position.x,
-                top: unit.position.y,
+                left: unit.position[0],
+                top: unit.position[1],
                 zIndex: 100,
                 fontSize: '24px',
                 transform: 'translate(-50%, -50%)',
@@ -391,23 +309,8 @@ export default function LevelPage() {
         </Box>
       </Box>
     </Stack>
-  );
+  )
 }
-
-const getCellColor = (terrain: string) => {
-  switch (terrain) {
-    case 'grass':
-      return '#4CAF50';
-    case 'water':
-      return '#2196F3';
-    case 'mountain':
-      return '#795548';
-    case 'forest':
-      return '#2E7D32';
-    default:
-      return '#9E9E9E';
-  }
-};
 
 const styles = {
   container: {
@@ -443,4 +346,4 @@ const styles = {
     border: '1px solid #ccc',
     clipPath: 'polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%)',
   },
-};
+}
