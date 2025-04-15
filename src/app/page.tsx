@@ -1,13 +1,15 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { userIdAtom } from '@/atoms';
 import { useAtom } from 'jotai';
+import AuthModal from '@/components/AuthModal';
 
 export default function Page() {
   const [userId] = useAtom(userIdAtom);
+  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+
   if (userId) {
     window.location.href = '/admin' //temp
     return
@@ -17,20 +19,12 @@ export default function Page() {
     <div>
       <nav className='flex min-w-full items-center justify-between p-24'>
         <h1> Welcome to IDLR Landing page!</h1>
-          <Link
-            href='/signin'
-            className='underline hover:text-primary'
-          >
-            Sign In
-          </Link>
-
-          <Link
-            href='/signup'
-            className='underline hover:text-primary'
-          >
-            Sign Up
-          </Link>
-
+        <button
+          onClick={() => setIsAuthModalOpen(true)}
+          className='underline hover:text-primary'
+        >
+          Sign In / Sign Up
+        </button>
       </nav>
       <div className="relative flex items-center justify-center h-[200px]">
         <div className="absolute inset-0 opacity-50 rounded-lg"/>
@@ -44,6 +38,10 @@ export default function Page() {
         />
       </div>
       <p>The greatest way to pass the time</p>
+      <AuthModal
+        open={isAuthModalOpen}
+        onClose={() => setIsAuthModalOpen(false)}
+      />
     </div>
   )
 }
